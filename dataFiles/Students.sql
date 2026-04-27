@@ -26,7 +26,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Students` (
-  `student_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `date_of_birth` date NOT NULL,
@@ -35,7 +35,8 @@ CREATE TABLE `Students` (
   `grade_level` int(11) NOT NULL,
   `enrollment_status` varchar(20) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `phone_number` varchar(15) DEFAULT NULL
+  `phone_number` varchar(15) DEFAULT NULL,
+  PRIMARY KEY (`student_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -212,29 +213,3 @@ INSERT INTO `Students` (`student_id`, `first_name`, `last_name`, `date_of_birth`
 (167, 'Karen', 'Ford', '2017-12-17', 'Female', '2025-08-01', 1, 'Active', 'karen.ford@example.com', '555-100-0167'),
 (168, 'Harry', 'Graham', '2011-02-01', 'Male', '2023-09-01', 7, 'Active', 'harry.graham@example.com', '555-100-0168'),
 (169, 'Dorothy', 'Sullivan', '2012-04-15', 'Female', '2023-08-15', 6, 'Active', 'dorothy.sullivan@example.com', '555-100-0169');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `Students`
---
-ALTER TABLE `Students`
-  ADD PRIMARY KEY (`student_id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `Students`
---
-ALTER TABLE `Students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -26,12 +26,13 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `Employees` (
-  `id` int NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) DEFAULT NULL,
   `salary` float DEFAULT NULL,
   `department` varchar(20) DEFAULT NULL,
   `position` varchar(20) DEFAULT NULL,
-  `hireDate` varchar(20) DEFAULT NULL
+  `hireDate` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -1029,16 +1030,7 @@ INSERT INTO `Employees` (`id`, `name`, `salary`, `department`, `position`, `hire
 (999, 'Debora', 1229, 'Engineering', 'Operator', '2023-02-17'),
 (1000, 'Fredrick', 953, 'Research and Develop', 'Senior Quality Engin', '2023-05-07');
 
---
--- Indexes for dumped tables
---
 
---
--- Indexes for table `Emmployees`
---
-ALTER TABLE `Employees`
-  ADD PRIMARY KEY (`id`);
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

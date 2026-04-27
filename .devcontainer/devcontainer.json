@@ -1,0 +1,23 @@
+{
+  "name": "Python & MySQL Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  
+  // Installs the mysql-connector-python automatically
+  "postCreateCommand": "pip install -r requirements.txt",
+
+  // Adds useful tools for interacting with MySQL
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:1": {},
+    "ghcr.io/devcontainers/features/mysql-utils:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-mysql"
+      ]
+    }
+  }
+}
