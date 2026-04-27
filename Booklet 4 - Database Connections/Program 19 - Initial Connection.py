@@ -4,19 +4,19 @@ import sys
 # Define the Class structure to mirror SQA-RL
 class Employee:
     def __init__(self, id, name, salary, department, position, hireDate):
-        self.id = id
-        self.name = name
-        self.salary = salary
-        self.department = department
-        self.position = position
-        self.hireDate = hireDate
+        self.id = int(id)
+        self.name = str(name)
+        self.salary = float(salary)
+        self.department = str(department)
+        self.position = str(position)
+        self.hireDate = str(hireDate)
 
 # 1. Connection Details with Port
 config = {
-    'host': '213.171.200.29',
-    'user': 'EAAHCSTeacher',
-    'password': 'EAAHCSt00!',
-    'database': 'EAAHCS'
+    'host': 'b07invi6fy0sdm4vfxaw-mysql.services.clever-cloud.com',
+    'user': 'ugckxuxbrxdott5j',
+    'password': 'rPKPsrlvZweFCu2ftdv0',
+    'database': 'b07invi6fy0sdm4vfxaw'
 }
 
 # 2, 3 & 4. Establish Connection and Error Check
@@ -28,7 +28,7 @@ except mysql.connector.Error as err:
 
 try:
     # 5. Query
-    query = "SELECT id, name, salary, department, position, hireDate FROM Temployees"
+    query = "SELECT * FROM Employees "
     cursor = connection.cursor()
     
     # 6 & 7. Execute and Map to Array of Class Objects
@@ -41,12 +41,12 @@ try:
         results.append(Employee(row[0], row[1], row[2], row[3], row[4], row[5]))
 
     # 8. Display Headings
-    print("id\tname\tsalary\tdept\tpos\tdate")
+    print(f"{'id':<5}{'name':<20}{'salary':<12}{'dept':<30}{'position':<30}{'date':<12}")
 
     # 9. Loop through the results array
     for worker in results:
-        print(f"{worker.id}\t{worker.name}\t{worker.salary}\t"
-              f"{worker.department}\t{worker.position}\t{worker.hireDate}")
+          print(f"{str(worker.id):<5}{str(worker.name):<20}{str(worker.salary):<12}"
+              f"{str(worker.department):<30}{str(worker.position):<30}{str(worker.hireDate):<12}")
 
 finally:
     # 10. Close Connection
