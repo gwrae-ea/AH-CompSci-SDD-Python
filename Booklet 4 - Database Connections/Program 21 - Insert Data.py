@@ -1,11 +1,28 @@
-from database import get_db_connection
-from mysql.connector import Error
+import os
 from datetime import date
+from pathlib import Path
+
+import mysql.connector
+from dotenv import load_dotenv
+from mysql.connector import Error
+
+base_path = Path(__file__).resolve().parent.parent
+env_path = base_path / '.env'
+load_dotenv(dotenv_path=env_path)
 
 def insert_employee():
-    conn = get_db_connection()
-    if conn is None:
+    try:
+        conn = mysql.connector.connect(
+            host=os.getenv('DB_HOST'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASS'),
+            database=os.getenv('DB_NAME')
+        )
+    except Error as e:
+        print(f"Connection Error: {e}")
         return
+
+    cursor = None
 
     try:
         cursor = conn.cursor()
@@ -38,7 +55,8 @@ def insert_employee():
         print("Error: Please enter a valid number for the salary.")
     finally:
         if conn.is_connected():
-            cursor.close()
+            if cursor is not None:
+                cursor.close()
             conn.close()
 
 if __name__ == "__main__":
