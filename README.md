@@ -13,13 +13,20 @@ Use this guide at the start of a learning topic to set up your own working copy 
 1. In your fork, click **Code**.
 2. Select the **Codespaces** tab.
 3. Click **Create codespace on main**.
-4. When the codespace appears in the list, click the **...** menu next to it.
-5. Choose **Open in** -> **Visual Studio Code**.
-	This option launches the VS Code desktop app and attaches it to your codespace.
+4. Wait for the codespace to start and open in the browser.
+5. Continue working in the Codespaces editor and terminal.
 
-Wait for the desktop codespace window to finish loading before continuing.
+Wait for the Codespaces browser window to finish loading before continuing.
 
-## 3. Create and activate a virtual environment
+## 3. Install required VS Code extension
+
+Install the PDF extension needed to view booklet files inside Codespaces:
+
+1. Open the **Extensions** view in VS Code.
+2. Search for **PDF Viewer**.
+3. Install **PDF Viewer**.
+
+## 4. Create and activate a virtual environment
 
 In the Codespaces terminal, from the project root:
 
@@ -29,7 +36,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 4. Create your `.env` file
+## 5. Create your `.env` file
 
 The database code reads environment values from a `.env` file in the project root.
 
@@ -44,7 +51,7 @@ DB_NAME=your-database-name
 
 Ask your teacher for the correct values if you are using a shared/school database.
 
-## 5. Check your `.gitignore`
+## 6. Check your `.gitignore`
 
 Your `.gitignore` should include at least:
 
@@ -55,7 +62,7 @@ Your `.gitignore` should include at least:
 
 This prevents secrets and virtual environment files from being committed.
 
-## 6. Test your setup
+## 7. Test your setup
 
 Run the first database connection program:
 
@@ -65,7 +72,7 @@ python "Booklet 1 - OOP/Program 1 - defining a class.py"
 
 If setup is correct, you should see a successful connection message and the database server version.
 
-## 7. Daily workflow in Codespaces
+## 8. Daily workflow in Codespaces
 
 Each time you open a new terminal:
 
