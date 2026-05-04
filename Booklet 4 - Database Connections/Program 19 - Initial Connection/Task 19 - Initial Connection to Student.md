@@ -23,16 +23,20 @@ Your task is to complete this file to:
 
 ## Student Database Schema
 
-The Student table has the following structure:
+The Students table has the following structure:
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `student_id` | INT | Unique student identifier |
+| `student_id` | INT | Unique student identifier (auto-increment) |
 | `first_name` | VARCHAR(50) | Student's first name |
 | `last_name` | VARCHAR(50) | Student's last name |
-| `email` | VARCHAR(100) | Student's email address |
 | `date_of_birth` | DATE | Student's date of birth |
+| `gender` | ENUM('Male','Female','Other') | Student's gender |
 | `enrollment_date` | DATE | Date student enrolled |
+| `grade_level` | INT | Grade level (1-12) |
+| `enrollment_status` | VARCHAR(20) | Enrollment status (e.g., 'Active') |
+| `email` | VARCHAR(100) | Student's email address |
+| `phone_number` | VARCHAR(15) | Student's phone number |
 
 ---
 
