@@ -22,12 +22,23 @@ class Employee:
 
 
 def select_employees():
+    db_host = os.getenv('DB_HOST')
+    db_user = os.getenv('DB_USER')
+    db_pass = os.getenv('DB_PASS')
+    db_name = os.getenv('DB_NAME')
+
+    missing = [name for name, val in [('DB_HOST', db_host), ('DB_USER', db_user),
+                                       ('DB_PASS', db_pass), ('DB_NAME', db_name)] if not val]
+    if missing:
+        print(f"Configuration Error: Missing environment variable(s): {', '.join(missing)}")
+        return
+
     try:
         conn = mysql.connector.connect(
-            host=os.getenv('DB_HOST'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASS'),
-            database=os.getenv('DB_NAME')
+            host=db_host,
+            user=db_user,
+            password=db_pass,
+            database=db_name
         )
     except Error as err:
         print(f"Connection Error: {err}")
@@ -42,9 +53,11 @@ def select_employees():
         cursor.execute(query)
         db_rows = cursor.fetchall()
 
-        results = []
-        for row in db_rows:
-            results.append(Employee(row[0], row[1], row[2], row[3], row[4], row[5]))
+        num_rows = len(db_rows)
+        results = [None] * num_rows
+        for i in range(num_rows):
+            row = db_rows[i]
+            results[i] = Employee(row[0], row[1], row[2], row[3], row[4], row[5])
 
         print(f"{'id':<10}{'name':<20}{'salary':<12}{'dept':<30}{'position':<30}{'date':<12}")
 

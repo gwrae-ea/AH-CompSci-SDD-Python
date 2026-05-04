@@ -11,12 +11,23 @@ env_path = base_path / '.env'
 load_dotenv(dotenv_path=env_path)
 
 def insert_employee():
+    db_host = os.getenv('DB_HOST')
+    db_user = os.getenv('DB_USER')
+    db_pass = os.getenv('DB_PASS')
+    db_name = os.getenv('DB_NAME')
+
+    missing = [name for name, val in [('DB_HOST', db_host), ('DB_USER', db_user),
+                                       ('DB_PASS', db_pass), ('DB_NAME', db_name)] if not val]
+    if missing:
+        print(f"Configuration Error: Missing environment variable(s): {', '.join(missing)}")
+        return
+
     try:
         conn = mysql.connector.connect(
-            host=os.getenv('DB_HOST'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASS'),
-            database=os.getenv('DB_NAME')
+            host=db_host,
+            user=db_user,
+            password=db_pass,
+            database=db_name
         )
     except Error as e:
         print(f"Connection Error: {e}")
@@ -28,15 +39,34 @@ def insert_employee():
         cursor = conn.cursor()
 
         print("--- Add New Employee Record ---")
-        name = input("Enter Employee Name: ")
-        # Changed 'role' to 'position' to match your SQL file
-        position = input("Enter Job Position: ") 
-        salary = float(input("Enter Salary: "))
-        department = input("Enter Department: ")
-        # Auto-generating today's date for hireDate
+
+        name = input("Enter Employee Name: ").strip()
+        while not name:
+            print("Error: Employee name cannot be empty.")
+            name = input("Enter Employee Name: ").strip()
+
+        position = input("Enter Job Position: ").strip()
+        while not position:
+            print("Error: Job position cannot be empty.")
+            position = input("Enter Job Position: ").strip()
+
+        salary = None
+        while salary is None:
+            try:
+                salary = float(input("Enter Salary: ").strip())
+                if salary < 0:
+                    print("Error: Salary cannot be negative.")
+                    salary = None
+            except ValueError:
+                print("Error: Please enter a valid number for the salary.")
+
+        department = input("Enter Department: ").strip()
+        while not department:
+            print("Error: Department cannot be empty.")
+            department = input("Enter Department: ").strip()
+
         hire_date = str(date.today())
 
-        # Updated query to match your exact SQL column names
         query = """
             INSERT INTO Employees (name, position, salary, department, hireDate) 
             VALUES (%s, %s, %s, %s, %s)
@@ -50,9 +80,7 @@ def insert_employee():
 
     except Error as e:
         print(f"Database Error: {e}")
-        conn.rollback() 
-    except ValueError:
-        print("Error: Please enter a valid number for the salary.")
+        conn.rollback()
     finally:
         if conn.is_connected():
             if cursor is not None:

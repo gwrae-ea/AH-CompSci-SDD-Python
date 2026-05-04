@@ -13,14 +13,25 @@ load_dotenv(dotenv_path=env_path)
 def test_connection():
     print("Checking connection to external database...")
 
+    db_host = os.getenv('DB_HOST')
+    db_user = os.getenv('DB_USER')
+    db_pass = os.getenv('DB_PASS')
+    db_name = os.getenv('DB_NAME')
+
+    missing = [name for name, val in [('DB_HOST', db_host), ('DB_USER', db_user),
+                                       ('DB_PASS', db_pass), ('DB_NAME', db_name)] if not val]
+    if missing:
+        print(f"Configuration Error: Missing environment variable(s): {', '.join(missing)}")
+        return
+
     cursor = None
 
     try:
         conn = mysql.connector.connect(
-            host=os.getenv('DB_HOST'),
-            user=os.getenv('DB_USER'),
-            password=os.getenv('DB_PASS'),
-            database=os.getenv('DB_NAME')
+            host=db_host,
+            user=db_user,
+            password=db_pass,
+            database=db_name
         )
     except Error as e:
         print(f"Connection Error: {e}")
