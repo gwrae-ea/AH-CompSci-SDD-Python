@@ -5,7 +5,7 @@ import mysql.connector
 from dotenv import load_dotenv
 from mysql.connector import Error
 
-base_path = Path(__file__).resolve().parent.parent
+base_path = Path(__file__).resolve().parent.parent.parent
 env_path = base_path / '.env'
 load_dotenv(dotenv_path=env_path)
 
