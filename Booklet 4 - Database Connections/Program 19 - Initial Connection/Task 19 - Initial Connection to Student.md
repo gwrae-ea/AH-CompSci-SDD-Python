@@ -72,7 +72,7 @@ The Students table has the following structure:
    - `Error` from `mysql.connector`
 
 2. **Set up environment loading:**
-   - Use `Path(__file__).resolve().parent.parent` to navigate to the parent directory where `.env` is stored
+   - Use `Path(__file__).resolve().parent.parent.parent` to navigate to the workspace root where `.env` is stored
    - Call `load_dotenv(dotenv_path=env_path)`
 
 3. **Create a main function** (e.g., `test_student_connection()`) that:
