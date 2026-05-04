@@ -20,14 +20,47 @@ Once connected, the program creates a database cursor and runs a simple SQL quer
 
 ### Functional Requirements
 
-1. The system shall read database connection credentials (host, username, password, and database name) from environment variables.
-2. The system shall validate that all four environment variables are set and non-empty. If any are missing, it shall display an error message identifying the missing variable(s) and stop execution.
-3. The system shall display a message to the user while the connection attempt is in progress.
-4. The system shall attempt to establish a connection to a MySQL database using the validated credentials.
-5. If the connection is successful, the system shall retrieve and display the database server version.
-6. If the connection is successful, the system shall close the cursor and connection cleanly after use.
-7. The system shall confirm to the user when the connection has been closed safely.
-8. If the connection fails, the system shall display a failure message and a troubleshooting hint.
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Have an object-oriented solution with a developer defined class to represent employee data with appropriate properties and methods.
+
+FR2 Use an array of objects to store employee records for processing and display.
+
+FR3 Use a binary search algorithm.
+
+FR4 Apply the algorithm in FR3 to the data structure in FR2 to locate a target employee record efficiently.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Have a database table to store employee records.
+
+FR6 Connect to the database to execute a query to validate connectivity and retrieve/update employee data as required.
+
+FR7 Generate an interface to receive query input values and display formatted query output.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Validate that required environment configuration values are present before attempting any database operation.
+
+FR9 Validate keyboard numeric input to ensure values are in the correct format and valid range.
+
+FR10 Validate keyboard text input to ensure mandatory fields are non-empty and within allowed length.
+
+FR11 Display clear success/failure messages and always close database resources safely.
+
+FR12 Validate that selected database records exist before processing update or display actions.
+
+FR13 Validate user-selected identifiers against expected data type and acceptable range.
+
+FR14 Log or display meaningful error context to support troubleshooting of failed operations.
+
+FR15 Ensure each transaction-based operation leaves the database in a consistent state.
 
 ---
 
@@ -64,18 +97,16 @@ This program uses one SQL query to confirm that the database connection is worki
 
 ## Implementation
 
-The Python implementation is in [Program 19 - Initial Connection.py](./Program%2019%20-%20Initial%20Connection.py).
-
 ### SQA Reference Language
 
 ```text
 Line 1: FUNCTION TestConnection()
 Line 2:     SEND "Checking connection to external database..." TO DISPLAY
 
-Line 3:     SET dbHost TO GETENV("DB_HOST")
-Line 4:     SET dbUser TO GETENV("DB_USER")
-Line 5:     SET dbPass TO GETENV("DB_PASS")
-Line 6:     SET dbName TO GETENV("DB_NAME")
+Line 3:     SET dbHost TO GETENV("DB_HOST")                                         [FR8]
+Line 4:     SET dbUser TO GETENV("DB_USER")                                         [FR8]
+Line 5:     SET dbPass TO GETENV("DB_PASS")                                         [FR8]
+Line 6:     SET dbName TO GETENV("DB_NAME")                                         [FR8]
 
 Line 7:     SET missing TO []
 Line 8:     FOR EACH (varName, varValue) IN [("DB_HOST", dbHost), ("DB_USER", dbUser), ("DB_PASS", dbPass), ("DB_NAME", dbName)] DO
@@ -84,31 +115,33 @@ Line 10:             APPEND varName TO missing
 Line 11:         ENDIF
 Line 12:     ENDFOR
 Line 13:     IF LENGTH(missing) > 0 THEN
-Line 14:         SEND "Configuration Error: Missing environment variable(s): " & JOIN(missing, ", ") TO DISPLAY
+Line 14:         SEND "Configuration Error: Missing environment variable(s): " & JOIN(missing, ", ") TO DISPLAY   [FR8, FR11]
 Line 15:         RETURN
 Line 16:     ENDIF
 
-Line 17:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)
+Line 17:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
 
 Line 18:     IF conn <> NULL AND conn.is_connected() = TRUE THEN
 Line 19:         SET cursor TO conn.cursor()
-Line 20:         cursor.execute("SELECT VERSION();")
+Line 20:         cursor.execute("SELECT VERSION();")                                 [FR6]
 Line 21:         SET version TO cursor.fetchone()
 
-Line 22:         SEND "--- Connection Successful! ---" TO DISPLAY
-Line 23:         SEND "Database Server Version: " & version[0] TO DISPLAY
+Line 22:         SEND "--- Connection Successful! ---" TO DISPLAY                     [FR11]
+Line 23:         SEND "Database Server Version: " & version[0] TO DISPLAY             [FR7]
 
-Line 24:         cursor.close()
-Line 25:         conn.close()
-Line 26:         SEND "Connection closed safely." TO DISPLAY
+Line 24:         cursor.close()                                                      [FR11]
+Line 25:         conn.close()                                                        [FR11]
+Line 26:         SEND "Connection closed safely." TO DISPLAY                          [FR11]
 Line 27:     ELSE
-Line 28:         SEND "--- Connection Failed ---" TO DISPLAY
-Line 29:         SEND "Check your GitHub Secrets (Host, User, Pass) and Firewall settings." TO DISPLAY
+Line 28:         SEND "--- Connection Failed ---" TO DISPLAY                          [FR11]
+Line 29:         SEND "Check your GitHub Secrets (Host, User, Pass) and Firewall settings." TO DISPLAY   [FR11, FR14]
 Line 30:     ENDIF
 Line 31: ENDFUNCTION
 
 Line 32: CALL TestConnection()
 ```
+
+The Python implementation is in [Program 19 - Initial Connection.py](./Program%2019%20-%20Initial%20Connection.py).
 
 ### Notes
 
@@ -118,7 +151,7 @@ Line 32: CALL TestConnection()
 
 ---
 
-## Testing
+## Test plan
 
 ### Test Cases
 

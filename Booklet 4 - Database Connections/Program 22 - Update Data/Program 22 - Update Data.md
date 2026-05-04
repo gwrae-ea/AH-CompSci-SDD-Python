@@ -22,19 +22,47 @@ Once the current record has been retrieved, the program displays the existing va
 
 ### Functional Requirements
 
-1. The system shall read database connection credentials (host, username, password, and database name) from environment variables.
-2. The system shall validate that all four environment variables are set and non-empty. If any are missing, it shall display an error message identifying the missing variable(s) and stop execution.
-3. If the connection fails, the system shall display an error message and stop execution.
-4. The system shall prompt the user to enter an employee ID and validate that it is a whole number greater than 0. If invalid, it shall re-prompt until a valid value is supplied.
-5. The system shall use a SELECT query to check that an employee with the given ID exists. If no record is found, it shall display an appropriate message and stop.
-6. The system shall display the current values of the employee record before prompting for updates.
-7. The system shall prompt for new name, position, salary, and department, allowing blank input to keep the existing value.
-8. The system shall validate non-blank text fields against a maximum length. If exceeded, it shall display an error and re-prompt.
-9. The system shall validate non-blank salary input as a positive number. If invalid or non-positive, it shall display an error and re-prompt.
-10. The system shall execute an UPDATE query using parameterised values and commit the transaction.
-11. If no rows were changed, the system shall display a message indicating no changes were made. Otherwise it shall display a success message.
-12. If a database error occurs, the system shall display an error message and roll back the transaction.
-13. The system shall close the cursor and database connection cleanly in all cases.
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Have an object-oriented solution with a developer defined class to represent employee data with appropriate properties and methods.
+
+FR2 Use an array of objects to store employee records for processing and display.
+
+FR3 Use a binary search algorithm.
+
+FR4 Apply the algorithm in FR3 to the data structure in FR2 to locate a target employee record efficiently.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Have a database table to store employee records.
+
+FR6 Connect to the database to execute a query to validate connectivity and retrieve/update employee data as required.
+
+FR7 Generate an interface to receive query input values and display formatted query output.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Validate that required environment configuration values are present before attempting any database operation.
+
+FR9 Validate keyboard numeric input to ensure values are in the correct format and valid range.
+
+FR10 Validate keyboard text input to ensure mandatory fields are non-empty and within allowed length.
+
+FR11 Display clear success/failure messages and always close database resources safely.
+
+FR12 Validate that selected database records exist before processing update or display actions.
+
+FR13 Validate user-selected identifiers against expected data type and acceptable range.
+
+FR14 Log or display meaningful error context to support troubleshooting of failed operations.
+
+FR15 Ensure each transaction-based operation leaves the database in a consistent state.
 
 ---
 
@@ -84,16 +112,14 @@ This program uses two parameterised SQL queries: one to find the existing employ
 
 ## Implementation
 
-The Python implementation is in [Program 22 - Update Data.py](./Program%2022%20-%20Update%20Data.py).
-
 ### SQA Reference Language
 
 ```text
 Line 1: FUNCTION UpdateEmployee()
-Line 2:     SET dbHost TO GETENV("DB_HOST")
-Line 3:     SET dbUser TO GETENV("DB_USER")
-Line 4:     SET dbPass TO GETENV("DB_PASS")
-Line 5:     SET dbName TO GETENV("DB_NAME")
+Line 2:     SET dbHost TO GETENV("DB_HOST")                                         [FR8]
+Line 3:     SET dbUser TO GETENV("DB_USER")                                         [FR8]
+Line 4:     SET dbPass TO GETENV("DB_PASS")                                         [FR8]
+Line 5:     SET dbName TO GETENV("DB_NAME")                                         [FR8]
 
 Line 6:     SET missing TO []
 Line 7:     FOR EACH (varName, varValue) IN [("DB_HOST", dbHost), ("DB_USER", dbUser), ("DB_PASS", dbPass), ("DB_NAME", dbName)] DO
@@ -102,13 +128,13 @@ Line 9:             APPEND varName TO missing
 Line 10:         ENDIF
 Line 11:     ENDFOR
 Line 12:     IF LENGTH(missing) > 0 THEN
-Line 13:         SEND "Configuration Error: Missing environment variable(s): " & JOIN(missing, ", ") TO DISPLAY
+Line 13:         SEND "Configuration Error: Missing environment variable(s): " & JOIN(missing, ", ") TO DISPLAY   [FR8, FR11]
 Line 14:         RETURN
 Line 15:     ENDIF
 
-Line 16:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)
+Line 16:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
 Line 17:     IF conn = NULL THEN
-Line 18:         SEND "Connection Error" TO DISPLAY
+Line 18:         SEND "Connection Error" TO DISPLAY                                 [FR11]
 Line 19:         RETURN
 Line 20:     ENDIF
 
@@ -118,50 +144,52 @@ Line 22:     TRY
 Line 23:         SET cursor TO conn.cursor()
 
 Line 24:         SEND "--- Update Employee Record ---" TO DISPLAY
-Line 25:         SET employeeId TO VALIDATED_INTEGER_INPUT("Enter Employee ID to update: ")
+Line 25:         SET employeeId TO VALIDATED_INTEGER_INPUT("Enter Employee ID to update: ")   [FR7, FR9]
 
-Line 26:         SET selectQuery TO "SELECT id, name, position, salary, department FROM Employees WHERE id = %s"
+Line 26:         SET selectQuery TO "SELECT id, name, position, salary, department FROM Employees WHERE id = %s"   [FR6, FR12]
 Line 27:         cursor.execute(selectQuery, (employeeId))
 Line 28:         SET employee TO cursor.fetchone()
 
 Line 29:         IF employee = NULL THEN
-Line 30:             SEND "No employee found with that ID." TO DISPLAY
+Line 30:             SEND "No employee found with that ID." TO DISPLAY               [FR11, FR12]
 Line 31:             RETURN
 Line 32:         ENDIF
 
 Line 33:         SEND "Leave blank to keep existing values." TO DISPLAY
-Line 34:         SET newName TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Name: ", employee.name)
-Line 35:         SET newPosition TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Position: ", employee.position)
-Line 36:         SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT("Enter New Salary: ", employee.salary)
-Line 37:         SET newDepartment TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Department: ", employee.department)
+Line 34:         SET newName TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Name: ", employee.name)   [FR7, FR10]
+Line 35:         SET newPosition TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Position: ", employee.position)   [FR7, FR10]
+Line 36:         SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT("Enter New Salary: ", employee.salary)   [FR7, FR9]
+Line 37:         SET newDepartment TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Department: ", employee.department)   [FR7, FR10]
 
-Line 38:         SET updateQuery TO "UPDATE Employees SET name=%s, position=%s, salary=%s, department=%s WHERE id=%s"
+Line 38:         SET updateQuery TO "UPDATE Employees SET name=%s, position=%s, salary=%s, department=%s WHERE id=%s"   [FR6]
 Line 39:         SET values TO (newName, newPosition, newSalary, newDepartment, employeeId)
 Line 40:         cursor.execute(updateQuery, values)
-Line 41:         conn.commit()
+Line 41:         conn.commit()                                                        [FR15]
 
 Line 42:         IF cursor.rowcount = 0 THEN
 Line 43:             SEND "No changes were made." TO DISPLAY
 Line 44:         ELSE
-Line 45:             SEND "Employee updated successfully." TO DISPLAY
+Line 45:             SEND "Employee updated successfully." TO DISPLAY                 [FR11]
 Line 46:         ENDIF
 
 Line 47:     CATCH DATABASEERROR
-Line 48:         SEND "Database Error" TO DISPLAY
-Line 49:         conn.rollback()
+Line 48:         SEND "Database Error" TO DISPLAY                                   [FR11, FR14]
+Line 49:         conn.rollback()                                                      [FR15]
 
 Line 50:     FINALLY
 Line 51:         IF conn.is_connected() = TRUE THEN
 Line 52:             IF cursor <> NULL THEN
-Line 53:                 cursor.close()
+Line 53:                 cursor.close()                                              [FR11]
 Line 54:             ENDIF
-Line 55:             conn.close()
+Line 55:             conn.close()                                                    [FR11]
 Line 56:         ENDIF
 Line 57:     ENDTRY
 Line 58: ENDFUNCTION
 
 Line 59: CALL UpdateEmployee()
 ```
+
+The Python implementation is in [Program 22 - Update Data.py](./Program%2022%20-%20Update%20Data.py).
 
 ### Notes
 
@@ -171,7 +199,7 @@ Line 59: CALL UpdateEmployee()
 
 ---
 
-## Testing
+## Test plan
 
 ### Test Cases
 

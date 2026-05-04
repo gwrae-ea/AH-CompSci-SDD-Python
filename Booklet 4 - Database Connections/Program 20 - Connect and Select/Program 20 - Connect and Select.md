@@ -19,16 +19,47 @@ The returned rows are then processed by first reading how many rows were returne
 
 ### Functional Requirements
 
-1. The system shall read database connection credentials (host, username, password, and database name) from environment variables.
-2. The system shall validate that all four environment variables are set and non-empty. If any are missing, it shall display an error message identifying the missing variable(s) and stop execution.
-3. The system shall attempt to establish a connection to a MySQL database using the validated credentials.
-4. If the connection fails, the system shall display an error message and stop execution.
-5. The system shall execute a SELECT query to retrieve all records from the Employees table.
-6. The system shall read the number of rows returned and create a fixed-size array of that length to store Employee objects.
-7. The system shall map each returned row into an Employee object stored at the corresponding index of the array.
-8. The system shall display the employee records in a formatted table with appropriate column headings.
-9. The system shall close the cursor and database connection cleanly after use.
-10. If a database error occurs during the query, the system shall display an appropriate error message.
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Have an object-oriented solution with a developer defined class to represent employee data with appropriate properties and methods.
+
+FR2 Use an array of objects to store employee records for processing and display.
+
+FR3 Use a binary search algorithm.
+
+FR4 Apply the algorithm in FR3 to the data structure in FR2 to locate a target employee record efficiently.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Have a database table to store employee records.
+
+FR6 Connect to the database to execute a query to validate connectivity and retrieve/update employee data as required.
+
+FR7 Generate an interface to receive query input values and display formatted query output.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Validate that required environment configuration values are present before attempting any database operation.
+
+FR9 Validate keyboard numeric input to ensure values are in the correct format and valid range.
+
+FR10 Validate keyboard text input to ensure mandatory fields are non-empty and within allowed length.
+
+FR11 Display clear success/failure messages and always close database resources safely.
+
+FR12 Validate that selected database records exist before processing update or display actions.
+
+FR13 Validate user-selected identifiers against expected data type and acceptable range.
+
+FR14 Log or display meaningful error context to support troubleshooting of failed operations.
+
+FR15 Ensure each transaction-based operation leaves the database in a consistent state.
 
 ---
 
@@ -70,12 +101,10 @@ This program uses one SQL query to retrieve all employee records from the databa
 
 ## Implementation
 
-The Python implementation is in [Program 20 - Connect and Select.py](./Program%2020%20-%20Connect%20and%20Select.py).
-
 ### SQA Reference Language
 
 ```text
-Line 1: CLASS Employee
+Line 1: CLASS Employee                                                              [FR1]
 Line 2:     FUNCTION __init__(id, name, salary, department, position, hireDate)
 Line 3:         SET self.id TO id
 Line 4:         SET self.name TO name
@@ -87,10 +116,10 @@ Line 9:     ENDFUNCTION
 Line 10: ENDCLASS
 
 Line 11: FUNCTION SelectEmployees()
-Line 12:     SET dbHost TO GETENV("DB_HOST")
-Line 13:     SET dbUser TO GETENV("DB_USER")
-Line 14:     SET dbPass TO GETENV("DB_PASS")
-Line 15:     SET dbName TO GETENV("DB_NAME")
+Line 12:     SET dbHost TO GETENV("DB_HOST")                                         [FR8]
+Line 13:     SET dbUser TO GETENV("DB_USER")                                         [FR8]
+Line 14:     SET dbPass TO GETENV("DB_PASS")                                         [FR8]
+Line 15:     SET dbName TO GETENV("DB_NAME")                                         [FR8]
 
 Line 16:     SET missing TO []
 Line 17:     FOR EACH (varName, varValue) IN [("DB_HOST", dbHost), ("DB_USER", dbUser), ("DB_PASS", dbPass), ("DB_NAME", dbName)] DO
@@ -99,38 +128,40 @@ Line 19:             APPEND varName TO missing
 Line 20:         ENDIF
 Line 21:     ENDFOR
 Line 22:     IF LENGTH(missing) > 0 THEN
-Line 23:         SEND "Configuration Error: Missing environment variable(s): " & JOIN(missing, ", ") TO DISPLAY
+Line 23:         SEND "Configuration Error: Missing environment variable(s): " & JOIN(missing, ", ") TO DISPLAY   [FR8, FR11]
 Line 24:         RETURN
 Line 25:     ENDIF
 
-Line 26:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)
+Line 26:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
 Line 27:     IF conn = NULL OR conn.is_connected() = FALSE THEN
-Line 28:         SEND "Connection failed" TO DISPLAY
+Line 28:         SEND "Connection failed" TO DISPLAY                                 [FR11]
 Line 29:         RETURN
 Line 30:     ENDIF
 
-Line 31:     SET query TO "SELECT * FROM Employees"
+Line 31:     SET query TO "SELECT * FROM Employees"                                  [FR6]
 Line 32:     SET cursor TO conn.cursor()
 Line 33:     cursor.execute(query)
 Line 34:     SET dbRows TO cursor.fetchall()
 
 Line 35:     SET numRows TO LENGTH(dbRows)
-Line 36:     SET results TO ARRAY OF SIZE numRows
+Line 36:     SET results TO ARRAY OF SIZE numRows                                    [FR2]
 Line 37:     FOR i FROM 0 TO numRows - 1 DO
-Line 38:         SET results[i] TO NEW Employee(dbRows[i][0], dbRows[i][1], dbRows[i][2], dbRows[i][3], dbRows[i][4], dbRows[i][5])
+Line 38:         SET results[i] TO NEW Employee(dbRows[i][0], dbRows[i][1], dbRows[i][2], dbRows[i][3], dbRows[i][4], dbRows[i][5])   [FR1, FR2]
 Line 39:     ENDFOR
 
-Line 40:     SEND "id        name                salary      dept                          position                      date" TO DISPLAY
+Line 40:     SEND "id        name                salary      dept                          position                      date" TO DISPLAY   [FR7]
 Line 41:     FOR EACH worker IN results DO
-Line 42:         SEND worker.id, worker.name, worker.salary, worker.department, worker.position, worker.hireDate TO DISPLAY
+Line 42:         SEND worker.id, worker.name, worker.salary, worker.department, worker.position, worker.hireDate TO DISPLAY   [FR7]
 Line 43:     ENDFOR
 
-Line 44:     cursor.close()
-Line 45:     conn.close()
+Line 44:     cursor.close()                                                          [FR11]
+Line 45:     conn.close()                                                            [FR11]
 Line 46: ENDFUNCTION
 
 Line 47: CALL SelectEmployees()
 ```
+
+The Python implementation is in [Program 20 - Connect and Select.py](./Program%2020%20-%20Connect%20and%20Select.py).
 
 ### Notes
 
@@ -140,7 +171,7 @@ Line 47: CALL SelectEmployees()
 
 ---
 
-## Testing
+## Test plan
 
 ### Test Cases
 

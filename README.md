@@ -60,7 +60,7 @@ This prevents secrets and virtual environment files from being committed.
 Run the first database connection program:
 
 ```bash
-python "Booklet 4 - Database Connections/Program 19 - Initial Connection.py"
+python "Booklet 1 - OOP/Program 1 - defining a class.py"
 ```
 
 If setup is correct, you should see a successful connection message and the database server version.

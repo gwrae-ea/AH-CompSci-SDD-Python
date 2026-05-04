@@ -11,6 +11,7 @@ load_dotenv(dotenv_path=env_path)
 
 
 def get_non_empty_text(prompt, max_length=20):
+    # FR10: validate required text input and enforce max length.
     while True:
         value = input(prompt).strip()
         if not value:
@@ -23,6 +24,7 @@ def get_non_empty_text(prompt, max_length=20):
 
 
 def get_optional_text(prompt, current_value, max_length=20):
+    # FR10: validate optional text input while allowing unchanged value.
     while True:
         value = input(prompt).strip()
         if value == "":
@@ -34,6 +36,7 @@ def get_optional_text(prompt, current_value, max_length=20):
 
 
 def get_positive_int(prompt):
+    # FR9: validate numeric keyboard input for positive integer IDs.
     while True:
         value = input(prompt).strip()
         try:
@@ -47,6 +50,7 @@ def get_positive_int(prompt):
 
 
 def get_optional_positive_float(prompt, current_value):
+    # FR9: validate numeric keyboard input for positive salary values.
     while True:
         value = input(prompt).strip()
         if value == "":
@@ -62,6 +66,7 @@ def get_optional_positive_float(prompt, current_value):
 
 
 def update_employee():
+    # FR8: validate required environment configuration values.
     db_host = os.getenv('DB_HOST')
     db_user = os.getenv('DB_USER')
     db_pass = os.getenv('DB_PASS')
@@ -70,10 +75,12 @@ def update_employee():
     missing = [name for name, val in [('DB_HOST', db_host), ('DB_USER', db_user),
                                        ('DB_PASS', db_pass), ('DB_NAME', db_name)] if not val]
     if missing:
+        # FR11: provide clear failure feedback to the user.
         print(f"Configuration Error: Missing environment variable(s): {', '.join(missing)}")
         return
 
     try:
+        # FR6: connect to the database to execute lookup and update queries.
         conn = mysql.connector.connect(
             host=db_host,
             user=db_user,
@@ -81,6 +88,7 @@ def update_employee():
             database=db_name
         )
     except Error as e:
+        # FR11: report connection errors clearly.
         print(f"Connection Error: {e}")
         return
 
@@ -89,9 +97,11 @@ def update_employee():
     try:
         cursor = conn.cursor()
 
+        # FR7: interface prompt to receive query input values.
         print("--- Update Employee Record ---")
         employee_id = get_positive_int("Enter Employee ID to update: ")
 
+        # FR6/FR12: select existing record and validate it exists.
         select_query = """
             SELECT id, name, position, salary, department
             FROM Employees
@@ -101,9 +111,11 @@ def update_employee():
         employee = cursor.fetchone()
 
         if employee is None:
+            # FR11: clear not-found feedback for invalid target ID.
             print(f"No employee found with ID {employee_id}.")
             return
 
+        # FR7: show current values and collect update input values.
         print("Leave a field blank to keep its current value.")
         print(
             f"Current values: Name={employee[1]}, Position={employee[2]}, "
@@ -115,6 +127,7 @@ def update_employee():
         new_salary = get_optional_positive_float("Enter New Salary: ", employee[3])
         new_department = get_optional_text("Enter New Department: ", employee[4])
 
+        # FR6: execute parameterised UPDATE query.
         update_query = """
             UPDATE Employees
             SET name = %s, position = %s, salary = %s, department = %s
@@ -123,6 +136,7 @@ def update_employee():
         values = (new_name, new_position, new_salary, new_department, employee_id)
 
         cursor.execute(update_query, values)
+        # FR15: commit successful transaction to maintain consistency.
         conn.commit()
 
         if cursor.rowcount == 0:
@@ -131,6 +145,7 @@ def update_employee():
             print(f"Successfully updated employee ID {employee_id}.")
 
     except Error as e:
+        # FR14/FR15: show error context and roll back failed transaction.
         print(f"Database Error: {e}")
         conn.rollback()
     finally:
@@ -138,6 +153,7 @@ def update_employee():
             if cursor is not None:
                 cursor.close()
             conn.close()
+            # FR11: always close resources safely.
 
 
 if __name__ == "__main__":
