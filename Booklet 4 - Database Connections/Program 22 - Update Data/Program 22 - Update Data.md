@@ -50,19 +50,19 @@ The solution is required to:
 
 FR8 Validate that required environment configuration values are present before attempting any database operation.
 
-FR9 Validate keyboard numeric input to ensure values are in the correct format and valid range.
+FR9 Validate the Employee ID keyboard input: the value entered must be a whole number (integer) greater than zero, matching the `id INT NOT NULL AUTO_INCREMENT` column in the `Employees` table. Non-integer input and values of zero or below must be rejected with an appropriate error message and re-prompted.
 
-FR10 Validate keyboard text input to ensure mandatory fields are non-empty and within allowed length.
+FR10 Validate the name, position, and department keyboard inputs: if a new value is entered for any of these fields it must not exceed 20 characters, matching the `varchar(20)` definition of those columns in the `Employees` table. Values exceeding the limit must be rejected with an appropriate error message and re-prompted.
 
-FR11 Display clear success/failure messages and always close database resources safely.
+FR11 Validate the salary keyboard input: if a new salary value is entered it must be a positive floating-point number (greater than zero), matching the `salary float` column in the `Employees` table. Non-numeric input and values of zero or below must be rejected with an appropriate error message and re-prompted.
 
-FR12 Validate that selected database records exist before processing update or display actions.
+FR12 Confirm that a record matching the entered Employee ID exists in the `Employees` table before displaying current values and proceeding to update prompts. If no match is found the program must inform the user and stop without attempting an UPDATE.
 
-FR13 Validate user-selected identifiers against expected data type and acceptable range.
+FR13 Detect when no field values have changed after all inputs are collected and inform the user; stop without executing an UPDATE if nothing has changed.
 
-FR14 Log or display meaningful error context to support troubleshooting of failed operations.
+FR14 Display clear success, no-change, and error messages for all operational outcomes, including sufficient error detail to support troubleshooting.
 
-FR15 Ensure each transaction-based operation leaves the database in a consistent state.
+FR15 Commit the transaction on success, roll back on error, and always close the cursor and connection after execution.
 
 ---
 
@@ -128,13 +128,13 @@ Line 9:             APPEND varName TO missing
 Line 10:         ENDIF
 Line 11:     ENDFOR
 Line 12:     IF LENGTH(missing) > 0 THEN
-Line 13:         SEND "Configuration Error: Missing environment variable(s): " & JOIN(missing, ", ") TO DISPLAY   [FR8, FR11]
+Line 13:         SEND "Configuration Error: Missing environment variable(s): " & JOIN(missing, ", ") TO DISPLAY   [FR8, FR14]
 Line 14:         RETURN
 Line 15:     ENDIF
 
 Line 16:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
 Line 17:     IF conn = NULL THEN
-Line 18:         SEND "Connection Error" TO DISPLAY                                 [FR11]
+Line 18:         SEND "Connection Error" TO DISPLAY                                 [FR14]
 Line 19:         RETURN
 Line 20:     ENDIF
 
@@ -151,14 +151,14 @@ Line 27:         cursor.execute(selectQuery, (employeeId))
 Line 28:         SET employee TO cursor.fetchone()
 
 Line 29:         IF employee = NULL THEN
-Line 30:             SEND "No employee found with that ID." TO DISPLAY               [FR11, FR12]
+Line 30:             SEND "No employee found with that ID." TO DISPLAY               [FR12, FR14]
 Line 31:             RETURN
 Line 32:         ENDIF
 
 Line 33:         SEND "Leave blank to keep existing values." TO DISPLAY
 Line 34:         SET newName TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Name: ", employee.name)   [FR7, FR10]
 Line 35:         SET newPosition TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Position: ", employee.position)   [FR7, FR10]
-Line 36:         SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT("Enter New Salary: ", employee.salary)   [FR7, FR9]
+Line 36:         SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT("Enter New Salary: ", employee.salary)   [FR7, FR11]
 Line 37:         SET newDepartment TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Department: ", employee.department)   [FR7, FR10]
 
 Line 38:         SET updateQuery TO "UPDATE Employees SET name=%s, position=%s, salary=%s, department=%s WHERE id=%s"   [FR6]
@@ -169,19 +169,19 @@ Line 41:         conn.commit()                                                  
 Line 42:         IF cursor.rowcount = 0 THEN
 Line 43:             SEND "No changes were made." TO DISPLAY
 Line 44:         ELSE
-Line 45:             SEND "Employee updated successfully." TO DISPLAY                 [FR11]
+Line 45:             SEND "Employee updated successfully." TO DISPLAY                 [FR14]
 Line 46:         ENDIF
 
 Line 47:     CATCH DATABASEERROR
-Line 48:         SEND "Database Error" TO DISPLAY                                   [FR11, FR14]
+Line 48:         SEND "Database Error" TO DISPLAY                                   [FR14]
 Line 49:         conn.rollback()                                                      [FR15]
 
 Line 50:     FINALLY
 Line 51:         IF conn.is_connected() = TRUE THEN
 Line 52:             IF cursor <> NULL THEN
-Line 53:                 cursor.close()                                              [FR11]
+Line 53:                 cursor.close()                                              [FR15]
 Line 54:             ENDIF
-Line 55:             conn.close()                                                    [FR11]
+Line 55:             conn.close()                                                    [FR15]
 Line 56:         ENDIF
 Line 57:     ENDTRY
 Line 58: ENDFUNCTION
@@ -205,23 +205,23 @@ The Python implementation is in [Program 22 - Update Data.py](./Program%2022%20-
 
 | # | Functional Requirement | Test Description | Input / Conditions | Expected Output | Evidence |
 |---|------------------------|------------------|--------------------|-----------------|----------|
-| 1 | FR1 | Valid credentials loaded from environment | All four environment variables set correctly | Credentials read without error | Before evidence: capture the configured environment variables. After evidence: capture program startup with no configuration error shown. |
-| 2 | FR2 – one missing | One environment variable not set | DB_HOST unset | Error message naming DB_HOST displayed; program stops | Before evidence: capture environment settings showing `DB_HOST` missing. After evidence: capture the named missing-variable error and no update prompts. |
-| 3 | FR2 – all missing | No environment variables set | All four unset | Error message listing all four variables; program stops | Before evidence: capture environment settings with all four variables absent. After evidence: capture output listing all missing variables and immediate stop. |
-| 4 | FR3 | Connection failure stops execution | Invalid credentials | Error message displayed; program stops | Before evidence: capture the invalid credentials used. After evidence: capture the connection error and the absence of update processing. |
-| 5 | FR4 – non-integer | Non-integer employee ID entered | Enter "abc" | Error message displayed; ID prompt repeated | Before evidence: capture the invalid text entered for employee ID. After evidence: capture the validation message and the repeated ID prompt. |
-| 6 | FR4 – zero or negative | Zero or negative ID entered | Enter "0" or "-1" | Error message displayed; ID prompt repeated | Before evidence: capture the zero or negative ID entered. After evidence: capture the validation message and the repeated ID prompt. |
-| 7 | FR4 – valid | Valid positive integer ID entered | Enter "3" | Value accepted; SELECT query runs | Before evidence: capture the valid ID entered and that it exists or will be searched. After evidence: capture progression to the record lookup stage without validation errors. |
-| 8 | FR5 – not found | ID does not exist in Employees table | Enter an unused ID | "No employee found" message displayed; program stops | Before evidence: capture the table showing the ID does not exist. After evidence: capture the not-found message and no update prompt sequence. |
-| 9 | FR5 – found | ID exists in Employees table | Enter a valid existing ID | Employee record retrieved | Before evidence: capture the existing employee row for that ID. After evidence: capture the program reaching the current-values display stage for that same record. |
-| 10 | FR6 | Current values displayed before update prompts | Valid employee found | Current name, position, salary, department shown | Before evidence: capture the employee row in the database. After evidence: capture output showing the same current values before edits are entered. |
-| 11 | FR7 | Blank input keeps existing value | Press Enter for name field | Original name retained in update | Before evidence: capture the original field value in the database. After evidence: capture the updated row showing that the original value is unchanged. |
-| 12 | FR8 | Text field too long rejected | Enter a string exceeding max length | Error message displayed; field prompt repeated | Before evidence: capture the overlength text entered. After evidence: capture the validation message and the repeated field prompt. |
-| 13 | FR9 – non-numeric salary | Non-numeric salary entered | Enter "abc" | Error message displayed; salary prompt repeated | Before evidence: capture the invalid salary value entered. After evidence: capture the salary validation message and repeated prompt. |
-| 14 | FR9 – non-positive salary | Zero or negative salary entered | Enter "0" or "-100" | Error message displayed; salary prompt repeated | Before evidence: capture the zero or negative salary entered. After evidence: capture the validation message and repeated salary prompt. |
-| 15 | FR10 | UPDATE query uses parameterised values | Valid input provided | UPDATE executed; no SQL injection risk | Before evidence: capture the original record values before update. After evidence: capture the database row after update showing only the intended changes. |
-| 16 | FR11 – no changes | All fields left blank (kept same values) | Press Enter for all fields | "No changes were made." displayed | Before evidence: capture the record before the update attempt. After evidence: capture the no-changes message and the unchanged record after the run. |
-| 17 | FR11 – updated | At least one field changed | Enter new name | "Employee updated successfully." displayed; record updated in DB | Before evidence: capture the original record values. After evidence: capture the success message and the changed row in the database. |
-| 18 | FR12 | Database error triggers rollback | Simulate a constraint violation | Error message shown; transaction rolled back | Before evidence: capture the record before the failing update and the failure condition. After evidence: capture the error message and unchanged database row. |
-| 19 | FR13 – success | Connection closed after successful update | Valid update | No open handles remain | Before evidence: capture that a connection is active during update processing. After evidence: capture completion plus any evidence that the connection/cursor is closed. |
-| 20 | FR13 – error | Connection closed after database error | Simulated error | Connection and cursor still closed cleanly | Before evidence: capture the failing update setup. After evidence: capture the error path plus evidence that no connection/cursor remains open. |
+| 1 | FR8 – all valid | Valid credentials loaded from environment | All four environment variables set correctly | Credentials read without error | Before evidence: capture the configured environment variables. After evidence: capture program startup with no configuration error shown. |
+| 2 | FR8 – one missing | One environment variable not set | DB_HOST unset | Error message naming DB_HOST displayed; program stops | Before evidence: capture environment settings showing `DB_HOST` missing. After evidence: capture the named missing-variable error and no update prompts. |
+| 3 | FR8 – all missing | No environment variables set | All four unset | Error message listing all four variables; program stops | Before evidence: capture environment settings with all four variables absent. After evidence: capture output listing all missing variables and immediate stop. |
+| 4 | FR6/FR14 | Connection failure stops execution | Invalid credentials | Error message displayed; program stops | Before evidence: capture the invalid credentials used. After evidence: capture the connection error and the absence of update processing. |
+| 5 | FR9 – non-integer | Non-integer Employee ID entered | Enter "abc" | Error message displayed; ID prompt repeated | Before evidence: capture the invalid text entered for Employee ID. After evidence: capture the validation message and the repeated ID prompt. |
+| 6 | FR9 – zero or negative | Zero or negative Employee ID entered | Enter "0" or "-1" | Error message displayed; ID prompt repeated | Before evidence: capture the zero or negative ID entered. After evidence: capture the validation message and the repeated ID prompt. |
+| 7 | FR9 – valid | Valid positive integer Employee ID entered | Enter "3" | Value accepted; SELECT query runs | Before evidence: capture the valid ID entered. After evidence: capture progression to the record lookup stage without validation errors. |
+| 8 | FR12 – not found | ID does not exist in Employees table | Enter an unused ID | "No employee found" message displayed; program stops | Before evidence: capture the table showing the ID does not exist. After evidence: capture the not-found message and no update prompt sequence. |
+| 9 | FR12 – found | ID exists in Employees table | Enter a valid existing ID | Employee record retrieved | Before evidence: capture the existing employee row for that ID. After evidence: capture the program reaching the current-values display stage. |
+| 10 | FR7 | Current values displayed before update prompts | Valid employee found | Current name, position, salary, department shown | Before evidence: capture the employee row in the database. After evidence: capture output showing those current values before edits are entered. |
+| 11 | FR10 – blank keeps value | Blank input retains existing value | Press Enter for name field | Original name retained in update | Before evidence: capture the original field value in the database. After evidence: capture the updated row showing that the original value is unchanged. |
+| 12 | FR10 – name too long | Name exceeds 20 characters | Enter a 21-character name | Error message displayed; field prompt repeated | Before evidence: capture the overlength text entered. After evidence: capture the validation message and the repeated field prompt. |
+| 13 | FR11 – non-numeric salary | Non-numeric salary entered | Enter "abc" | Error message displayed; salary prompt repeated | Before evidence: capture the invalid salary value entered. After evidence: capture the salary validation message and repeated prompt. |
+| 14 | FR11 – non-positive salary | Zero or negative salary entered | Enter "0" or "-100" | Error message displayed; salary prompt repeated | Before evidence: capture the zero or negative salary. After evidence: capture the validation message and repeated salary prompt. |
+| 15 | FR6 | UPDATE query uses parameterised values | Valid input provided | UPDATE executed; no SQL injection risk | Before evidence: capture the original record values before update. After evidence: capture the database row after update showing only the intended changes. |
+| 16 | FR13 | All fields left blank; no changes made | Press Enter for all fields | "No changes were made." displayed | Before evidence: capture the record before the update attempt. After evidence: capture the no-changes message and the unchanged record. |
+| 17 | FR14 – updated | At least one field changed | Enter new name | "Employee updated successfully." displayed; record updated in DB | Before evidence: capture the original record values. After evidence: capture the success message and the changed row. |
+| 18 | FR15 | Database error triggers rollback and connection closed | Simulate a constraint violation | Error message shown; transaction rolled back; cursor and connection closed | Before evidence: capture the record before the failing update and the failure condition. After evidence: capture the error message and unchanged database row. |
+| 19 | FR15 – success | Connection closed after successful update | Valid update | No open handles remain | Before evidence: capture that a connection is active during update processing. After evidence: capture completion plus any evidence the connection/cursor is closed. |
+| 20 | FR15 – error | Connection closed after database error | Simulated error | Connection and cursor still closed cleanly | Before evidence: capture the failing update setup. After evidence: capture the error path plus evidence that no connection/cursor remains open. |

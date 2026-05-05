@@ -49,19 +49,19 @@ The solution is required to:
 
 FR8 Validate that required environment configuration values are present before attempting any database operation.
 
-FR9 Validate keyboard numeric input to ensure values are in the correct format and valid range.
+FR9 Validate the Employee ID keyboard input: the value entered must be a whole number (integer) greater than zero, matching the `id` field defined as `INT NOT NULL AUTO_INCREMENT` in the `Employees` table. Non-numeric input and values of zero or below must be rejected with an appropriate error message and re-prompted.
 
-FR10 Validate keyboard text input to ensure mandatory fields are non-empty and within allowed length.
+FR10 Validate the delete confirmation keyboard input: the value entered must be one of the accepted strings `y`, `yes`, `n`, or `no` (case-insensitive). Any other input must be rejected with an appropriate error message and re-prompted.
 
-FR11 Display clear success/failure messages and always close database resources safely.
+FR11 Display clear success, cancel, and error messages for all operational outcomes.
 
-FR12 Validate that selected database records exist before processing update or display actions.
+FR12 Confirm that a record matching the entered Employee ID exists in the `Employees` table before proceeding with deletion and display the matched record to the user for verification.
 
-FR13 Validate user-selected identifiers against expected data type and acceptable range.
+FR13 Log or display meaningful error context to support troubleshooting of failed operations.
 
-FR14 Log or display meaningful error context to support troubleshooting of failed operations.
+FR14 Ensure each transaction-based operation leaves the database in a consistent state.
 
-FR15 Ensure each transaction-based operation leaves the database in a consistent state.
+FR15 Always close the cursor and connection after execution, whether the delete succeeds, is cancelled, or encounters an error.
 
 ---
 
@@ -164,7 +164,7 @@ Line 38:         ENDIF
 
 Line 39:         SET deleteQuery TO "DELETE FROM Employees WHERE id = %s"            [FR6]
 Line 40:         cursor.execute(deleteQuery, (employeeId))
-Line 41:         conn.commit()                                                        [FR15]
+Line 41:         conn.commit()                                                        [FR14]
 
 Line 42:         IF cursor.rowcount = 0 THEN
 Line 43:             SEND "No record was deleted." TO DISPLAY
@@ -173,15 +173,15 @@ Line 45:             SEND "Employee deleted successfully." TO DISPLAY           
 Line 46:         ENDIF
 
 Line 47:     CATCH DATABASEERROR
-Line 48:         SEND "Database Error" TO DISPLAY                                   [FR11, FR14]
-Line 49:         conn.rollback()                                                      [FR15]
+Line 48:         SEND "Database Error" TO DISPLAY                                   [FR11, FR13]
+Line 49:         conn.rollback()                                                      [FR14]
 
 Line 50:     FINALLY
 Line 51:         IF conn.is_connected() = TRUE THEN
 Line 52:             IF cursor <> NULL THEN
-Line 53:                 cursor.close()                                              [FR11]
+Line 53:                 cursor.close()                                              [FR15]
 Line 54:             ENDIF
-Line 55:             conn.close()                                                    [FR11]
+Line 55:             conn.close()                                                    [FR15]
 Line 56:         ENDIF
 Line 57:     ENDTRY
 Line 58: ENDFUNCTION
@@ -214,6 +214,6 @@ The Python implementation is in [Program 23 - Delete Data.py](./Program%2023%20-
 | 7 | FR7 | Existing record displayed | Enter existing ID | Current record values displayed | Before evidence: capture row in table. After evidence: capture matching values in output. |
 | 8 | FR10 | Confirmation validation | Enter invalid confirmation text | Prompt repeats until Yes/No | Before evidence: capture invalid text. After evidence: capture validation message and repeat prompt. |
 | 9 | FR11 | Delete cancelled by user | Enter existing ID then "No" | Cancel message shown; no delete occurs | Before evidence: capture record exists pre-run. After evidence: capture cancellation and unchanged row. |
-| 10 | FR6/FR15 | Delete confirmed and committed | Enter existing ID then "Yes" | Success message; row removed from DB | Before evidence: capture target row present. After evidence: capture success message and row absence. |
-| 11 | FR14/FR15 | Database error rollback | Simulate delete failure | Error shown; transaction rolled back | Before evidence: capture pre-delete state and failure setup. After evidence: capture error and unchanged state. |
-| 12 | FR11 | Resource cleanup on all paths | Success/cancel/error paths | Cursor and connection closed cleanly | Before evidence: capture active connection during process. After evidence: capture completion with safe closure behavior. |
+| 10 | FR6/FR14 | Delete confirmed and committed | Enter existing ID then "Yes" | Success message; row removed from DB | Before evidence: capture target row present. After evidence: capture success message and row absence. |
+| 11 | FR13/FR14 | Database error rollback | Simulate delete failure | Error shown; transaction rolled back | Before evidence: capture pre-delete state and failure setup. After evidence: capture error and unchanged state. |
+| 12 | FR15 | Resource cleanup on all paths | Success/cancel/error paths | Cursor and connection closed cleanly | Before evidence: capture active connection during process. After evidence: capture completion with safe closure behavior. |

@@ -49,19 +49,19 @@ The solution is required to:
 
 FR8 Validate that required environment configuration values are present before attempting any database operation.
 
-FR9 Validate keyboard numeric input to ensure values are in the correct format and valid range.
+FR9 Validate the salary keyboard input: the value entered must be a positive floating-point number (greater than zero), matching the `salary float` column in the `Employees` table. Non-numeric input and values of zero or below must be rejected with an appropriate error message and re-prompted.
 
-FR10 Validate keyboard text input to ensure mandatory fields are non-empty and within allowed length.
+FR10 Validate the name, position, and department keyboard inputs: each value must be non-empty (blank input must be rejected) and must not exceed 20 characters, matching the `varchar(20)` definition of those columns in the `Employees` table. Invalid input must be rejected with an appropriate error message and re-prompted.
 
-FR11 Display clear success/failure messages and always close database resources safely.
+FR11 Display clear success and failure messages for all operational outcomes.
 
-FR12 Validate that selected database records exist before processing update or display actions.
+FR12 Set hireDate automatically to the current system date so the user is not required to enter it; the value is inserted directly into the `hireDate varchar(20)` column without any keyboard prompt.
 
-FR13 Validate user-selected identifiers against expected data type and acceptable range.
+FR13 Use a parameterised INSERT query to add the new record to the `Employees` table, ensuring no SQL injection is possible through user-supplied values.
 
 FR14 Log or display meaningful error context to support troubleshooting of failed operations.
 
-FR15 Ensure each transaction-based operation leaves the database in a consistent state.
+FR15 Commit the transaction on success, roll back on error, and always close the cursor and connection after execution.
 
 ---
 
@@ -189,9 +189,9 @@ Line 60:         conn.rollback()                                                
 Line 61:     FINALLY
 Line 62:         IF conn.is_connected() = TRUE THEN
 Line 63:             IF cursor <> NULL THEN
-Line 64:                 cursor.close()                                              [FR11]
+Line 64:                 cursor.close()                                              [FR15]
 Line 65:             ENDIF
-Line 66:             conn.close()                                                    [FR11]
+Line 66:             conn.close()                                                    [FR15]
 Line 67:         ENDIF
 Line 68:     ENDTRY
 Line 69: ENDFUNCTION
@@ -215,22 +215,22 @@ The Python implementation is in [Program 21 - Insert Data.py](./Program%2021%20-
 
 | # | Functional Requirement | Test Description | Input / Conditions | Expected Output | Evidence |
 |---|------------------------|------------------|--------------------|-----------------|----------|
-| 1 | FR1 | Valid credentials loaded from environment | All four environment variables set correctly | Credentials read without error | Before evidence: capture the configured environment variables. After evidence: capture program startup with no configuration error shown. |
-| 2 | FR2 – one missing | One environment variable not set | DB_PASS unset | Error message naming DB_PASS displayed; program stops | Before evidence: capture environment settings showing `DB_PASS` missing. After evidence: capture the named missing-variable error and no insert prompts. |
-| 3 | FR2 – all missing | No environment variables set | All four unset | Error message listing all four variables; program stops | Before evidence: capture environment settings with all four variables absent. After evidence: capture output listing all missing variables and immediate stop. |
-| 4 | FR3 | Connection failure stops execution | Invalid credentials | Error message displayed; program stops | Before evidence: capture the invalid credentials used. After evidence: capture the connection error and the absence of input prompts. |
-| 5 | FR4 | User prompted for all required fields | Valid connection | Prompts shown for name, position, salary, and department | Before evidence: capture successful connection and start of insert flow. After evidence: capture the sequence of prompts for all four user-entered fields. |
-| 6 | FR5 – name empty | Employee name left blank | Press Enter with no input | Error message displayed; prompt repeated | Before evidence: capture the blank input submitted for name. After evidence: capture the validation message and the repeated name prompt. |
-| 7 | FR5 – position empty | Job position left blank | Press Enter with no input | Error message displayed; prompt repeated | Before evidence: capture the blank position input. After evidence: capture the validation message and the repeated position prompt. |
-| 8 | FR5 – department empty | Department left blank | Press Enter with no input | Error message displayed; prompt repeated | Before evidence: capture the blank department input. After evidence: capture the validation message and the repeated department prompt. |
-| 9 | FR6 – non-numeric | Non-numeric salary entered | Enter "abc" | Error message displayed; salary prompt repeated | Before evidence: capture the non-numeric salary value entered. After evidence: capture the validation message and the repeated salary prompt. |
-| 10 | FR6 – negative | Negative salary entered | Enter "-500" | Error message displayed; salary prompt repeated | Before evidence: capture the negative salary entered. After evidence: capture the negative-value error and the repeated salary prompt. |
-| 11 | FR6 – valid | Valid positive salary entered | Enter "30000" | Value accepted; no error | Before evidence: capture the valid salary input. After evidence: capture continuation to the next step without any validation message. |
-| 12 | FR7 | Hire date set automatically to today | Valid connection and input | Hire date matches today's date; user not prompted for it | Before evidence: capture the current system date and the prompts shown to the user. After evidence: capture the inserted record showing today's date and no separate hire-date prompt. |
-| 13 | FR8 | Record inserted using parameterised query | Valid input provided | INSERT executed with correct values; no SQL injection risk | Before evidence: capture that the record does not yet exist in the table. After evidence: capture the new row in the database with the expected values. |
-| 14 | FR9 | Success message includes employee name | Valid insert | "Successfully added [name] to the Employees table." displayed | Before evidence: capture the employee name entered. After evidence: capture the success message containing that same name. |
-| 15 | FR9 – commit | Transaction committed on success | Valid insert | Record visible in Employees table after execution | Before evidence: capture the table before insertion. After evidence: capture the table after insertion showing the new committed row. |
-| 16 | FR10 | Database error triggers rollback | Simulate a constraint violation | Error message shown; transaction rolled back | Before evidence: capture the table state and the condition that will trigger the insert error. After evidence: capture the error message and unchanged table contents. |
-| 17 | FR11 – success | Connection closed after success | Valid insert | No open handles remain after execution | Before evidence: capture that a connection is active during insert processing. After evidence: capture completion plus any check that the connection/cursor is closed. |
-| 18 | FR11 – error | Connection closed after database error | Simulated error during insert | Connection and cursor still closed cleanly | Before evidence: capture the failing insert setup. After evidence: capture the error path plus evidence that no connection/cursor remains open. |
+| 1 | FR8 – all valid | Valid credentials loaded from environment | All four environment variables set correctly | Credentials read without error | Before evidence: capture the configured environment variables. After evidence: capture program startup with no configuration error shown. |
+| 2 | FR8 – one missing | One environment variable not set | DB_PASS unset | Error message naming DB_PASS displayed; program stops | Before evidence: capture environment settings showing `DB_PASS` missing. After evidence: capture the named missing-variable error and no insert prompts. |
+| 3 | FR8 – all missing | No environment variables set | All four unset | Error message listing all four variables; program stops | Before evidence: capture environment settings with all four variables absent. After evidence: capture output listing all missing variables and immediate stop. |
+| 4 | FR6/FR11 | Connection failure stops execution | Invalid credentials | Error message displayed; program stops | Before evidence: capture the invalid credentials used. After evidence: capture the connection error and the absence of input prompts. |
+| 5 | FR7 | User prompted for all required fields | Valid connection | Prompts shown for name, position, salary, and department | Before evidence: capture successful connection and start of insert flow. After evidence: capture the sequence of prompts for all four user-entered fields. |
+| 6 | FR10 – name empty | Employee name left blank | Press Enter with no input | Error message displayed; prompt repeated | Before evidence: capture the blank input submitted for name. After evidence: capture the validation message and the repeated name prompt. |
+| 7 | FR10 – position empty | Job position left blank | Press Enter with no input | Error message displayed; prompt repeated | Before evidence: capture the blank position input. After evidence: capture the validation message and the repeated position prompt. |
+| 8 | FR10 – department empty | Department left blank | Press Enter with no input | Error message displayed; prompt repeated | Before evidence: capture the blank department input. After evidence: capture the validation message and the repeated department prompt. |
+| 9 | FR10 – name too long | Name exceeds 20 characters | Enter a 21-character name | Error message displayed; prompt repeated | Before evidence: capture the overlength name entered. After evidence: capture the validation message and the repeated name prompt. |
+| 10 | FR9 – non-numeric | Non-numeric salary entered | Enter "abc" | Error message displayed; salary prompt repeated | Before evidence: capture the non-numeric salary value entered. After evidence: capture the validation message and the repeated salary prompt. |
+| 11 | FR9 – negative | Negative salary entered | Enter "-500" | Error message displayed; salary prompt repeated | Before evidence: capture the negative salary entered. After evidence: capture the negative-value error and the repeated salary prompt. |
+| 12 | FR9 – valid | Valid positive salary entered | Enter "30000" | Value accepted; no error | Before evidence: capture the valid salary input. After evidence: capture continuation to the next step without any validation message. |
+| 13 | FR12 | Hire date set automatically to today | Valid connection and input | Hire date matches today's date; user not prompted for it | Before evidence: capture the current system date and the prompts shown to the user. After evidence: capture the inserted record showing today's date and no hire-date prompt. |
+| 14 | FR13 | Record inserted using parameterised query | Valid input provided | INSERT executed with correct values; no SQL injection risk | Before evidence: capture that the record does not yet exist in the table. After evidence: capture the new row in the database with the expected values. |
+| 15 | FR11/FR15 | Success message shown and transaction committed | Valid insert | Confirmation message displayed; record visible in Employees table | Before evidence: capture the table before insertion. After evidence: capture the success message and the new committed row in the table. |
+| 16 | FR15 | Database error triggers rollback | Simulate a constraint violation | Error message shown; transaction rolled back | Before evidence: capture the table state and the failure condition. After evidence: capture the error message and unchanged table contents. |
+| 17 | FR15 – success | Connection closed after success | Valid insert | No open handles remain after execution | Before evidence: capture that a connection is active during insert processing. After evidence: capture completion plus any check that the connection/cursor is closed. |
+| 18 | FR15 – error | Connection closed after database error | Simulated error during insert | Connection and cursor still closed cleanly | Before evidence: capture the failing insert setup. After evidence: capture the error path plus evidence that no connection/cursor remains open. |
 

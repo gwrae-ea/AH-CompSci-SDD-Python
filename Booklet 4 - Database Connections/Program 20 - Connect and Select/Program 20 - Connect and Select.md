@@ -47,19 +47,19 @@ The solution is required to:
 
 FR8 Validate that required environment configuration values are present before attempting any database operation.
 
-FR9 Validate keyboard numeric input to ensure values are in the correct format and valid range.
+FR9 Display all retrieved employee records in a clear tabular format with labelled column headings for id, name, salary, department, position, and hireDate, matching the column definitions in the `Employees` table.
 
-FR10 Validate keyboard text input to ensure mandatory fields are non-empty and within allowed length.
+FR10 Handle the case where the SELECT query returns zero rows by displaying no data rows and completing normally without error.
 
-FR11 Display clear success/failure messages and always close database resources safely.
+FR11 Display clear success and failure messages for all operational outcomes.
 
-FR12 Validate that selected database records exist before processing update or display actions.
+FR12 Use the row count returned by the SELECT query to correctly size the results array before populating it with Employee objects.
 
-FR13 Validate user-selected identifiers against expected data type and acceptable range.
+FR13 Map each returned database row to an Employee object stored at the corresponding index in the results array.
 
 FR14 Log or display meaningful error context to support troubleshooting of failed operations.
 
-FR15 Ensure each transaction-based operation leaves the database in a consistent state.
+FR15 Ensure the cursor and connection are always closed after execution, even if an error occurs during the query.
 
 ---
 
@@ -177,16 +177,16 @@ The Python implementation is in [Program 20 - Connect and Select.py](./Program%2
 
 | # | Functional Requirement | Test Description | Input / Conditions | Expected Output | Evidence |
 |---|------------------------|------------------|--------------------|-----------------|----------|
-| 1 | FR1 | Valid credentials loaded from environment | All four environment variables set correctly | Credentials read without error | Before evidence: capture the configured environment variables. After evidence: capture program startup with no configuration error. |
-| 2 | FR2 – one missing | One environment variable not set | DB_NAME unset | Error message naming DB_NAME displayed; program stops | Before evidence: capture environment settings showing `DB_NAME` is missing. After evidence: capture output naming the missing variable and showing no query runs. |
-| 3 | FR2 – all missing | No environment variables set | All four unset | Error message listing all four variables; program stops | Before evidence: capture environment settings with none of the variables present. After evidence: capture output listing all missing variables and immediate termination. |
-| 4 | FR3 | Successful database connection | Valid host, user, password, and database name | Connection established; no error raised | Before evidence: capture valid credentials and a reachable database. After evidence: capture output showing the program proceeds to data retrieval without connection errors. |
-| 5 | FR4 | Connection failure stops execution | Invalid or missing credentials | Error message displayed; program stops | Before evidence: capture the bad credentials or unavailable host. After evidence: capture the connection error output and absence of table data. |
-| 6 | FR5 | SELECT query returns all employee rows | Employees table contains data | All rows fetched from the database | Before evidence: capture the current rows in the `Employees` table. After evidence: capture displayed results matching those stored rows. |
-| 7 | FR6 – row count | Row count read correctly | Query returns 5 rows | numRows = 5; results array created with 5 slots | Before evidence: capture evidence that the table contains 5 rows. After evidence: capture debug output, trace, or comparison showing 5 displayed records and an array sized for 5 items. |
-| 8 | FR6 – empty table | No rows in Employees table | Table is empty | numRows = 0; results array is empty; no data rows displayed | Before evidence: capture the empty `Employees` table. After evidence: capture output showing headings only, with no employee rows printed. |
-| 9 | FR7 | Each row mapped to an Employee object by index | Rows returned from query | results[i] holds Employee with correct field values for row i | Before evidence: capture one or more source rows from the database. After evidence: capture displayed values or debugger evidence showing each object matches the row at the same index. |
-| 10 | FR8 – headings | Records displayed with column headings | Valid data returned | Header row (id, name, salary, etc.) shown before records | Before evidence: capture the start of output before data rows appear. After evidence: capture the heading line shown above the records. |
-| 11 | FR8 – data rows | Each employee's details displayed | Valid Employee objects in array | Each employee's id, name, salary, department, position, and hire date shown | Before evidence: capture expected employee values from the database. After evidence: capture the printed table showing the same values in each row. |
-| 12 | FR9 | Cursor and connection closed after use | Valid connection and query | No open handles remain after execution | Before evidence: capture that the program opens the database during processing. After evidence: capture completion plus any evidence that no connection/cursor remains active. |
-| 13 | FR10 | Database error handled gracefully | Simulate a query error (e.g. table does not exist) | Appropriate error message displayed | Before evidence: capture the condition causing the SQL failure, such as a missing table. After evidence: capture the database error message and the absence of normal results output. |
+| 1 | FR8 – all valid | Valid credentials loaded from environment | All four environment variables set correctly | Credentials read without error | Before evidence: capture the configured environment variables. After evidence: capture program startup with no configuration error. |
+| 2 | FR8 – one missing | One environment variable not set | DB_NAME unset | Error message naming DB_NAME displayed; program stops | Before evidence: capture environment settings showing `DB_NAME` is missing. After evidence: capture output naming the missing variable and showing no query runs. |
+| 3 | FR8 – all missing | No environment variables set | All four unset | Error message listing all four variables; program stops | Before evidence: capture environment settings with none of the variables present. After evidence: capture output listing all missing variables and immediate termination. |
+| 4 | FR6 – connected | Successful database connection | Valid host, user, password, and database name | Connection established; no error raised | Before evidence: capture valid credentials and a reachable database. After evidence: capture output showing the program proceeds to data retrieval without connection errors. |
+| 5 | FR6/FR11 – failure | Connection failure stops execution | Invalid or missing credentials | Error message displayed; program stops | Before evidence: capture the bad credentials or unavailable host. After evidence: capture the connection error output and absence of table data. |
+| 6 | FR6 – rows returned | SELECT query returns all employee rows | Employees table contains data | All rows fetched from the database | Before evidence: capture the current rows in the `Employees` table. After evidence: capture displayed results matching those stored rows. |
+| 7 | FR12 – row count | Row count read correctly from query result | Query returns 5 rows | Results array created with 5 slots | Before evidence: capture evidence that the table contains 5 rows. After evidence: capture displayed records and evidence that the array was sized for 5 items. |
+| 8 | FR10 – empty table | No rows in Employees table | Table is empty | No data rows displayed; program completes normally | Before evidence: capture the empty `Employees` table. After evidence: capture output showing headings only with no employee rows printed. |
+| 9 | FR13 | Each row mapped to an Employee object by index | Rows returned from query | results[i] holds Employee with correct field values for row i | Before evidence: capture one or more source rows from the database. After evidence: capture displayed values showing each object matches the row at the same index. |
+| 10 | FR9 – headings | Records displayed with column headings | Valid data returned | Header row (id, name, salary, etc.) shown before records | Before evidence: capture the start of output before data rows appear. After evidence: capture the heading line shown above the records. |
+| 11 | FR9 – data rows | Each employee's details displayed | Valid Employee objects in array | Each employee's id, name, salary, department, position, and hireDate shown | Before evidence: capture expected employee values from the database. After evidence: capture the printed table showing the same values in each row. |
+| 12 | FR15 | Cursor and connection closed after use | Valid connection and query | No open handles remain after execution | Before evidence: capture that the program opens the database during processing. After evidence: capture completion plus any evidence that no connection/cursor remains active. |
+| 13 | FR14/FR11 | Database error handled gracefully | Simulate a query error (e.g. table does not exist) | Appropriate error message displayed; resources closed | Before evidence: capture the condition causing the SQL failure. After evidence: capture the database error message and the absence of normal results output. |
