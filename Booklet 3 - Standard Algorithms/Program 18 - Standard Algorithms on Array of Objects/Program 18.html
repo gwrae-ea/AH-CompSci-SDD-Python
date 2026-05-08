@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 18: Standard Algorithms on Array of Objects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 18: Standard Algorithms on Array of Objects</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>class Car():
+#define the structure and content of the City Record
+    def __init__( self, car_id,car_make,car_model,car_colour,car_year,car_serviced ):
+        self.car_id = str(car_id) #String
+        self.car_make = str(car_make) #String
+        self.car_model = str(car_model) #String
+        self.car_colour = str(car_colour) #String
+        self.car_year = str(car_year) #String
+        self.car_serviced = str(car_serviced) #String
+
+def readFileToArrayOfObjects():
+
+    cArray = []
+    entireFile = open ( &quot;dataFiles/carData.csv&quot; , &quot;r&quot; )
+    #this file needs to be in the same folder as the program
+    linesArray = entireFile.read().splitlines()
+    entireFile.close()
+    for line in linesArray:
+        lineSplit = line.split( &quot;,&quot; )
+        currentCar = Car(lineSplit[0], lineSplit[1], lineSplit[2],lineSplit[3],lineSplit[4],lineSplit[5])
+        cArray.append(currentCar)
+    return cArray 
+
+
+def bubbleSortArrayofObjects(cArray):
+    n = len(cArray)
+    swapped = True
+
+    while swapped and n&gt;=0:
+        swapped = False
+        for i in range(0,n-1): #changed from algorithm (n-2)
+            if cArray[i].car_make &gt; cArray[i+1].car_make:
+                temp = cArray[i]
+                cArray[i] = cArray [i+1]
+                cArray[i+1] = temp
+                swapped = True
+        n = n-1
+    return cArray
+
+def binarySearch(cA, target):
+    low = 0
+    high =  len(cA)-1
+    mid = 0
+    found = False
+    position = -1
+
+    while not(found) and low &lt;= high:
+        mid = int((low + high)/2)
+        if target == cA[mid].car_make:
+            position = mid
+            found = True
+        elif target &gt;= cA[mid].car_make:
+            low = mid + 1
+        else:
+            high = mid - 1
+    
+    return position
+    
+carArray = readFileToArrayOfObjects()
+
+print (&quot;*Unsorted Array*&quot;)
+for cars in range (0,len(carArray)):
+    print (carArray[cars].car_make)
+
+sortedArray = bubbleSortArrayofObjects(carArray)
+
+print (&quot;*Unsorted Array*&quot;)
+for cars in range (0,len(carArray)):
+    print (carArray[cars].car_make)
+
+
+target = str(input(&quot;What make of car are you looking for? &quot;))
+position = binarySearch(sortedArray, target)
+if position == -1:
+    print (&quot;Sorry, we don&#39;t have any of that make.&quot;)
+else:
+    print (&quot;Yes! We have that make of car!&quot;)
+</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>

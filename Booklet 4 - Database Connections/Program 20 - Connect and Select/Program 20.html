@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 20: Connect and Select</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 20: Connect and Select</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>import os
+from pathlib import Path
+
+import mysql.connector
+from dotenv import load_dotenv
+from mysql.connector import Error
+
+base_path = Path(__file__).resolve().parent.parent.parent
+env_path = base_path / &#39;.env&#39;
+load_dotenv(dotenv_path=env_path)
+
+
+# FR1: developer-defined class for object-oriented solution.
+class Employee:
+    def __init__(self, id, name, salary, department, position, hireDate):
+        self.id = int(id)
+        self.name = str(name)
+        self.salary = float(salary)
+        self.department = str(department)
+        self.position = str(position)
+        self.hireDate = str(hireDate)
+
+
+def select_employees():
+    # FR8: validate required environment configuration values.
+    db_host = os.getenv(&#39;DB_HOST&#39;)
+    db_user = os.getenv(&#39;DB_USER&#39;)
+    db_pass = os.getenv(&#39;DB_PASS&#39;)
+    db_name = os.getenv(&#39;DB_NAME&#39;)
+
+    missing = [name for name, val in [(&#39;DB_HOST&#39;, db_host), (&#39;DB_USER&#39;, db_user),
+                                       (&#39;DB_PASS&#39;, db_pass), (&#39;DB_NAME&#39;, db_name)] if not val]
+    if missing:
+        # FR11: provide clear failure feedback to the user.
+        print(f&quot;Configuration Error: Missing environment variable(s): {&#39;, &#39;.join(missing)}&quot;)
+        return
+
+    try:
+        # FR6: connect to the database to execute retrieval query.
+        conn = mysql.connector.connect(
+            host=db_host,
+            user=db_user,
+            password=db_pass,
+            database=db_name
+        )
+    except Error as err:
+        # FR11: report connection errors clearly.
+        print(f&quot;Connection Error: {err}&quot;)
+        return
+
+    cursor = None
+
+    try:
+        # FR6: execute SELECT query against employee table.
+        query = &quot;SELECT * FROM Employees&quot;
+        cursor = conn.cursor()
+
+        cursor.execute(query)
+        db_rows = cursor.fetchall()
+
+        # FR2: create and populate an array of Employee objects.
+        num_rows = len(db_rows)
+        results = [None] * num_rows
+        for i in range(num_rows):
+            row = db_rows[i]
+            results[i] = Employee(row[0], row[1], row[2], row[3], row[4], row[5])
+
+        # FR7: display formatted query output.
+        print(f&quot;{&#39;id&#39;:&lt;10}{&#39;name&#39;:&lt;20}{&#39;salary&#39;:&lt;12}{&#39;dept&#39;:&lt;30}{&#39;position&#39;:&lt;30}{&#39;date&#39;:&lt;12}&quot;)
+
+        for worker in results:
+            print(f&quot;{str(worker.id):&lt;10}{str(worker.name):&lt;20}{str(worker.salary):&lt;12}&quot;
+                  f&quot;{str(worker.department):&lt;30}{str(worker.position):&lt;30}{str(worker.hireDate):&lt;12}&quot;)
+
+    except Error as err:
+        # FR14: include meaningful error context when query fails.
+        print(f&quot;Connection failed: {err}&quot;)
+    finally:
+        if conn.is_connected():
+            if cursor is not None:
+                cursor.close()
+            conn.close()
+            # FR11: always close resources safely.
+
+
+if __name__ == &quot;__main__&quot;:
+    select_employees()
+</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>

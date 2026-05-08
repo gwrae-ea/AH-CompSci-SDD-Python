@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 2: – instantiate and test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 2: – instantiate and test</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>class Event:
+    def __init__(self, startDate, startTime, venue, reminder):
+        self.date = str(startDate)       #String
+        self.startTime = str(startTime)  #String
+        self.venue = str(venue)          #String
+        self.reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;)    #Boolean (don&#39;t use bool(reminder): bool(&quot;False&quot;) is True)
+        self.participants = [&quot;&quot;]*20 #Array of String
+        self.index = int(0)              #Integer
+
+
+item1 = Event(&quot;13/04/18&quot;, &quot;0900&quot;, &quot;Main Office&quot;, True)
+print (item1.venue)
+</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>

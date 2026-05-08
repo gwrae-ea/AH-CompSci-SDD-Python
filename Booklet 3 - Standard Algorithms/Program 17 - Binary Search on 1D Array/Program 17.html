@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 17: – Binary Search on 1D Array</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 17: – Binary Search on 1D Array</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>def bubbleSort(nA):
+
+    n = len(nA)
+    swapped = True
+
+    while swapped and n&gt;=0:
+        swapped = False
+        for i in range(0,n-1): #changed from algorithm (n-2)
+            if nA[i] &gt; nA[i+1]:
+                temp = numArray[i]
+                nA[i] = nA [i+1]
+                nA[i+1] = temp
+                swapped = True
+        n = n-1
+    return nA
+
+def binarySearch(nA, target):
+    low = 0
+    high =  len(nA)-1
+    mid = 0
+    found = False
+    position = -1
+
+    while not(found) and low &lt;= high:
+        mid = int((low + high)/2)
+        if target == nA[mid]:
+            position = mid
+            found = True
+        elif target &gt;= nA[mid]:
+            low = mid + 1
+        else:
+            high = mid - 1     
+    
+    return position 
+
+numArray = [23,546,2,3214,456,234,3214,4576,4657,324,321,4658,765,324,6548,435,54687,32,46857,87659,435,486,87690,5]
+numArray = bubbleSort(numArray)
+print (numArray)
+posFound = binarySearch(numArray,int(input(&quot;Please enter value to find: &quot;)))
+print (posFound)
+</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>

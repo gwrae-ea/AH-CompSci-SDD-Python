@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 8: –testing inheritance 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 8: –testing inheritance 1</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>class Event:
+    def __init__(self, startDate, startTime, venue, reminder):
+        self.__startDate = str(startDate)  #String
+        self.__startTime = str(startTime)  #String
+        self.__venue = str(venue)          #String
+        self.__reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;)    #Boolean (don&#39;t use bool(reminder): bool(&quot;False&quot;) is True)
+        self.__participants = [&quot;&quot;]*20 #Array of String
+        self.__index = int(0)              #Integer
+
+    def updateDate(self, eventDate):
+        self.__startDate = str(eventDate)
+
+    def getDate(self):
+        return self.__startDate
+
+    def addParticipant(self, name):
+        self.__participants[self.__index] = str(name)
+        self.__index = self.__index + 1
+
+class WorkMeeting(Event):
+    def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage ):
+        super().__init__(startDate, startTime, venue, reminder)
+        self.meetingTitle = str(meetingTitle)      #String
+        self.mileage = float(mileage)                #Real
+        self.travelExpenses = float(0)               #Real
+
+    def calculateTravelExpenses(self):
+        self.travelExpenses = self.mileage * 1.5
+    
+    def getTravelExpenses(self):
+        return self.travelExpenses
+
+#Test for the CONSTRUCTOR method (inheriting from Event class)
+workMeeting1 = WorkMeeting(startDate = &quot;14/04/21&quot;, startTime = &quot;0900&quot;, venue = &quot;Main Office&quot;, reminder = True, meetingTitle = &quot;Work from Home&quot;, mileage = 7.5)
+
+print (&quot;The date of the meeting was&quot; , workMeeting1.getDate())
+</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>

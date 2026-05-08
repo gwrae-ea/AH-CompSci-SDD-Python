@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 24: Complete OO Program</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 24: Complete OO Program</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>import os
+from pathlib import Path
+
+import mysql.connector
+from dotenv import load_dotenv
+from mysql.connector import Error
+
+# Load the .env file from the workspace root (three levels up from this script)
+base_path = Path(__file__).resolve().parent.parent.parent
+env_path = base_path / &#39;.env&#39;
+load_dotenv(dotenv_path=env_path)
+
+
+class Employee:
+    # FR1: developer-defined class with encapsulated properties.
+    def __init__(self, employee_id, name, salary, department, position, hire_date):
+        self.__id = None
+        self.__name = &quot;&quot;
+        self.__salary = 0.0
+        self.__department = &quot;&quot;
+        self.__position = &quot;&quot;
+        self.__hire_date = &quot;&quot;
+
+        # FR1: use setter methods to validate and assign values.
+        self.set_id(employee_id)
+        self.set_name(name)
+        self.set_salary(salary)
+        self.set_department(department)
+        self.set_position(position)
+        self.set_hire_date(hire_date)
+
+    def get_id(self):
+        return self.__id
+
+    def get_name(self):
+        return self.__name
+
+    def get_salary(self):
+        return self.__salary
+
+    def get_department(self):
+        return self.__department
+
+    def get_position(self):
+        return self.__position
+
+    def get_hire_date(self):
+        return self.__hire_date
+
+    def set_id(self, employee_id):
+        if isinstance(employee_id, int) and employee_id &gt; 0:
+            self.__id = employee_id
+        else:
+            raise ValueError(&quot;Employee ID must be a whole number greater than 0.&quot;)
+
+    def set_name(self, name):
+        cleaned = str(name).strip()
+        if 1 &lt;= len(cleaned) &lt;= 20:
+            self.__name = cleaned
+        else:
+            raise ValueError(&quot;Employee name must be 1 to 20 characters long.&quot;)
+
+    def set_salary(self, salary):
+        try:
+            salary_value = float(salary)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(&quot;Salary must be numeric.&quot;) from exc
+
+        if salary_value &gt; 0:
+            self.__salary = round(salary_value, 2)
+        else:
+            raise ValueError(&quot;Salary must be greater than 0.&quot;)
+
+    def set_department(self, department):
+        cleaned = str(department).strip()
+        if 1 &lt;= len(cleaned) &lt;= 20:
+            self.__department = cleaned
+        else:
+            raise ValueError(&quot;Department must be 1 to 20 characters long.&quot;)
+
+    def set_position(self, position):
+        cleaned = str(position).strip()
+        if 1 &lt;= len(cleaned) &lt;= 20:
+            self.__position = cleaned
+        else:
+            raise ValueError(&quot;Position must be 1 to 20 characters long.&quot;)
+
+    def set_hire_date(self, hire_date):
+        cleaned = str(hire_date).strip()
+        if cleaned:
+            self.__hire_date = cleaned
+        else:
+            raise ValueError(&quot;Hire date cannot be empty.&quot;)
+
+
+def get_non_empty_text(prompt, max_length=20):
+    # FR10: validate mandatory text input.
+    while True:
+        value = input(prompt).strip()
+        if not value:
+            print(&quot;Error: This field cannot be empty.&quot;)
+            continue
+        if len(value) &gt; max_length:
+            print(f&quot;Error: Maximum length is {max_length} characters.&quot;)
+            continue
+        return value
+
+
+def get_positive_float(prompt):
+    # FR9: validate numeric keyboard input for salary filter.
+    while True:
+        value = input(prompt).strip()
+        try:
+            number = float(value)
+            if number &lt;= 0:
+                print(&quot;Error: Please enter a number greater than 0.&quot;)
+                continue
+            return number
+        except ValueError:
+            print(&quot;Error: Please enter a valid number.&quot;)
+
+
+def get_percentage(prompt):
+    # FR9: validate numeric keyboard input for percentage values.
+    while True:
+        value = input(prompt).strip()
+        try:
+            number = float(value)
+            if number &lt; 0 or number &gt; 100:
+                print(&quot;Error: Please enter a percentage from 0 to 100.&quot;)
+                continue
+            return number
+        except ValueError:
+            print(&quot;Error: Please enter a valid number.&quot;)
+
+
+def validate_environment_config():
+    # FR8: validate required environment configuration values.
+    db_host = os.getenv(&#39;DB_HOST&#39;)
+    db_user = os.getenv(&#39;DB_USER&#39;)
+    db_pass = os.getenv(&#39;DB_PASS&#39;)
+    db_name = os.getenv(&#39;DB_NAME&#39;)
+
+    required_values = [
+        (&#39;DB_HOST&#39;, db_host),
+        (&#39;DB_USER&#39;, db_user),
+        (&#39;DB_PASS&#39;, db_pass),
+        (&#39;DB_NAME&#39;, db_name)
+    ]
+
+    missing = [name for name, val in required_values if not val]
+    if missing:
+        print(f&quot;Configuration Error: Missing environment variable(s): {&#39;, &#39;.join(missing)}&quot;)
+        return None
+
+    return db_host, db_user, db_pass, db_name
+
+
+def connect_to_database(db_config):
+    # FR6: connect to the database with validated configuration.
+    try:
+        conn = mysql.connector.connect(
+            host=db_config[0],
+            user=db_config[1],
+            password=db_config[2],
+            database=db_config[3]
+        )
+        return conn
+    except Error as err:
+        print(f&quot;Connection Error: {err}&quot;)
+        return None
+
+
+def fetch_employees(conn):
+    # FR6: retrieve employee rows without ORDER BY so sorting is done in Python.
+    query = &quot;SELECT id, name, salary, department, position, hireDate FROM Employees&quot;
+    cursor = conn.cursor()
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    cursor.close()
+
+    # FR2: store data in an array (list) of Employee objects.
+    employees = []
+    for row in rows:
+        try:
+            employee = Employee(row[0], row[1], row[2], row[3], row[4], row[5])
+            employees.append(employee)
+        except ValueError as err:
+            # FR13: include data context if a row fails object validation.
+            print(f&quot;Skipping invalid row ID {row[0]}: {err}&quot;)
+    return employees
+
+
+def insertion_sort_by_salary_desc(employee_array):
+    # FR3/FR4: insertion sort on array of objects using get_salary().
+    for index in range(1, len(employee_array)):
+        key_employee = employee_array[index]
+        compare_index = index - 1
+
+        while compare_index &gt;= 0 and employee_array[compare_index].get_salary() &lt; key_employee.get_salary():
+            employee_array[compare_index + 1] = employee_array[compare_index]
+            compare_index -= 1
+
+        employee_array[compare_index + 1] = key_employee
+
+
+def filter_by_department_and_min_salary(employee_array, department, min_salary):
+    # FR12: create a processed subset based on user-entered criteria.
+    filtered = []
+    for employee in employee_array:
+        if (
+            employee.get_department().lower() == department.lower()
+            and employee.get_salary() &gt;= min_salary
+        ):
+            filtered.append(employee)
+    return filtered
+
+
+def apply_pay_rise(employee_array, percentage):
+    # FR1: demonstrate setter usage by updating each selected object safely.
+    multiplier = 1 + (percentage / 100)
+    for employee in employee_array:
+        new_salary = employee.get_salary() * multiplier
+        employee.set_salary(new_salary)
+
+
+def display_employees(employee_array, heading):
+    # FR7: display formatted output for the user.
+    print(&quot;\n&quot; + heading)
+    print(f&quot;{&#39;ID&#39;:&lt;6}{&#39;Name&#39;:&lt;22}{&#39;Salary&#39;:&lt;12}{&#39;Department&#39;:&lt;22}{&#39;Position&#39;:&lt;22}{&#39;Hire Date&#39;:&lt;12}&quot;)
+    print(&quot;-&quot; * 96)
+
+    for employee in employee_array:
+        print(
+            f&quot;{employee.get_id():&lt;6}&quot;
+            f&quot;{employee.get_name():&lt;22}&quot;
+            f&quot;{employee.get_salary():&lt;12.2f}&quot;
+            f&quot;{employee.get_department():&lt;22}&quot;
+            f&quot;{employee.get_position():&lt;22}&quot;
+            f&quot;{employee.get_hire_date():&lt;12}&quot;
+        )
+
+
+def run_program_24():
+    # FR11: clear status message at start.
+    print(&quot;--- Program 24: Complete OO Employee Processing ---&quot;)
+
+    db_config = validate_environment_config()
+    if db_config is None:
+        return
+
+    conn = connect_to_database(db_config)
+    if conn is None:
+        return
+
+    try:
+        # FR6/FR2: load employee data from database into object array.
+        employees = fetch_employees(conn)
+
+        if not employees:
+            print(&quot;No employee records were loaded.&quot;)
+            return
+
+        # FR3/FR4: sort the object array using insertion sort.
+        insertion_sort_by_salary_desc(employees)
+
+        # FR7: collect user criteria for processing.
+        print(&quot;\nFilter employees by department and minimum salary.&quot;)
+        target_department = get_non_empty_text(&quot;Enter Department: &quot;)
+        minimum_salary = get_positive_float(&quot;Enter Minimum Salary: &quot;)
+        rise_percentage = get_percentage(&quot;Enter Pay Rise Percentage (0-100): &quot;)
+
+        matches = filter_by_department_and_min_salary(employees, target_department, minimum_salary)
+
+        if not matches:
+            print(&quot;No employees matched the selected criteria.&quot;)
+            return
+
+        display_employees(matches, &quot;Matching employees before salary update:&quot;)
+
+        # FR1: update objects using setter methods.
+        apply_pay_rise(matches, rise_percentage)
+
+        display_employees(matches, &quot;Matching employees after salary update:&quot;)
+
+        # FR11: clear completion feedback.
+        print(f&quot;\nProcessed {len(matches)} employee object(s) successfully.&quot;)
+
+    except Error as err:
+        # FR13/FR14: provide context and keep data operations safe.
+        print(f&quot;Database Error: {err}&quot;)
+    except ValueError as err:
+        print(f&quot;Validation Error: {err}&quot;)
+    finally:
+        # FR15: always close database connection safely.
+        if conn.is_connected():
+            conn.close()
+            print(&quot;Database connection closed safely.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    run_program_24()
+</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>

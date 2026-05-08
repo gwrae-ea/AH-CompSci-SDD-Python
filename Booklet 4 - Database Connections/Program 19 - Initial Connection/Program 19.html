@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 19: Initial Connection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 19: Initial Connection</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>import os
+from pathlib import Path
+
+import mysql.connector
+from dotenv import load_dotenv
+from mysql.connector import Error
+
+# Load the .env file from the workspace root (three levels up from this script)
+base_path = Path(__file__).resolve().parent.parent.parent
+env_path = base_path / &#39;.env&#39;
+load_dotenv(dotenv_path=env_path)
+
+def test_connection():
+    # FR11: provide clear status feedback at program start.
+    print(&quot;Checking connection to external database...&quot;)
+
+    # FR8: validate required environment configuration values.
+    db_host = os.getenv(&#39;DB_HOST&#39;)
+    db_user = os.getenv(&#39;DB_USER&#39;)
+    db_pass = os.getenv(&#39;DB_PASS&#39;)
+    db_name = os.getenv(&#39;DB_NAME&#39;)
+
+    missing = [name for name, val in [(&#39;DB_HOST&#39;, db_host), (&#39;DB_USER&#39;, db_user),
+                                       (&#39;DB_PASS&#39;, db_pass), (&#39;DB_NAME&#39;, db_name)] if not val]
+    if missing:
+        # FR11: return clear failure feedback if config is invalid.
+        print(f&quot;Configuration Error: Missing environment variable(s): {&#39;, &#39;.join(missing)}&quot;)
+        return
+
+    cursor = None
+
+    try:
+        # FR6: connect to the database and execute a query.
+        conn = mysql.connector.connect(
+            host=db_host,
+            user=db_user,
+            password=db_pass,
+            database=db_name
+        )
+    except Error as e:
+        # FR11: report connection errors clearly.
+        print(f&quot;Connection Error: {e}&quot;)
+        conn = None
+
+    if conn and conn.is_connected():
+        try:
+            # FR6: use SQL query to validate connectivity.
+            cursor = conn.cursor()
+            cursor.execute(&quot;SELECT VERSION();&quot;)
+            version = cursor.fetchone()
+            
+            # FR11: success feedback with query output.
+            print(&quot;--- Connection Successful! ---&quot;)
+            print(f&quot;Database Server Version: {version[0]}&quot;)
+            
+        except Error as e:
+            # FR14: include meaningful error context from failed query.
+            print(f&quot;Connected, but query failed: {e}&quot;)
+        finally:
+            # FR11: always clean up open database resources.
+            if cursor is not None:
+                cursor.close()
+            conn.close()
+            print(&quot;Connection closed safely.&quot;)
+    else:
+        # FR11: failure feedback and troubleshooting guidance.
+        print(&quot;--- Connection Failed ---&quot;)
+        print(&quot;Check your GitHub Secrets (Host, User, Pass) and Firewall settings.&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    test_connection()</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>

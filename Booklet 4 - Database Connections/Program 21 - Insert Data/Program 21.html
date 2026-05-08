@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 21: Insert Data</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 21: Insert Data</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>import os
+from datetime import date
+from pathlib import Path
+
+import mysql.connector
+from dotenv import load_dotenv
+from mysql.connector import Error
+
+base_path = Path(__file__).resolve().parent.parent.parent
+env_path = base_path / &#39;.env&#39;
+load_dotenv(dotenv_path=env_path)
+
+def insert_employee():
+    # FR8: validate required environment configuration values.
+    db_host = os.getenv(&#39;DB_HOST&#39;)
+    db_user = os.getenv(&#39;DB_USER&#39;)
+    db_pass = os.getenv(&#39;DB_PASS&#39;)
+    db_name = os.getenv(&#39;DB_NAME&#39;)
+
+    missing = [name for name, val in [(&#39;DB_HOST&#39;, db_host), (&#39;DB_USER&#39;, db_user),
+                                       (&#39;DB_PASS&#39;, db_pass), (&#39;DB_NAME&#39;, db_name)] if not val]
+    if missing:
+        # FR11: provide clear failure feedback to the user.
+        print(f&quot;Configuration Error: Missing environment variable(s): {&#39;, &#39;.join(missing)}&quot;)
+        return
+
+    try:
+        # FR6: connect to the database to execute required queries.
+        conn = mysql.connector.connect(
+            host=db_host,
+            user=db_user,
+            password=db_pass,
+            database=db_name
+        )
+    except Error as e:
+        # FR11: provide clear failure feedback to the user.
+        print(f&quot;Connection Error: {e}&quot;)
+        return
+
+    cursor = None
+
+    try:
+        cursor = conn.cursor()
+
+        # FR7: interface prompt to receive query input values.
+        print(&quot;--- Add New Employee Record ---&quot;)
+
+        # FR10: validate mandatory text input (name cannot be blank).
+        name = input(&quot;Enter Employee Name: &quot;).strip()
+        while not name:
+            print(&quot;Error: Employee name cannot be empty.&quot;)
+            name = input(&quot;Enter Employee Name: &quot;).strip()
+
+        # FR10: validate mandatory text input (position cannot be blank).
+        position = input(&quot;Enter Job Position: &quot;).strip()
+        while not position:
+            print(&quot;Error: Job position cannot be empty.&quot;)
+            position = input(&quot;Enter Job Position: &quot;).strip()
+
+        # FR9: validate keyboard numeric input (salary format and range).
+        salary = None
+        while salary is None:
+            try:
+                salary = float(input(&quot;Enter Salary: &quot;).strip())
+                if salary &lt; 0:
+                    print(&quot;Error: Salary cannot be negative.&quot;)
+                    salary = None
+            except ValueError:
+                print(&quot;Error: Please enter a valid number for the salary.&quot;)
+
+        # FR10: validate mandatory text input (department cannot be blank).
+        department = input(&quot;Enter Department: &quot;).strip()
+        while not department:
+            print(&quot;Error: Department cannot be empty.&quot;)
+            department = input(&quot;Enter Department: &quot;).strip()
+
+        # FR7: include system-generated value for formatted output/data capture.
+        hire_date = str(date.today())
+
+        # FR5/FR6: execute an INSERT against the employee table using parameters.
+        query = &quot;&quot;&quot;
+            INSERT INTO Employees (name, position, salary, department, hireDate) 
+            VALUES (%s, %s, %s, %s, %s)
+        &quot;&quot;&quot;
+        values = (name, position, salary, department, hire_date)
+        
+        cursor.execute(query, values)
+        # FR15: commit transaction to keep the database in a consistent state.
+        conn.commit()
+        
+        # FR11: provide clear success feedback to the user.
+        print(f&quot;Successfully added {name} to the Employees table.&quot;)
+
+    except Error as e:
+        # FR14/FR15: show meaningful error context and roll back failed transaction.
+        print(f&quot;Database Error: {e}&quot;)
+        conn.rollback()
+    finally:
+        if conn.is_connected():
+            if cursor is not None:
+                cursor.close()
+            conn.close()
+            # FR11: always close resources safely after processing.
+
+if __name__ == &quot;__main__&quot;:
+    insert_employee()</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>

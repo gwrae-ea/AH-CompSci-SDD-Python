@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program 14: 2D Array of Records or Objects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .code-block {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        pre {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        code {
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Program 14: 2D Array of Records or Objects</h1>
+            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
+        </header>
+        
+        <div class="code-block">
+            <pre><code>import numpy
+import pandas
+
+ROWS = 4
+SEATS_PER_ROW = 6
+ROW_PRICES = {0: 8.50, 1: 12.00, 2: 12.00, 3: 15.00}
+
+
+# ── Seat Class ────────────────────────────────────────────────
+class Seat:
+    def __init__(self, row, seat_num):
+        self.row      = int(row)
+        self.seat_num = int(seat_num)
+        self.status   = str(&quot;available&quot;)
+        self.price    = float(ROW_PRICES[self.row])
+
+    def book(self):
+        if self.status == &quot;booked&quot;:
+            print(f&quot;  Seat {self.row}/{self.seat_num} is already taken.&quot;)
+            return False
+        self.status = str(&quot;booked&quot;)
+        print(f&quot;  Booked seat {self.row}/{self.seat_num} — £{self.price:.2f}&quot;)
+        return True
+
+    def is_available(self):
+        return self.status == &quot;available&quot;
+
+    def __str__(self):
+        return (f&quot;R:{self.row} S:{self.seat_num}\n&quot;
+                f&quot;£{self.price:.2f}\n&quot;
+                f&quot;{self.status}&quot;)
+
+
+# ── Cinema functions ──────────────────────────────────────────
+def create_cinema(rows, seats_per_row):
+    cinema = []
+    for r in range(rows):
+        row = []
+        for s in range(seats_per_row):
+            row.append(Seat(r, s))
+        cinema.append(row)
+    return cinema
+
+def book_seat(cinema, row, seat_num):
+    cinema[row][seat_num].book()
+
+def display_cinema(cinema):
+    grid = [[&quot; &quot; for s in range(SEATS_PER_ROW + 1)] for r in range(ROWS + 1)]
+
+    for r in range(ROWS):
+        for s in range(SEATS_PER_ROW):
+            grid[r + 1][s + 1] = str(cinema[r][s])   # use __str__ for full details
+
+    rowHeaders = [f&quot;Row {r}&quot; for r in range(ROWS)]
+    colHeaders = [f&quot;Seat {s}&quot; for s in range(SEATS_PER_ROW)]
+
+    dispCinema = numpy.array(grid)
+    dispCinema = pandas.DataFrame(dispCinema[1:, 1:], columns=colHeaders, index=rowHeaders)
+    dispCinema.columns.name = &quot;Cinema&quot;
+
+    print(&quot;\n      --- SCREEN ---\n&quot;)
+    print(dispCinema)
+    print()
+
+def count_available(cinema):
+    count = 0
+    for r in range(ROWS):
+        for s in range(SEATS_PER_ROW):
+            if cinema[r][s].is_available():
+                count += 1
+    return count
+
+def revenue_report(cinema):
+    total = 0.0
+    for r in range(ROWS):
+        for s in range(SEATS_PER_ROW):
+            if not cinema[r][s].is_available():
+                total += cinema[r][s].price
+    return total
+
+
+# ── Demo ──────────────────────────────────────────────────────
+cinema = create_cinema(ROWS, SEATS_PER_ROW)
+
+print(&quot;=== Initial seating plan ===&quot;)
+display_cinema(cinema)
+
+print(&quot;=== Booking seats ===&quot;)
+book_seat(cinema, 0, 1)
+book_seat(cinema, 1, 2)
+book_seat(cinema, 2, 0)
+book_seat(cinema, 3, 4)
+book_seat(cinema, 0, 1)   # already booked — should fail
+
+print(&quot;\n=== Updated seating plan ===&quot;)
+display_cinema(cinema)
+
+print(f&quot;Available seats : {count_available(cinema)}&quot;)
+print(f&quot;Revenue so far  : £{revenue_report(cinema):.2f}&quot;)</code></pre>
+        </div>
+        
+        <footer>
+            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
+        </footer>
+    </div>
+</body>
+</html>
