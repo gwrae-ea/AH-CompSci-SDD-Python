@@ -1,11 +1,11 @@
 class Event:
     def __init__(self, startDate, startTime, venue, reminder):
-        self.date = startDate       #String
-        self.startTime = startTime  #String
-        self.venue = venue          #String
-        self.reminder = reminder    #Boolean
+        self.date = str(startDate)       #String
+        self.startTime = str(startTime)  #String
+        self.venue = str(venue)          #String
+        self.reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in ("true", "1", "yes", "y")    #Boolean (don't use bool(reminder): bool("False") is True)
         self.participants = [""]*20 #Array of String
-        self.index = 0              #Integer
+        self.index = int(0)              #Integer
 
 
 item1 = Event("13/04/18", "0900", "Main Office", True)

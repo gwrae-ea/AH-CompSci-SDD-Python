@@ -13,12 +13,12 @@ load_dotenv(dotenv_path=env_path)
 # FR1: developer-defined class for object-oriented solution.
 class Employee:
     def __init__(self, id, name, salary, department, position, hireDate):
-        self.id = id
-        self.name = name
-        self.salary = salary
-        self.department = department
-        self.position = position
-        self.hireDate = hireDate
+        self.id = int(id)
+        self.name = str(name)
+        self.salary = float(salary)
+        self.department = str(department)
+        self.position = str(position)
+        self.hireDate = str(hireDate)
 
 
 def select_employees():

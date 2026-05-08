@@ -1,12 +1,12 @@
 class Car():
 #define the structure and content of the City Record
     def __init__( self, car_id,car_make,car_model,car_colour,car_year,car_serviced ):
-        self.car_id = car_id #String
-        self.car_make = car_make #String
-        self.car_model = car_model #String
-        self.car_colour = car_colour #String
-        self.car_year = car_year #String
-        self.car_serviced = car_serviced #String
+        self.car_id = str(car_id) #String
+        self.car_make = str(car_make) #String
+        self.car_model = str(car_model) #String
+        self.car_colour = str(car_colour) #String
+        self.car_year = str(car_year) #String
+        self.car_serviced = str(car_serviced) #String
 
 def readFileToArrayOfObjects():
 

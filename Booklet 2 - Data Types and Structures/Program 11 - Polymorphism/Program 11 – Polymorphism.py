@@ -1,28 +1,28 @@
 class Event:
     def __init__(self, startDate, startTime, venue, reminder):
-        self.startDate = startDate  #String
-        self.startTime = startTime  #String
-        self.venue = venue          #String
-        self.reminder = reminder    #Boolean
+        self.startDate = str(startDate)  #String
+        self.startTime = str(startTime)  #String
+        self.venue = str(venue)          #String
+        self.reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in ("true", "1", "yes", "y")    #Boolean (don't use bool(reminder): bool("False") is True)
         self.participants = [""]*20 #Array of String
-        self.index = 0              #Integer
+        self.index = int(0)              #Integer
 
     def updateDate(self, eventDate):
-        self.startDate  = eventDate
+        self.startDate  = str(eventDate)
 
     def getDate(self):
         return self.startDate
 
     def addParticipant(self, name):
-        self.participants[self.index] = name
+        self.participants[self.index] = str(name)
         self.index = self.index + 1
 
 class WorkMeeting(Event):
     def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage ):
         super().__init__(startDate, startTime, venue, reminder)
-        self.meetingTitle = meetingTitle      #String
-        self.mileage = mileage                #Real
-        self.travelExpenses = 0               #Real
+        self.meetingTitle = str(meetingTitle)      #String
+        self.mileage = float(mileage)                #Real
+        self.travelExpenses = float(0)               #Real
 
     def calculateTravelExpenses(self):
         self.travelExpenses = self.mileage * 1.5
@@ -36,14 +36,14 @@ class WorkMeeting(Event):
 class Personal(Event):
     def __init__(self, startDate, startTime, venue, reminder, eventType, description):
         super().__init__(startDate, startTime, venue, reminder)
-        self.eventType = eventType      # String
-        self.description = description  # String
+        self.eventType = str(eventType)      # String
+        self.description = str(description)  # String
 
     def setEventType(self, eventType):
-        self.eventType = eventType
+        self.eventType = str(eventType)
 
     def setDescription(self, description):
-        self.description = description
+        self.description = str(description)
 
     def getDescription(self):
         return self.description

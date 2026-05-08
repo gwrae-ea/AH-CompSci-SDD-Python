@@ -9,16 +9,16 @@ ROW_PRICES = {0: 8.50, 1: 12.00, 2: 12.00, 3: 15.00}
 # ── Seat Class ────────────────────────────────────────────────
 class Seat:
     def __init__(self, row, seat_num):
-        self.row      = row
-        self.seat_num = seat_num
-        self.status   = "available"
-        self.price    = ROW_PRICES[row]
+        self.row      = int(row)
+        self.seat_num = int(seat_num)
+        self.status   = str("available")
+        self.price    = float(ROW_PRICES[self.row])
 
     def book(self):
         if self.status == "booked":
             print(f"  Seat {self.row}/{self.seat_num} is already taken.")
             return False
-        self.status = "booked"
+        self.status = str("booked")
         print(f"  Booked seat {self.row}/{self.seat_num} — £{self.price:.2f}")
         return True
 
