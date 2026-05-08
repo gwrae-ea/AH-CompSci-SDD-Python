@@ -52,6 +52,16 @@ Use **PDF Viewer** for booklet files and **HTML Preview** for the generated `Pro
 
 ### 4. Set up your environment
 
+First, open a terminal in Codespaces:
+
+1. Click **Terminal** on the top menu.
+2. Click **New Terminal**.
+3. Keyboard shortcuts:
+	- Toggle terminal: **Ctrl+`** (Windows/Linux) or **Cmd+`** (Mac)
+	- New terminal: **Ctrl+Shift+`** (Windows/Linux) or **Cmd+Shift+`** (Mac)
+
+Then run the setup commands below.
+
 In the terminal, from the project root:
 
 ```bash
