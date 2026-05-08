@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,86 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates how to create (instantiate) objects from a class definition and test that the objects are created correctly. Once a class template has been defined, the program shows how to call the class as a constructor to create instance objects with specific data. The program demonstrates passing parameters to the constructor, storing those values as properties in the new object, and accessing properties from an instantiated object. These skills are fundamental to using object-oriented design: defining the blueprint (class) and then creating actual working copies (instances) from that blueprint.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants to create objects that represent specific employee records with actual data.
+2. The user wants to verify that object properties are set correctly during creation.
+3. The user wants to access object properties to retrieve stored data.
+4. The user wants to create multiple independent objects, each with different data.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Instantiate objects from a developer-defined class.
+
+FR2 Pass parameters to constructor to initialize object properties.
+
+FR3 Access object properties using dot notation (object.property).
+
+FR4 Verify that each object instance maintains independent data.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Import and use a class defined in another module or location.
+
+FR6 Create and manage multiple instances without data corruption or mixing.
+
+FR7 Display or output object data to verify correct instantiation.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Demonstrate constructor parameter passing and mapping to properties.
+
+FR9 Show accessing individual properties from created objects.
+
+FR10 Verify property independence between different object instances.
+
+FR11 Display clear output showing successful object creation and property values.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Object Creation Pattern
+
+```
+DECLARE object1 AS NEW ClassName(param1, param2, param3, ...)
+DECLARE object2 AS NEW ClassName(param1, param2, param3, ...)
+
+CALL object1.DisplayInfo()
+CALL object2.DisplayInfo()
+```
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 2 - instantiate and test.py](./Program%202%20%E2%80%93%20instantiate%20and%20test.py)
+
+### Notes
+
+- Each call to the class constructor creates a new, independent object
+- Properties of one object are not affected by changes to another object
+- The class definition is reusable—many objects can be created from the same class
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.date = str(startDate)       #String
@@ -94,7 +224,12 @@
 item1 = Event(&quot;13/04/18&quot;, &quot;0900&quot;, &quot;Main Office&quot;, True)
 print (item1.venue)
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Object instantiation</td><td>Create Employee object</td><td>Object created without error</td><td>Before: NameError / After: Object created</td></tr><tr><td>Constructor parameters passed</td><td>Create object with specific values</td><td>Object properties contain passed values</td><td>Before: Properties undefined / After: Values stored</td></tr><tr><td>Multiple independent instances</td><td>Create two Employee objects with different data</td><td>Each object has its own distinct values</td><td>Before: Data shared/overwritten / After: Independent values</td></tr><tr><td>Property access</td><td>Access object.property_name</td><td>Correct value returned from object</td><td>Before: AttributeError / After: Value retrieved</td></tr><tr><td>Object comparison</td><td>Create two instances with same data</td><td>Objects are distinct (different memory locations)</td><td>Before: Objects compared as equal / After: Distinct objects</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

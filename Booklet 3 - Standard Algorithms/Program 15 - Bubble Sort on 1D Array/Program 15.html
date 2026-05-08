@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,108 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates Bubble Sort on a 1D array of numbers. Bubble Sort repeatedly compares adjacent elements and swaps them when they are in the wrong order, so larger values move toward the end of the array each pass. The implementation also uses a `swapped` flag to stop early if the list is already sorted.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants numeric data sorted into ascending order.
+2. The user wants to see the array before and after sorting.
+3. The user wants a clear, repeatable algorithm.
+4. The user wants sorting to stop when no more swaps are needed.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Use a 1D array to store the numeric dataset.
+
+FR2 Implement Bubble Sort using adjacent comparisons.
+
+FR3 Swap out-of-order values correctly.
+
+FR4 Return the sorted array.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Display array contents before sorting.
+
+FR6 Display array contents after sorting.
+
+FR7 Use a loop control mechanism to stop when sorted.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Reduce pass length each iteration.
+
+FR9 Avoid unnecessary passes when no swaps occur.
+
+FR10 Keep the function reusable for different input arrays.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Data Structure Design
+
+- Use a 1D numeric array.
+- Track active unsorted region with variable `n`.
+- Use boolean `swapped` for early stop.
+
+### English Pseudocode
+
+1. Set `n` to array length.
+2. Set `swapped` to true.
+3. While `swapped` is true and `n` is valid:
+   - Set `swapped` false.
+   - Loop from index 0 to `n-2`.
+   - Compare adjacent values.
+   - Swap when left value is larger.
+   - Set `swapped` true if a swap occurs.
+4. Decrease `n` after each pass.
+5. Return sorted array.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 15 – Bubble Sort on 1D Array.py](./Program%2015%20%E2%80%93%20Bubble%20Sort%20on%201D%20Array.py)
+
+SQA-RL:
+```text
+FUNCTION bubbleSort(numArray)
+    SET n &lt;- SIZE(numArray)
+    SET swapped &lt;- TRUE
+
+    WHILE swapped = TRUE AND n &gt;= 0
+        SET swapped &lt;- FALSE
+        FOR i &lt;- 1 TO n-1
+            IF numArray[i] &gt; numArray[i+1] THEN
+                SWAP numArray[i], numArray[i+1]
+                SET swapped &lt;- TRUE
+            END IF
+        NEXT i
+        SET n &lt;- n - 1
+    END WHILE
+
+    RETURN numArray
+END FUNCTION
+```
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>def bubbleSort(nA):
 
     n = len(nA)
@@ -102,7 +254,12 @@ print (numArray)
 numArray = bubbleSort(numArray) #if you want to keep the original array, assign to a new array at this point
 print (numArray)
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Unsorted list</td><td>`[23, 546, 2, 3214]`</td><td>`[2, 23, 546, 3214]`</td><td>Before: unsorted / After: sorted ascending</td></tr><tr><td>Already sorted</td><td>`[1, 2, 3, 4]`</td><td>`[1, 2, 3, 4]` with minimal passes</td><td>Before: sorted / After: unchanged</td></tr><tr><td>Reverse order</td><td>`[9, 7, 5, 3]`</td><td>`[3, 5, 7, 9]`</td><td>Before: descending / After: ascending</td></tr><tr><td>Duplicate values</td><td>`[4, 2, 4, 1]`</td><td>`[1, 2, 4, 4]`</td><td>Before: mixed / After: duplicates retained</td></tr><tr><td>Single item</td><td>`[10]`</td><td>`[10]`</td><td>Before: one element / After: unchanged</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

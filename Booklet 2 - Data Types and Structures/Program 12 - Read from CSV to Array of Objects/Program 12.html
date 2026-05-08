@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,108 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program reads event records from a CSV file and converts each row into an `Event` object. The objects are then stored in a fixed-size array for indexed access and processing. This combines file handling, parsing, object creation, and fixed-capacity array design.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants event data loaded from a CSV file automatically.
+2. The user wants each CSV row represented as an object.
+3. The user wants the resulting objects stored in a predictable fixed-size structure.
+4. The user wants to access loaded events by index and property.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Define an `Event` class used for object instantiation from CSV rows.
+
+FR2 Parse CSV lines into fields and map fields to object properties.
+
+FR3 Store loaded objects in a fixed-size array.
+
+FR4 Use indexed access to retrieve loaded object data.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Read an external CSV file from disk.
+
+FR6 Convert each row to an object reliably.
+
+FR7 Output values from selected object indices.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Handle file open/read/close correctly.
+
+FR9 Use a row counter to control fixed-size insertion.
+
+FR10 Keep parsing logic clear and maintainable.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Data Structure Design
+
+- Read all lines from CSV first.
+- Create fixed-size array: `eventArray = [&quot;&quot;] * len(linesArray)`
+- Insert one `Event` object per row by index.
+
+### English Pseudocode
+
+1. Open CSV file and read all lines.
+2. Create fixed-size array sized to number of lines.
+3. For each line:
+   - Split by comma.
+   - Instantiate `Event` object.
+   - Store object at current index.
+4. Return fixed-size object array.
+5. Display selected properties.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 12 - Read from CSV to Array of Objects.py](./Program%2012%20-%20Read%20from%20CSV%20to%20Array%20of%20Objects.py)
+
+SQA-RL:
+```text
+OPENFILE &quot;dataFiles/eventData.csv&quot; FOR READ
+SET linesArray &lt;- READALLLINES
+CLOSEFILE
+
+DECLARE eventArray : ARRAY[1:SIZE(linesArray)] OF Event
+SET idx &lt;- 1
+FOR eachLine IN linesArray
+    SET fields &lt;- SPLIT(eachLine, &quot;,&quot;)
+    SET eventArray[idx] &lt;- NEW Event(fields[1], fields[2], fields[3], fields[4])
+    SET idx &lt;- idx + 1
+NEXT eachLine
+
+OUTPUT eventArray[1].venue
+OUTPUT eventArray[24].startTime
+```
+
+### Notes
+
+- The implementation must use a fixed-size array, not unbounded append-only storage.
+- Index-based insertion keeps design aligned with AH array requirements.
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.startDate = str(startDate)  #String
@@ -115,7 +267,12 @@ def populateEventArrayFromFile():
 eventArray = populateEventArrayFromFile()
 print (eventArray[0].venue)
 print (eventArray[23].startTime)</code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>File read</td><td>Valid CSV path</td><td>Lines loaded into memory</td><td>Before: no data / After: lines array populated</td></tr><tr><td>Fixed-size array creation</td><td>`len(linesArray)`</td><td>Array capacity equals row count</td><td>Before: no array / After: correct capacity</td></tr><tr><td>Row-to-object conversion</td><td>One CSV row</td><td>One `Event` object created</td><td>Before: raw string / After: object</td></tr><tr><td>Indexed insertion</td><td>`eventArray[idx] = Event(...)`</td><td>Objects stored in sequence</td><td>Before: blanks / After: objects</td></tr><tr><td>Output check</td><td>`eventArray[0].venue`</td><td>Correct value from CSV</td><td>Before: incorrect/none / After: expected value</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,103 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates Insertion Sort on a 1D array. Insertion Sort builds a sorted section from left to right, taking one value at a time and inserting it into the correct position in the sorted section by shifting larger values right.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants a reliable ascending sort on numeric data.
+2. The user wants sorting performed in place on the existing array.
+3. The user wants clear insertion-based algorithm logic.
+4. The user wants sorted output displayed.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Use a 1D array as the main data structure.
+
+FR2 Implement Insertion Sort using shifting and insertion.
+
+FR3 Track current value and insertion index correctly.
+
+FR4 Return the sorted array.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Process each element from index 1 onward.
+
+FR6 Shift larger preceding values right.
+
+FR7 Insert each value into its correct location.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Keep sorting logic in a reusable function.
+
+FR9 Preserve all original values during shifting.
+
+FR10 Print the sorted array for verification.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Data Structure Design
+
+- Use one 1D numeric array.
+- Maintain `value` (item being inserted) and `index` (current insert position).
+
+### English Pseudocode
+
+1. Loop `i` from 1 to end of array.
+2. Set `value` to current element.
+3. Set `index` to `i`.
+4. While `index &gt; 0` and previous element is larger:
+   - Shift previous element right.
+   - Decrease `index`.
+5. Insert `value` at `index`.
+6. Continue until all elements processed.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 16 – Insertion Sort on 1D Array.py](./Program%2016%20%E2%80%93%20Insertion%20Sort%20on%201D%20Array.py)
+
+SQA-RL:
+```text
+FUNCTION insertionSort(numArray)
+    FOR i &lt;- 2 TO SIZE(numArray)
+        SET value &lt;- numArray[i]
+        SET index &lt;- i
+
+        WHILE index &gt; 1 AND value &lt; numArray[index-1]
+            SET numArray[index] &lt;- numArray[index-1]
+            SET index &lt;- index - 1
+        END WHILE
+
+        SET numArray[index] &lt;- value
+    NEXT i
+
+    RETURN numArray
+END FUNCTION
+```
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>def insertionSort(nA):
     value = 0
     index = 0
@@ -97,7 +244,12 @@ numArray = [23,546,2,3214,456,234,321 ]
 sortedArray = insertionSort(numArray)
 print (sortedArray)
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Unsorted list</td><td>`[23, 546, 2, 3214]`</td><td>`[2, 23, 546, 3214]`</td><td>Before: unsorted / After: sorted ascending</td></tr><tr><td>Nearly sorted</td><td>`[1, 2, 4, 3, 5]`</td><td>`[1, 2, 3, 4, 5]`</td><td>Before: one item out / After: corrected</td></tr><tr><td>Reverse order</td><td>`[5, 4, 3, 2, 1]`</td><td>`[1, 2, 3, 4, 5]`</td><td>Before: descending / After: ascending</td></tr><tr><td>Duplicate values</td><td>`[4, 2, 4, 1]`</td><td>`[1, 2, 4, 4]`</td><td>Before: mixed / After: duplicates retained</td></tr><tr><td>Single item</td><td>`[10]`</td><td>`[10]`</td><td>Before: one element / After: unchanged</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

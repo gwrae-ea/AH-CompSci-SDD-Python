@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,88 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates how to add methods (functions) to a class definition. While properties store data, methods define the behaviors and operations that objects can perform. Methods are functions defined within a class that typically operate on the object&#39;s properties. This program shows creating methods that access properties, calculate values, perform operations, and return results. Key technical skills include method definition syntax, the `self` parameter for accessing object properties, parameter passing to methods, return values, and understanding the difference between data (properties) and behavior (methods) in object-oriented programming.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants objects to perform actions beyond just storing data (e.g., calculate salary increases, generate reports).
+2. The user wants methods that operate on object properties in meaningful ways.
+3. The user wants clear method names describing what action they perform.
+4. The user wants methods to return useful results or modify object state appropriately.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Define methods within a class to represent object behaviors.
+
+FR2 Use the `self` parameter to access object properties within methods.
+
+FR3 Create methods that accept parameters to customize their behavior.
+
+FR4 Implement methods that return values or perform state changes.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Demonstrate methods that retrieve or display object information.
+
+FR6 Show methods that calculate derived values from properties.
+
+FR7 Display clear output showing method results.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Include docstrings explaining method behavior and parameters.
+
+FR9 Implement validation or processing logic within methods.
+
+FR10 Show method calls through consistent naming conventions.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Method Structure
+
+```
+CLASS ClassName
+    ...properties...
+    
+    METHOD MethodName(param1, param2)
+        ... method implementation ...
+        RETURN result
+    END METHOD
+END CLASS
+```
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 3 - creating methods in a class.py](./Program%203%20%E2%80%93%20creating%20methods%20in%20a%20class.py)
+
+### Notes
+
+- Methods are defined with `def method_name(self, parameters):`
+- Access properties using `self.property_name`
+- Call methods using `object.method_name(arguments)`
+- Methods can modify object properties or return values
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.startDate = str(startDate)  #String
@@ -100,7 +232,12 @@
         self.participants[self.index] = str(name)
         self.index = self.index + 1
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Method definition</td><td>Define method in class</td><td>Method accessible on instances</td><td>Before: AttributeError / After: Method callable</td></tr><tr><td>Method with property access</td><td>Call method that reads properties</td><td>Method accesses and uses properties correctly</td><td>Before: None / After: Properties accessed</td></tr><tr><td>Method with parameters</td><td>Call method with parameters</td><td>Parameters received and used in computation</td><td>Before: TypeError / After: Parameters processed</td></tr><tr><td>Method return value</td><td>Call method and capture return</td><td>Correct value returned</td><td>Before: None returned / After: Expected value</td></tr><tr><td>Multiple method calls</td><td>Call different methods on same object</td><td>All methods execute correctly</td><td>Before: Methods fail / After: All succeed</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

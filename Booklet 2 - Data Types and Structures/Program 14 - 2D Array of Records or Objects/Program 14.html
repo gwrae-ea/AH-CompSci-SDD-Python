@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,116 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program models cinema seating with a class (`Seat`) and a fixed-size 2D array of objects. Each grid position stores one `Seat` object containing row, seat number, booking status, and price. The design demonstrates class-based records, fixed-size 2D array population, traversal, and reporting operations.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants a seating grid with a fixed number of rows and seats.
+2. The user wants each seat to store its own state and price.
+3. The user wants to book seats by row and seat index.
+4. The user wants to see available seats and current revenue.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Use a class to represent a seat record/object.
+
+FR2 Use a fixed-size 2D array of seat objects.
+
+FR3 Traverse the full 2D array for counting and reporting.
+
+FR4 Update object state through class methods.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Create the 2D seat structure from constants.
+
+FR6 Support booking by indexed coordinates.
+
+FR7 Display current seating and summary information.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Prevent double booking through status checks.
+
+FR9 Produce available-seat and revenue reports.
+
+FR10 Keep pricing rules by row.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Data Structure Design
+
+- Fixed-size dimensions: `ROWS = 4`, `SEATS_PER_ROW = 6`
+- Fixed-size 2D object array:
+  `cinema = [[Seat(r, s) for s in range(SEATS_PER_ROW)] for r in range(ROWS)]`
+
+### English Pseudocode
+
+1. Define `Seat` class with row, number, status, price.
+2. Create fixed-size 2D array of `Seat` objects.
+3. Book selected seats by row/column index.
+4. Traverse fixed-size 2D array to count available seats.
+5. Traverse fixed-size 2D array to sum booked revenue.
+6. Display seating grid and reports.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 14 - 2D Array of Records or Objects.py](./Program%2014%20-%202D%20Array%20of%20Records%20or%20Objects.py)
+
+SQA-RL:
+```text
+DECLARE ROWS &lt;- 4
+DECLARE SEATS_PER_ROW &lt;- 6
+DECLARE cinema : ARRAY[1:ROWS, 1:SEATS_PER_ROW] OF Seat
+
+FOR r FROM 1 TO ROWS
+    FOR s FROM 1 TO SEATS_PER_ROW
+        SET cinema[r,s] &lt;- NEW Seat(r, s)
+    NEXT s
+NEXT r
+
+CALL bookSeat(cinema, 1, 2)
+CALL bookSeat(cinema, 2, 3)
+
+SET availableCount &lt;- 0
+SET revenue &lt;- 0
+FOR r FROM 1 TO ROWS
+    FOR s FROM 1 TO SEATS_PER_ROW
+        IF cinema[r,s].isAvailable() THEN
+            SET availableCount &lt;- availableCount + 1
+        ELSE
+            SET revenue &lt;- revenue + cinema[r,s].price
+        END IF
+    NEXT s
+NEXT r
+```
+
+### Notes
+
+- Both design and implementation use a fixed-size 2D array of objects.
+- Object methods encapsulate booking and availability checks.
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>import numpy
 import pandas
 
@@ -180,7 +340,12 @@ display_cinema(cinema)
 
 print(f&quot;Available seats : {count_available(cinema)}&quot;)
 print(f&quot;Revenue so far  : £{revenue_report(cinema):.2f}&quot;)</code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Create fixed 2D cinema</td><td>ROWS=4, SEATS=6</td><td>24 Seat objects created</td><td>Before: none / After: full grid</td></tr><tr><td>Book valid seat</td><td>`book_seat(cinema, 0, 1)`</td><td>Seat status becomes booked</td><td>Before: available / After: booked</td></tr><tr><td>Double booking</td><td>Same seat booked twice</td><td>Second booking rejected</td><td>Before: second success / After: warning and fail</td></tr><tr><td>Count available seats</td><td>Traverse full grid</td><td>Correct available count</td><td>Before: unknown / After: exact count</td></tr><tr><td>Revenue report</td><td>Traverse booked seats</td><td>Sum of booked prices</td><td>Before: 0/wrong / After: correct revenue</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

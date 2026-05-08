@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,206 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates how an existing database record can be searched for and updated safely. It begins by validating the connection settings and opening a connection to the database, showing the technical skills of environment-based configuration, validation, and database connectivity. The program then asks the user for an employee ID and validates that it is a positive whole number before using it in a `SELECT` query to find the matching record. This demonstrates data validation, record lookup, and conditional logic.
+
+Once the current record has been retrieved, the program displays the existing values and allows the user to enter replacement values while also allowing blank input to keep the current data. This demonstrates optional input handling, validation of text length and numeric values, and decision-making based on whether new input is provided. The `UPDATE` query is then executed using parameterised values, followed by transaction control to commit successful changes or roll them back if an error occurs. Overall, the technical skills shown are validation, record searching, conditional updates, parameterised SQL, transaction handling, and safe management of database resources.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants to be able to update the details of an existing employee record in the database.
+2. The user wants to be able to find the employee by typing their ID number.
+3. The user wants to see the current values before making any changes, so they know what is already stored.
+4. The user wants to be able to leave a field blank if they do not want to change it.
+5. The user wants to be told immediately if they enter something invalid, so they can correct it.
+6. The user wants to see a message confirming whether the record was updated or whether nothing changed.
+7. The user wants to be told if the database settings have not been configured, rather than the program crashing silently.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Have an object-oriented solution with a developer defined class to represent employee data with appropriate properties and methods.
+
+FR2 Use an array of objects to store employee records for processing and display.
+
+FR3 Use a binary search algorithm.
+
+FR4 Apply the algorithm in FR3 to the data structure in FR2 to locate a target employee record efficiently.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Have a database table to store employee records.
+
+FR6 Connect to the database to execute a query to validate connectivity and retrieve/update employee data as required.
+
+FR7 Generate an interface to receive query input values and display formatted query output.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Validate that required environment configuration values are present before attempting any database operation.
+
+FR9 Validate the Employee ID keyboard input: the value entered must be a whole number (integer) greater than zero, matching the `id INT NOT NULL AUTO_INCREMENT` column in the `Employees` table. Non-integer input and values of zero or below must be rejected with an appropriate error message and re-prompted.
+
+FR10 Validate the name, position, and department keyboard inputs: if a new value is entered for any of these fields it must not exceed 20 characters, matching the `varchar(20)` definition of those columns in the `Employees` table. Values exceeding the limit must be rejected with an appropriate error message and re-prompted.
+
+FR11 Validate the salary keyboard input: if a new salary value is entered it must be a positive floating-point number (greater than zero), matching the `salary float` column in the `Employees` table. Non-numeric input and values of zero or below must be rejected with an appropriate error message and re-prompted.
+
+FR12 Confirm that a record matching the entered Employee ID exists in the `Employees` table before displaying current values and proceeding to update prompts. If no match is found the program must inform the user and stop without attempting an UPDATE.
+
+FR13 Detect when no field values have changed after all inputs are collected and inform the user; stop without executing an UPDATE if nothing has changed.
+
+FR14 Display clear success, no-change, and error messages for all operational outcomes, including sufficient error detail to support troubleshooting.
+
+FR15 Commit the transaction on success, roll back on error, and always close the cursor and connection after execution.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Query Design
+
+This program uses two parameterised SQL queries: one to find the existing employee record and one to update it.
+
+| Query | Purpose | SQL | Parameters | Expected Result |
+|---|---|---|---|---|
+| Select employee by ID | Finds the employee record that matches the entered ID | `SELECT id, name, position, salary, department FROM Employees WHERE id = %s` | `employeeId` | One matching employee row or no row if the ID does not exist |
+| Update employee by ID | Updates the selected employee record with the new values | `UPDATE Employees SET name = %s, position = %s, salary = %s, department = %s WHERE id = %s` | `newName`, `newPosition`, `newSalary`, `newDepartment`, `employeeId` | The matching employee row updated, or no rows changed if the values are unchanged |
+
+### English Pseudocode
+
+1. Start a procedure to update an existing employee record.
+2. Read the database host, username, password, and database name from environment settings.
+3. Check that all four environment variables have been set.
+	1. If any are missing, display an error message naming the missing variables and stop.
+4. Try to connect to the database using the validated settings.
+5. If the connection fails:
+	1. Display a connection error message.
+	2. Stop the procedure.
+6. Otherwise:
+	1. Create a database cursor.
+	2. Ask the user for an employee ID and validate that it is a whole number greater than 0.
+	3. Use a SELECT query to fetch that employee record.
+	4. If no record is found:
+		1. Display a message that no employee exists with that ID.
+		2. Stop the procedure.
+	5. Display the current values.
+	6. Ask for new name, position, salary, and department.
+	7. Allow blank input to keep the existing value.
+	8. Validate each non-blank text field length and salary value.
+	9. Build an UPDATE query for the Employees table.
+	10. Execute the UPDATE query and commit the transaction.
+	11. If no rows were changed, display that no changes were made.
+	12. Otherwise, display a success message.
+	13. If a database error occurs:
+		1. Display a database error message.
+		2. Roll back the transaction.
+	14. Close the cursor if it exists.
+	15. Close the database connection.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">### SQA Reference Language
+
+```text
+Line 1: FUNCTION UpdateEmployee()
+Line 2:     SET dbHost TO GETENV(&quot;DB_HOST&quot;)                                         [FR8]
+Line 3:     SET dbUser TO GETENV(&quot;DB_USER&quot;)                                         [FR8]
+Line 4:     SET dbPass TO GETENV(&quot;DB_PASS&quot;)                                         [FR8]
+Line 5:     SET dbName TO GETENV(&quot;DB_NAME&quot;)                                         [FR8]
+
+Line 6:     SET missing TO []
+Line 7:     FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
+Line 8:         IF varValue = NULL OR varValue = &quot;&quot; THEN
+Line 9:             APPEND varName TO missing
+Line 10:         ENDIF
+Line 11:     ENDFOR
+Line 12:     IF LENGTH(missing) &gt; 0 THEN
+Line 13:         SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY   [FR8, FR14]
+Line 14:         RETURN
+Line 15:     ENDIF
+
+Line 16:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
+Line 17:     IF conn = NULL THEN
+Line 18:         SEND &quot;Connection Error&quot; TO DISPLAY                                 [FR14]
+Line 19:         RETURN
+Line 20:     ENDIF
+
+Line 21:     SET cursor TO NULL
+
+Line 22:     TRY
+Line 23:         SET cursor TO conn.cursor()
+
+Line 24:         SEND &quot;--- Update Employee Record ---&quot; TO DISPLAY
+Line 25:         SET employeeId TO VALIDATED_INTEGER_INPUT(&quot;Enter Employee ID to update: &quot;)   [FR7, FR9]
+
+Line 26:         SET selectQuery TO &quot;SELECT id, name, position, salary, department FROM Employees WHERE id = %s&quot;   [FR6, FR12]
+Line 27:         cursor.execute(selectQuery, (employeeId))
+Line 28:         SET employee TO cursor.fetchone()
+
+Line 29:         IF employee = NULL THEN
+Line 30:             SEND &quot;No employee found with that ID.&quot; TO DISPLAY               [FR12, FR14]
+Line 31:             RETURN
+Line 32:         ENDIF
+
+Line 33:         SEND &quot;Leave blank to keep existing values.&quot; TO DISPLAY
+Line 34:         SET newName TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Name: &quot;, employee.name)   [FR7, FR10]
+Line 35:         SET newPosition TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Position: &quot;, employee.position)   [FR7, FR10]
+Line 36:         SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT(&quot;Enter New Salary: &quot;, employee.salary)   [FR7, FR11]
+Line 37:         SET newDepartment TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Department: &quot;, employee.department)   [FR7, FR10]
+
+Line 38:         SET updateQuery TO &quot;UPDATE Employees SET name=%s, position=%s, salary=%s, department=%s WHERE id=%s&quot;   [FR6]
+Line 39:         SET values TO (newName, newPosition, newSalary, newDepartment, employeeId)
+Line 40:         cursor.execute(updateQuery, values)
+Line 41:         conn.commit()                                                        [FR15]
+
+Line 42:         IF cursor.rowcount = 0 THEN
+Line 43:             SEND &quot;No changes were made.&quot; TO DISPLAY
+Line 44:         ELSE
+Line 45:             SEND &quot;Employee updated successfully.&quot; TO DISPLAY                 [FR14]
+Line 46:         ENDIF
+
+Line 47:     CATCH DATABASEERROR
+Line 48:         SEND &quot;Database Error&quot; TO DISPLAY                                   [FR14]
+Line 49:         conn.rollback()                                                      [FR15]
+
+Line 50:     FINALLY
+Line 51:         IF conn.is_connected() = TRUE THEN
+Line 52:             IF cursor &lt;&gt; NULL THEN
+Line 53:                 cursor.close()                                              [FR15]
+Line 54:             ENDIF
+Line 55:             conn.close()                                                    [FR15]
+Line 56:         ENDIF
+Line 57:     ENDTRY
+Line 58: ENDFUNCTION
+
+Line 59: CALL UpdateEmployee()
+```
+
+The Python implementation is in [Program 22 - Update Data.py](./Program%2022%20-%20Update%20Data.py).
+
+### Notes
+
+- `MYSQLCONNECT(...)` represents `mysql.connector.connect(...)` in the Python file.
+- `GETENV(...)` represents reading values from environment variables after `.env` has been loaded.
+- Validation helper routines in SQA-RL stand in for repeated input-check loops used in Python.
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>import os
 from pathlib import Path
 
@@ -242,7 +492,12 @@ def update_employee():
 if __name__ == &quot;__main__&quot;:
     update_employee()
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="section-content">### Test Cases</div><div class="table-wrap"><table class="test-plan-table"><thead><tr><th>#</th><th>Functional Requirement</th><th>Test Description</th><th>Input / Conditions</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>1</td><td>FR8 – all valid</td><td>Valid credentials loaded from environment</td><td>All four environment variables set correctly</td><td>Credentials read without error</td><td>Before evidence: capture the configured environment variables. After evidence: capture program startup with no configuration error shown.</td></tr><tr><td>2</td><td>FR8 – one missing</td><td>One environment variable not set</td><td>DB_HOST unset</td><td>Error message naming DB_HOST displayed; program stops</td><td>Before evidence: capture environment settings showing `DB_HOST` missing. After evidence: capture the named missing-variable error and no update prompts.</td></tr><tr><td>3</td><td>FR8 – all missing</td><td>No environment variables set</td><td>All four unset</td><td>Error message listing all four variables; program stops</td><td>Before evidence: capture environment settings with all four variables absent. After evidence: capture output listing all missing variables and immediate stop.</td></tr><tr><td>4</td><td>FR6/FR14</td><td>Connection failure stops execution</td><td>Invalid credentials</td><td>Error message displayed; program stops</td><td>Before evidence: capture the invalid credentials used. After evidence: capture the connection error and the absence of update processing.</td></tr><tr><td>5</td><td>FR9 – non-integer</td><td>Non-integer Employee ID entered</td><td>Enter &quot;abc&quot;</td><td>Error message displayed; ID prompt repeated</td><td>Before evidence: capture the invalid text entered for Employee ID. After evidence: capture the validation message and the repeated ID prompt.</td></tr><tr><td>6</td><td>FR9 – zero or negative</td><td>Zero or negative Employee ID entered</td><td>Enter &quot;0&quot; or &quot;-1&quot;</td><td>Error message displayed; ID prompt repeated</td><td>Before evidence: capture the zero or negative ID entered. After evidence: capture the validation message and the repeated ID prompt.</td></tr><tr><td>7</td><td>FR9 – valid</td><td>Valid positive integer Employee ID entered</td><td>Enter &quot;3&quot;</td><td>Value accepted; SELECT query runs</td><td>Before evidence: capture the valid ID entered. After evidence: capture progression to the record lookup stage without validation errors.</td></tr><tr><td>8</td><td>FR12 – not found</td><td>ID does not exist in Employees table</td><td>Enter an unused ID</td><td>&quot;No employee found&quot; message displayed; program stops</td><td>Before evidence: capture the table showing the ID does not exist. After evidence: capture the not-found message and no update prompt sequence.</td></tr><tr><td>9</td><td>FR12 – found</td><td>ID exists in Employees table</td><td>Enter a valid existing ID</td><td>Employee record retrieved</td><td>Before evidence: capture the existing employee row for that ID. After evidence: capture the program reaching the current-values display stage.</td></tr><tr><td>10</td><td>FR7</td><td>Current values displayed before update prompts</td><td>Valid employee found</td><td>Current name, position, salary, department shown</td><td>Before evidence: capture the employee row in the database. After evidence: capture output showing those current values before edits are entered.</td></tr><tr><td>11</td><td>FR10 – blank keeps value</td><td>Blank input retains existing value</td><td>Press Enter for name field</td><td>Original name retained in update</td><td>Before evidence: capture the original field value in the database. After evidence: capture the updated row showing that the original value is unchanged.</td></tr><tr><td>12</td><td>FR10 – name too long</td><td>Name exceeds 20 characters</td><td>Enter a 21-character name</td><td>Error message displayed; field prompt repeated</td><td>Before evidence: capture the overlength text entered. After evidence: capture the validation message and the repeated field prompt.</td></tr><tr><td>13</td><td>FR11 – non-numeric salary</td><td>Non-numeric salary entered</td><td>Enter &quot;abc&quot;</td><td>Error message displayed; salary prompt repeated</td><td>Before evidence: capture the invalid salary value entered. After evidence: capture the salary validation message and repeated prompt.</td></tr><tr><td>14</td><td>FR11 – non-positive salary</td><td>Zero or negative salary entered</td><td>Enter &quot;0&quot; or &quot;-100&quot;</td><td>Error message displayed; salary prompt repeated</td><td>Before evidence: capture the zero or negative salary. After evidence: capture the validation message and repeated salary prompt.</td></tr><tr><td>15</td><td>FR6</td><td>UPDATE query uses parameterised values</td><td>Valid input provided</td><td>UPDATE executed; no SQL injection risk</td><td>Before evidence: capture the original record values before update. After evidence: capture the database row after update showing only the intended changes.</td></tr><tr><td>16</td><td>FR13</td><td>All fields left blank; no changes made</td><td>Press Enter for all fields</td><td>&quot;No changes were made.&quot; displayed</td><td>Before evidence: capture the record before the update attempt. After evidence: capture the no-changes message and the unchanged record.</td></tr><tr><td>17</td><td>FR14 – updated</td><td>At least one field changed</td><td>Enter new name</td><td>&quot;Employee updated successfully.&quot; displayed; record updated in DB</td><td>Before evidence: capture the original record values. After evidence: capture the success message and the changed row.</td></tr><tr><td>18</td><td>FR15</td><td>Database error triggers rollback and connection closed</td><td>Simulate a constraint violation</td><td>Error message shown; transaction rolled back; cursor and connection closed</td><td>Before evidence: capture the record before the failing update and the failure condition. After evidence: capture the error message and unchanged database row.</td></tr><tr><td>19</td><td>FR15 – success</td><td>Connection closed after successful update</td><td>Valid update</td><td>No open handles remain</td><td>Before evidence: capture that a connection is active during update processing. After evidence: capture completion plus any evidence the connection/cursor is closed.</td></tr><tr><td>20</td><td>FR15 – error</td><td>Connection closed after database error</td><td>Simulated error</td><td>Connection and cursor still closed cleanly</td><td>Before evidence: capture the failing update setup. After evidence: capture the error path plus evidence that no connection/cursor remains open.</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

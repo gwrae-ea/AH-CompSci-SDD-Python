@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,108 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates the fundamental concept of object-oriented programming: creating a class definition. A class serves as a blueprint or template for creating objects that represent real-world entities. This program defines a class with properties (also called attributes or variables) that store data about an instance. Key technical skills demonstrated include class structure, properties/variables, class naming conventions, and the concept that a class definition does not create objects—it only specifies what properties each object should have.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants to define a class structure that can represent a real-world entity.
+2. The user wants the class to have appropriate properties for storing data about that entity.
+3. The user wants to ensure the class definition is clear and follows standard naming conventions.
+4. The user wants to verify the class has been defined correctly before using it to create objects.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Have an object-oriented solution with a developer defined class to represent &lt;entity&gt; data with appropriate properties.
+
+FR2 Use appropriate property names that clearly describe what data is stored in each property.
+
+FR3 Implement properties as instance variables with consistent naming conventions.
+
+FR4 Include a docstring or comments explaining the purpose of the class and each property.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Define the class in a Python module that can be imported and reused by other programs.
+
+FR6 Ensure the class definition follows Python naming conventions (PascalCase for class names).
+
+FR7 Provide clear property structure that could be displayed or printed for verification.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Use either an `__init__` method or property decorators to initialize class attributes.
+
+FR9 Include property validation where appropriate (e.g., checking data types or ranges).
+
+FR10 Provide a human-readable output method (e.g., `__str__` or `__repr__`) to display class instances.
+
+FR11 Document the class interface clearly for other developers to understand how to use it.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Class Structure
+
+The class should define properties appropriate to the real-world entity being modeled. Properties should be:
+- Named clearly (e.g., `name`, `id`, `age`, `salary`)
+- Typed appropriately (string, integer, float, boolean)
+- Initialized with sensible default values or passed as constructor parameters
+
+### Example Structure
+
+```
+CLASS &lt;EntityName&gt;
+    PROPERTY &lt;property1&gt;
+    PROPERTY &lt;property2&gt;
+    PROPERTY &lt;property3&gt;
+    ...
+    METHOD __init__(parameters)
+        ASSIGN each parameter to corresponding property
+END CLASS
+```
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 1 - defining a class.py](./Program%201%20-%20defining%20a%20class.py)
+
+SQA-RL (Sample structure):
+```
+CLASS Student
+    DECLARE studentID AS INTEGER
+    DECLARE firstName AS STRING
+    DECLARE lastName AS STRING
+    DECLARE dateOfBirth AS DATE
+    DECLARE enrollmentDate AS DATE
+END CLASS
+```
+
+### Notes
+
+- The class definition creates a template but does not create any objects yet
+- Each property will hold one piece of data per object instance
+- The `__init__` method (if included) allows passing initial values when creating objects
+- Python uses the `self` parameter to refer to instance properties
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.date = str(startDate)       #String
@@ -90,7 +242,12 @@
         self.participants = [&quot;&quot;]*20 #Array of String
         self.index = int(0)              #Integer
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Class can be imported</td><td>Import class in another module</td><td>No import errors</td><td>Before: ImportError / After: Import successful</td></tr><tr><td>Class has required properties</td><td>Instantiate class</td><td>All properties accessible</td><td>Before: AttributeError / After: Properties accessible</td></tr><tr><td>Properties store data correctly</td><td>Create instance with values</td><td>Values match input</td><td>Before: Values not set / After: Values stored correctly</td></tr><tr><td>Properties are independent per instance</td><td>Create two instances with different values</td><td>Each instance maintains its own values</td><td>Before: Values overwrite / After: Independent values</td></tr><tr><td>Class has appropriate output method</td><td>Print instance</td><td>Human-readable representation shown</td><td>Before: `&lt;__main__.Class object&gt;` / After: `Class(prop1=..., prop2=...)`</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

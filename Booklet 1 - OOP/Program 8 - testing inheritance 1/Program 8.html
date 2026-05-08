@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,86 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program tests basic inheritance functionality to verify that child classes correctly inherit properties and methods from their parent class. The program creates instances of both parent and child classes and demonstrates that child objects have access to all parent functionality. It shows method resolution—when a method is called on a child object, the appropriate version (parent or child) executes. Testing inheritance is crucial to ensure the class hierarchy is correctly structured and that code reuse is functioning as expected. Key technical skills include verifying inheritance relationships, testing method resolution order, confirming property inheritance, and validating that overrides work correctly.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants to verify that inheritance is correctly implemented.
+2. The user wants to see which methods/properties are inherited vs added.
+3. The user wants to confirm that child objects work as expected.
+4. The user wants to validate that method overrides function correctly.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Test that child class instances exist and can be created.
+
+FR2 Test that child instances access inherited properties.
+
+FR3 Test that child instances call inherited methods correctly.
+
+FR4 Verify property inheritance doesn&#39;t cause conflicts.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Display test results clearly showing what works.
+
+FR6 Show distinction between inherited and child-specific members.
+
+FR7 Demonstrate method resolution (which version executes).
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Test inherited property access patterns.
+
+FR9 Test inherited method calls.
+
+FR10 Display clear output showing inheritance hierarchy.
+
+FR11 Verify no property conflicts between parent and child.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Test Categories
+
+1. **Inheritance Verification:** Confirm Manager inherits from Employee
+2. **Inherited Properties:** Access parent properties on child
+3. **Inherited Methods:** Call parent methods on child
+4. **Child Properties:** Verify child-specific properties work
+5. **Child Methods:** Verify child-specific methods work
+6. **Method Resolution:** Confirm correct version runs
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 8 - testing inheritance 1.py](./Program%208%20%E2%80%93testing%20inheritance%201.py)
+
+### Notes
+
+- Verify `isinstance(mgr, Manager)` and `isinstance(mgr, Employee)`
+- Test that parent methods work on child objects
+- Show that child has both parent and child methods
+- Demonstrate method overrides
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.__startDate = str(startDate)  #String
@@ -118,7 +248,12 @@ workMeeting1 = WorkMeeting(startDate = &quot;14/04/21&quot;, startTime = &quot;0
 
 print (&quot;The date of the meeting was&quot; , workMeeting1.getDate())
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Child instance creation</td><td>Create Manager object</td><td>Object created successfully</td><td>Before: Error / After: Object exists</td></tr><tr><td>Inherited property access</td><td>Call get_full_name() on Manager</td><td>Returns correct name</td><td>Before: Error / After: Name returned</td></tr><tr><td>Inherited method call</td><td>Call calculate_monthly_salary() on Manager</td><td>Returns correct value</td><td>Before: Error / After: Value calculated</td></tr><tr><td>Child property access</td><td>Access team_size on Manager</td><td>Returns correct team size</td><td>Before: Error / After: Team size</td></tr><tr><td>isinstance check</td><td>isinstance(mgr, Employee)</td><td>True</td><td>Before: False / After: True</td></tr><tr><td>Method override check</td><td>Call overridden method</td><td>Child version executes</td><td>Before: Parent version / After: Child version</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,106 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates how to create a developer-defined class and store multiple object instances in a fixed-size array. The `Event` class models one event, then a fixed-size array is created to hold up to 20 `Event` objects. This shows object-oriented design, indexed storage, and controlled data capacity. A participant list is also stored as a fixed-size array inside each object.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants to store multiple events in one program structure.
+2. The user wants each event to keep its own properties and participant list.
+3. The user wants a fixed maximum number of events to avoid uncontrolled growth.
+4. The user wants to add and view event data by index.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Have an object-oriented solution with a developer defined class to represent event data.
+
+FR2 Use a fixed-size array of objects to store event records.
+
+FR3 Use indexed access to retrieve and update individual objects.
+
+FR4 Use class methods to update and return event properties.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Create and populate event objects with valid sample data.
+
+FR6 Store objects in a fixed-size array structure for processing.
+
+FR7 Display selected object data as output.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Include a fixed-size participant array in each event object.
+
+FR9 Prevent participant insertion beyond participant array bounds.
+
+FR10 Use clear variable names and comments for readability.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Data Structure Design
+
+- Fixed-size event array: `eventArray = [&quot;&quot;] * 20`
+- Fixed-size participant array inside each `Event`: `participants = [&quot;&quot;] * 20`
+- Integer index tracks next insertion point for participants.
+
+### English Pseudocode
+
+1. Define class `Event` with date, time, venue, reminder.
+2. In constructor, create fixed-size participant array of length 20.
+3. Create fixed-size `eventArray` of length 20.
+4. Store `Event` objects in specific array positions.
+5. Add a participant to one event.
+6. Display participant array contents.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 10 – Creating an Array of Objects.py](./Program%2010%20%E2%80%93%20Creating%20an%20Array%20of%20Objects.py)
+
+SQA-RL:
+```text
+CLASS Event
+    DECLARE startDate : STRING
+    DECLARE startTime : STRING
+    DECLARE venue : STRING
+    DECLARE reminder : BOOLEAN
+    DECLARE participants : ARRAY[1:20] OF STRING
+    DECLARE index : INTEGER
+END CLASS
+
+DECLARE eventArray : ARRAY[1:20] OF Event
+SET eventArray[1] &lt;- NEW Event(...)
+SET eventArray[2] &lt;- NEW Event(...)
+CALL eventArray[2].addParticipant(&quot;Erica Knowles&quot;)
+OUTPUT eventArray[2].participants
+```
+
+### Notes
+
+- The design and implementation both use fixed-size arrays.
+- Using fixed capacity supports predictable memory and index control.
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.startDate = str(startDate)  #String
@@ -108,7 +258,12 @@ eventArray[1] = Event(&quot;15/04/2022&quot;, &quot;1030&quot;, &quot;Staff Room
 eventArray[1].addParticipant(&quot;Erica Knowles&quot;)
 print (eventArray[1].participants)
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Create fixed event array</td><td>`eventArray = [&quot;&quot;] * 20`</td><td>Array length is 20</td><td>Before: no array / After: length 20</td></tr><tr><td>Insert event object</td><td>`eventArray[0] = Event(...)`</td><td>Object stored at index 0</td><td>Before: empty / After: Event object</td></tr><tr><td>Add participant</td><td>`addParticipant(&quot;Erica&quot;)`</td><td>Participant saved at next index</td><td>Before: blank entry / After: `Erica`</td></tr><tr><td>Retrieve event property</td><td>`eventArray[1].venue`</td><td>Correct venue displayed</td><td>Before: none / After: expected venue</td></tr><tr><td>Participant array bound</td><td>Add up to 20 names</td><td>No out-of-range insertion</td><td>Before: potential overflow / After: controlled capacity</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

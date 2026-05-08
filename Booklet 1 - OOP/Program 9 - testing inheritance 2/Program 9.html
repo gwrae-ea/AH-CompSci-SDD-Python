@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,90 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program continues testing inheritance but focuses on more advanced scenarios: polymorphism (treating different types uniformly), method overrides, and complex inheritance scenarios. The program demonstrates calling methods on a collection of mixed parent and child objects, handling polymorphic calls correctly, and verifying that the most specific implementation executes. It also tests method chaining (child calling parent via `super()`), inheritance-based processing, and shows how inheritance enables flexible, extensible code. This program validates not just that inheritance works, but that it enables the design patterns and flexibility that make OOP powerful.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants to mix parent and child objects in collections and process them uniformly.
+2. The user wants method overrides to execute the appropriate version based on object type.
+3. The user wants to verify polymorphism works correctly.
+4. The user wants to confirm that inheritance enables extensible design.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Store parent and child objects in the same collection.
+
+FR2 Call methods on mixed collections correctly.
+
+FR3 Verify polymorphic behavior (correct method version executes).
+
+FR4 Test method overrides in realistic scenarios.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Display output showing polymorphic behavior.
+
+FR6 Show how parent and child types behave differently.
+
+FR7 Demonstrate extensibility benefits of inheritance.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Test super() calls within methods.
+
+FR9 Test complex method behavior with inherited state.
+
+FR10 Display clear output showing polymorphic results.
+
+FR11 Verify that inheritance enables flexible code patterns.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Polymorphism Pattern
+
+```
+DECLARE employees ARRAY
+ADD Employee(...)
+ADD Manager(...)
+ADD Developer(...)
+
+FOR EACH emp IN employees
+    CALL emp.get_info()    // Correct version executes
+END FOR
+```
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 9 - testing inheritance 2.py](./Program%209%20%E2%80%93testing%20inheritance%202.py)
+
+### Notes
+
+- Collections can hold parent and child objects
+- Methods called on collection items use correct type-specific version
+- Demonstrates true polymorphism
+- Shows benefits of inheritance for extensible code
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.__startDate = str(startDate)  #String
@@ -122,7 +256,12 @@ print (&quot;Before calculation, the travel expenses are £&quot;, workMeeting1.
 workMeeting1.calculateTravelExpenses()
 print (&quot;After calculation, the travel expenses are £&quot;, workMeeting1.getTravelExpenses())
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Mixed collection</td><td>Add Employee and Manager to list</td><td>Both types stored</td><td>Before: TypeError / After: Both stored</td></tr><tr><td>Polymorphic call</td><td>Call method on mixed collection</td><td>Correct version executes</td><td>Before: Wrong method / After: Correct method</td></tr><tr><td>Override execution</td><td>Call overridden method on each type</td><td>Each executes its version</td><td>Before: All same / After: Type-specific</td></tr><tr><td>Super call test</td><td>Method calls super()</td><td>Parent version also executes</td><td>Before: Skipped / After: Called</td></tr><tr><td>Type-specific behavior</td><td>Different types show different output</td><td>Output reflects type</td><td>Before: Identical / After: Different</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

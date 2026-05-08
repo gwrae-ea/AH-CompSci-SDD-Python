@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,97 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates inheritance, a fundamental OOP principle where a new class (child/derived class) inherits properties and methods from an existing class (parent/base class). Inheritance allows code reuse and establishes logical hierarchies. For example, an `Employee` class can be the parent, and a `Manager` child class inherits all Employee properties and methods while adding Manager-specific properties (e.g., `department_budget`, `team_size`) and methods (e.g., `approve_expense()`). The program demonstrates how the child class can override parent methods to customize behavior, how to call parent class methods using `super()`, and how both classes can be used interchangeably where inheritance is appropriate. Key technical skills include class hierarchies, method overriding, the `super()` function, inheritance syntax, and polymorphic behavior.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants to model different types of employees (manager, developer, etc.) without duplicating common code.
+2. The user wants specialized behavior for different employee types while reusing common base functionality.
+3. The user wants the ability to treat different employee types consistently where their behavior is the same.
+4. The user wants to extend the system with new employee types without modifying existing code.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Define a parent class with common properties and methods.
+
+FR2 Define a child class that inherits from the parent class.
+
+FR3 Child class inherits all parent properties and methods.
+
+FR4 Child class can add new properties specific to its type.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Child class can override parent methods to provide specialized behavior.
+
+FR6 Child class can call parent methods using `super()` when needed.
+
+FR7 Both parent and child objects can be displayed and used polymorphically.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Demonstrate inheritance syntax and class hierarchies.
+
+FR9 Show how child classes extend parent functionality.
+
+FR10 Display clear output showing behavior of inherited and overridden methods.
+
+FR11 Document the inheritance relationship clearly in code.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Inheritance Hierarchy
+
+```
+CLASS Employee
+    PROPERTIES: id, name, salary, ...
+    METHODS: get_salary(), apply_raise(), ...
+END CLASS
+
+CLASS Manager EXTENDS Employee
+    ADDITIONAL PROPERTIES: team_size, budget, ...
+    ADDITIONAL METHODS: approve_expense(), add_to_team(), ...
+    OVERRIDE METHODS: get_info() (add manager-specific info)
+END CLASS
+
+CLASS Developer EXTENDS Employee
+    ADDITIONAL PROPERTIES: programming_languages, projects, ...
+    ADDITIONAL METHODS: add_language(), assign_project(), ...
+END CLASS
+```
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 7 - inheritance.py](./Program%207%20%E2%80%93%20inheritance.py)
+
+### Notes
+
+- Parent class is the base; child class builds on it
+- Child class inherits without modification
+- Child can override parent methods
+- `super()` calls parent implementation
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.__startDate = str(startDate)  #String
@@ -112,7 +253,12 @@ class WorkMeeting(Event):
     
     def getTravelExpenses(self):
         return self.travelExpenses</code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Child inherits properties</td><td>Create child, access parent property</td><td>Property accessible</td><td>Before: AttributeError / After: Value</td></tr><tr><td>Child inherits methods</td><td>Call parent method on child object</td><td>Parent method works on child</td><td>Before: AttributeError / After: Method works</td></tr><tr><td>Child adds properties</td><td>Add property in child class</td><td>New property on child, not parent</td><td>Before: N/A / After: Property exists</td></tr><tr><td>Child adds methods</td><td>Add method in child class</td><td>New method callable on child</td><td>Before: AttributeError / After: Method works</td></tr><tr><td>Method override</td><td>Override parent method in child</td><td>Child version executes</td><td>Before: Parent version / After: Child version</td></tr><tr><td>Polymorphism</td><td>Use child where parent expected</td><td>Works due to inheritance</td><td>Before: Type error / After: Works</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,104 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates how to define and use a fixed-size 2D array (rows and columns) to represent a grid. Specific coordinates are updated and the grid is displayed. This models board layouts and map-like structures where dimensions are known in advance.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants a grid with fixed dimensions.
+2. The user wants to place values at exact row/column coordinates.
+3. The user wants to display the full grid clearly.
+4. The user wants predictable indexing with fixed bounds.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Define a fixed-size 2D array with set row and column counts.
+
+FR2 Use nested loops or comprehensions to initialize the full structure.
+
+FR3 Update specific cells by row/column index.
+
+FR4 Traverse and display the grid structure.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Use row and column headers for readable display.
+
+FR6 Maintain consistent index mapping between logic and output.
+
+FR7 Print the 2D array in a tabular format.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Keep grid dimensions as constants.
+
+FR9 Avoid out-of-range coordinate updates.
+
+FR10 Use meaningful symbols for stored values.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Data Structure Design
+
+- Fixed-size dimensions: `ROWS = 6`, `COLS = 9`
+- Fixed-size 2D array: `game = [[&quot; &quot; for c in range(COLS)] for r in range(ROWS)]`
+
+### English Pseudocode
+
+1. Set fixed row and column values.
+2. Create fixed-size 2D array with blanks.
+3. Set values at specific coordinates.
+4. Build row/column headers.
+5. Output grid in table form.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 13 - Defining a 2D Array.py](./Program%2013%20-%20Defining%20a%202D%20Array.py)
+
+SQA-RL:
+```text
+DECLARE ROWS &lt;- 6
+DECLARE COLS &lt;- 9
+DECLARE game : ARRAY[1:ROWS, 1:COLS] OF STRING
+
+FOR r FROM 1 TO ROWS
+    FOR c FROM 1 TO COLS
+        SET game[r,c] &lt;- &quot; &quot;
+    NEXT c
+NEXT r
+
+SET game[3,7] &lt;- &quot;P&quot;
+SET game[2,3] &lt;- &quot;E&quot;
+SET game[5,2] &lt;- &quot;E&quot;
+OUTPUT game
+```
+
+### Notes
+
+- The design and implementation explicitly use a fixed-size 2D array.
+- This structure is appropriate when dimensions are known before runtime.
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>import numpy, pandas #numpy and pandas provide useful functions for the display and manipulation of 2-d Arrays
 
 rows, cols = (6,9) #define the number of rows and columns in the 2-D Array
@@ -100,7 +248,12 @@ dispGame.columns.name = &quot;Game&quot;
 
 print (dispGame)
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Create fixed 2D array</td><td>ROWS=6, COLS=9</td><td>6x9 grid created</td><td>Before: no grid / After: 6x9 structure</td></tr><tr><td>Set coordinate value</td><td>`game[3][7] = &quot;P&quot;`</td><td>Cell contains `P`</td><td>Before: blank / After: `P`</td></tr><tr><td>Multiple placements</td><td>3 updates</td><td>All target cells updated</td><td>Before: blanks / After: correct symbols</td></tr><tr><td>Display grid</td><td>print/table output</td><td>Readable rows and columns</td><td>Before: unclear / After: structured table</td></tr><tr><td>Bounds safety</td><td>valid indices only</td><td>No index errors</td><td>Before: risk / After: safe access</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

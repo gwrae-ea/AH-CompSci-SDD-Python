@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,95 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program demonstrates the principle of encapsulation, a core OOP concept that involves hiding internal object details and controlling access to properties. Rather than allowing direct modification of properties from outside the object, encapsulation uses methods to manage data. This program shows how to use private properties (by convention, prefixed with underscore) and public getter/setter methods to control how data is accessed and modified. Encapsulation ensures validity constraints (e.g., salary cannot be negative), prevents accidental misuse, and allows internal implementation changes without affecting external code. Key technical skills include naming conventions for private vs public members, property validation, data hiding, and the getter/setter pattern.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants invalid data to be prevented from being stored in objects.
+2. The user wants confidence that properties will not be corrupted by external code.
+3. The user wants to see meaningful error messages when attempting invalid operations.
+4. The user wants internal implementation details to be hidden from external view.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Implement property access control using getter and setter methods.
+
+FR2 Use naming conventions to indicate private vs public members (underscore prefix).
+
+FR3 Add validation logic to setters to prevent invalid data.
+
+FR4 Maintain consistent access patterns throughout the class.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Display error messages for invalid property modification attempts.
+
+FR6 Allow read-only properties where modification is not permitted.
+
+FR7 Demonstrate that encapsulation prevents data corruption.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Document public interface (getters/setters) clearly.
+
+FR9 Raise exceptions or return error codes for invalid operations.
+
+FR10 Show the difference between direct property access and encapsulated access.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Encapsulation Pattern
+
+```
+CLASS Employee
+    PRIVATE: _employee_id, _first_name, _salary, etc.
+    
+    PUBLIC METHOD get_salary()
+        RETURN _salary
+    END METHOD
+    
+    PUBLIC METHOD set_salary(amount)
+        IF amount &gt;= 0 THEN
+            _salary = amount
+        ELSE
+            RAISE error
+        END IF
+    END METHOD
+END CLASS
+```
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 5 - encapsulation.py](./Program%205%20%E2%80%93%20encapsulation.py)
+
+### Notes
+
+- Properties prefixed with underscore are conventionally private
+- Access through getter/setter methods provides control
+- Setters validate data before assignment
+- Makes code more robust and maintainable
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.__startDate = str(startDate)  #String
@@ -100,7 +239,12 @@
         self.participants[self.index] = str(name)
         self.index = self.index + 1
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Valid setter</td><td>set_salary(50000)</td><td>Salary updated to 50000</td><td>Before: Old value / After: 50000</td></tr><tr><td>Invalid setter</td><td>set_salary(-100)</td><td>Error raised, salary unchanged</td><td>Before: Unchanged / After: Error raised</td></tr><tr><td>Getter access</td><td>get_salary()</td><td>Returns current salary</td><td>Before: Error / After: Salary value</td></tr><tr><td>Constraint enforcement</td><td>set_salary(0)</td><td>Accepted (0 is valid) or rejected</td><td>Before: Undefined / After: Clear behavior</td></tr><tr><td>Data isolation</td><td>Modify _property directly bypasses validation</td><td>Demonstrates need for encapsulation</td><td>Before: No validation bypass / After: Shows vulnerability</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

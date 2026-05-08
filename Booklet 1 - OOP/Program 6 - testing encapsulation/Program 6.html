@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,86 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program tests the encapsulation implementation from the previous program to verify that data protection is working correctly. It demonstrates attempts to access and modify properties both correctly (through setters) and incorrectly (direct property access), showing which operations are prevented by encapsulation. The program verifies that validation rules are enforced, that read-only properties cannot be changed, and that the object maintains data integrity. Testing encapsulation proves that the design protects against common programming errors and ensures constraints are maintained. Key technical skills include exception handling, testing constraint enforcement, validating that invariants are maintained, and demonstrating the defensive benefits of encapsulation.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants to verify that invalid data cannot be stored in objects.
+2. The user wants meaningful feedback when attempting invalid operations.
+3. The user wants to see that encapsulation actually prevents data corruption.
+4. The user wants to test both valid operations (should succeed) and invalid operations (should fail).
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Test all getter methods to verify they return correct values.
+
+FR2 Test all setter methods with both valid and invalid inputs.
+
+FR3 Verify that invalid inputs are rejected and raise appropriate exceptions.
+
+FR4 Confirm that state changes only occur for valid operations.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Display clear test results showing pass/fail status.
+
+FR6 Show both successful operations and prevented invalid operations.
+
+FR7 Demonstrate that object state remains consistent.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Test read-only properties to verify they cannot be modified.
+
+FR9 Test boundary conditions (minimum/maximum values, empty strings).
+
+FR10 Show that modifications through setters work but direct access does not.
+
+FR11 Report total pass/fail count and coverage of test suite.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Test Categories
+
+1. **Getter Tests:** Verify getters return expected values
+2. **Valid Setter Tests:** Verify valid data is accepted
+3. **Invalid Setter Tests:** Verify invalid data is rejected
+4. **State Change Tests:** Verify object state updates correctly
+5. **Exception Tests:** Verify correct exceptions are raised
+6. **Read-Only Tests:** Verify protected properties cannot be changed
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 6 - testing encapsulation.py](./Program%206%20%E2%80%93%20testing%20encapsulation.py)
+
+### Notes
+
+- Use try/except blocks to test for expected exceptions
+- Verify that failed operations leave object state unchanged
+- Test edge cases: zero, negative, empty, maximum length
+- Demonstrate that encapsulation prevents errors
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
     def __init__(self, startDate, startTime, venue, reminder):
         self.__startDate = str(startDate)  #String
@@ -104,7 +234,12 @@
 item1 = Event(&quot;13/04/18&quot;, &quot;0900&quot;, &quot;Main Office&quot;, True)
 print (item1.venue)
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Valid salary setter</td><td>set_salary(55000)</td><td>Updates to 55000</td><td>Before: 50000 / After: 55000</td></tr><tr><td>Invalid negative salary</td><td>set_salary(-100)</td><td>ValueError raised</td><td>Before: No error / After: ValueError</td></tr><tr><td>Invalid string salary</td><td>set_salary(&quot;abc&quot;)</td><td>ValueError raised</td><td>Before: No error / After: ValueError</td></tr><tr><td>Read-only ID property</td><td>set_employee_id(999)</td><td>AttributeError or ignored</td><td>Before: Can change / After: Cannot change</td></tr><tr><td>Name validation</td><td>set_first_name(&quot;&quot;)</td><td>ValueError for empty</td><td>Before: No error / After: ValueError</td></tr><tr><td>Name validation</td><td>set_first_name(&quot;A&quot; * 100)</td><td>ValueError for too long</td><td>Before: No error / After: ValueError</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>

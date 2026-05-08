@@ -42,12 +42,63 @@
             font-size: 14px;
         }
         
-        .code-block {
+        .section-block {
             background: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+
+        .section-content {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 12px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .python-code-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin: 8px 0;
+        }
+
+        .table-wrap {
             overflow-x: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #fff;
+            margin-bottom: 12px;
+        }
+
+        .test-plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .test-plan-table th,
+        .test-plan-table td {
+            border: 1px solid #e5e7eb;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .test-plan-table th {
+            background: #f3f4f6;
+            font-weight: 600;
         }
         
         pre {
@@ -80,7 +131,100 @@
             <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
         </header>
         
-        <div class="code-block">
+        <section class="section-block">
+            <h2>Technical Explanation</h2>
+            <div class="section-content">This program applies standard algorithms to an array of objects. Car records are read from CSV into `Car` objects, then sorted by `car_make` using Bubble Sort, and searched using Binary Search. This demonstrates how algorithm logic can be adapted from primitive values to object properties.</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Analysis</h2>
+            <div class="section-content">### End User Requirements
+
+1. The user wants car records loaded from file into object form.
+2. The user wants records sorted by make.
+3. The user wants to search quickly for a car make.
+4. The user wants a clear available/not available result.
+
+### Functional Requirements
+
+#### Advanced Higher concepts
+
+The solution is required to:
+
+FR1 Define a class for car records.
+
+FR2 Store records in an array of objects.
+
+FR3 Sort object array by a selected property (`car_make`).
+
+FR4 Search sorted object array using Binary Search.
+
+#### Integration
+
+The solution is required to:
+
+FR5 Read external CSV data and convert rows to objects.
+
+FR6 Output unsorted and sorted make lists.
+
+FR7 Return and display search outcome.
+
+#### Additional functional requirements
+
+The solution is required to:
+
+FR8 Keep read, sort, and search as separate functions.
+
+FR9 Compare object properties consistently.
+
+FR10 Handle not-found case robustly.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Design</h2>
+            <div class="section-content">### Data Structure Design
+
+- Use a fixed-size object array sized from CSV row count.
+- Store `Car` objects by index.
+- Sort/search operate on `.car_make` property.
+
+### English Pseudocode
+
+1. Read all CSV lines.
+2. Create fixed-size car array with length equal to lines.
+3. For each row, create `Car` object and insert by index.
+4. Bubble sort array by `car_make`.
+5. Binary search sorted array for user target make.
+6. Output found/not found message.
+
+---</div>
+        </section>
+
+        <section class="section-block">
+            <h2>Implementation</h2>
+            <div class="section-content">[Program 18 - Standard Algorithms on Array of Objects.py](./Program%2018%20-%20Standard%20Algorithms%20on%20Array%20of%20Objects.py)
+
+SQA-RL:
+```text
+DECLARE carArray : ARRAY[1:n] OF Car
+FOR i FROM 1 TO n
+    SET carArray[i] &lt;- NEW Car(...)
+NEXT i
+
+CALL bubbleSortArrayOfObjects(carArray) USING car_make
+SET position &lt;- binarySearch(carArray, targetMake) USING car_make
+
+IF position = -1 THEN
+    OUTPUT &quot;Not found&quot;
+ELSE
+    OUTPUT &quot;Found&quot;
+END IF
+```
+
+---</div>
+            <div class="python-code-label">Python Code</div>
             <pre><code>class Car():
 #define the structure and content of the City Record
     def __init__( self, car_id,car_make,car_model,car_colour,car_year,car_serviced ):
@@ -159,7 +303,12 @@ if position == -1:
 else:
     print (&quot;Yes! We have that make of car!&quot;)
 </code></pre>
-        </div>
+        </section>
+
+        <section class="section-block">
+            <h2>Test Plan</h2>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>CSV load</td><td>`carData.csv`</td><td>Array of `Car` objects populated</td><td>Before: empty / After: objects loaded</td></tr><tr><td>Sort by make</td><td>Unsorted object array</td><td>Makes in ascending order</td><td>Before: unsorted / After: sorted</td></tr><tr><td>Search existing make</td><td>target in sorted array</td><td>Found index != -1</td><td>Before: unknown / After: found</td></tr><tr><td>Search missing make</td><td>target not in array</td><td>-1 and not-available message</td><td>Before: unknown / After: not found</td></tr><tr><td>Case sensitivity check</td><td>mixed input casing</td><td>Documented behavior (exact/normalized)</td><td>Before: unclear / After: defined behavior</td></tr></tbody></table></div>
+        </section>
         
         <footer>
             <p>View the original Python file for execution. This HTML version is for easier reading.</p>
