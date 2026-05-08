@@ -8,6 +8,21 @@ This repository contains structured programming lessons, code examples, and task
 - **Booklet 3:** Standard algorithms
 - **Booklet 4:** Database connections
 
+## AI Use in This Course
+
+This course is about learning to code yourself, not relying on AI to generate answers.
+
+Switch off AI coding tools while working on tasks.
+
+### How to switch off AI in Codespaces/VS Code
+
+1. Open **Extensions**.
+2. Find **GitHub Copilot** and choose **Disable**.
+3. Find **GitHub Copilot Chat** and choose **Disable**.
+4. Open **Settings** and turn off **Editor: Inline Suggest: Enabled**.
+
+You can still use the repository guides and examples to support your own coding practice.
+
 ## Getting Started
 
 ### 1. Fork the repository
@@ -23,13 +38,17 @@ This repository contains structured programming lessons, code examples, and task
 3. Click **Create codespace on main**.
 4. Wait for the codespace to start in the browser.
 
-### 3. Install VS Code extension
+### 3. Install VS Code extensions
 
-Install the PDF viewer to read booklet files:
+Install these required extensions:
 
 1. Open the **Extensions** view in VS Code.
 2. Search for **PDF Viewer**.
 3. Install **PDF Viewer**.
+4. Search for **HTML Preview**.
+5. Install **HTML Preview**.
+
+Use **PDF Viewer** for booklet files and **HTML Preview** for the generated `Program N.html` pages.
 
 ### 4. Set up your environment
 
