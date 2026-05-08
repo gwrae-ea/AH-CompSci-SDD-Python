@@ -18,7 +18,18 @@ Use this guide at the start of a learning topic to set up your own working copy 
 
 Wait for the Codespaces browser window to finish loading before continuing.
 
-## 3. Install required VS Code extension
+## 3. Configure Git identity
+
+Before committing work, set your Git name and email once:
+
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+```
+
+Replace `"Your Name"` and `"you@example.com"` with your actual name and email.
+
+## 4. Install required VS Code extension
 
 Install the PDF extension needed to view booklet files inside Codespaces:
 
@@ -26,7 +37,7 @@ Install the PDF extension needed to view booklet files inside Codespaces:
 2. Search for **PDF Viewer**.
 3. Install **PDF Viewer**.
 
-## 4. Create and activate a virtual environment
+## 5. Create and activate a virtual environment
 
 In the Codespaces terminal, from the project root:
 
@@ -36,7 +47,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 5. Create your `.env` file
+## 6. Create your `.env` file
 
 The database code reads environment values from a `.env` file in the project root.
 
@@ -51,7 +62,7 @@ DB_NAME=your-database-name
 
 Ask your teacher for the correct values if you are using a shared/school database.
 
-## 6. Check your `.gitignore`
+## 7. Check your `.gitignore`
 
 Your `.gitignore` should include at least:
 
@@ -62,7 +73,7 @@ Your `.gitignore` should include at least:
 
 This prevents secrets and virtual environment files from being committed.
 
-## 7. Test your setup
+## 8. Test your setup
 
 Run the first database connection program:
 
@@ -72,7 +83,7 @@ python "Booklet 1 - OOP/Program 1 - defining a class.py"
 
 If setup is correct, you should see a successful connection message and the database server version.
 
-## 8. Daily workflow in Codespaces
+## 9. Daily workflow in Codespaces
 
 Each time you open a new terminal:
 
