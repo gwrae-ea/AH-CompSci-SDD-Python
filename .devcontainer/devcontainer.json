@@ -2,13 +2,12 @@
   "name": "Python & MySQL Environment",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
   
-  // Installs the mysql-connector-python automatically
-  "postCreateCommand": "pip install -r requirements.txt",
+  // Install project dependencies and MySQL CLI tools.
+  "postCreateCommand": "pip install -r requirements.txt && sudo apt-get update && sudo apt-get install -y default-mysql-client",
 
   // Adds useful tools for interacting with MySQL
   "features": {
-    "ghcr.io/devcontainers/features/common-utils:1": {},
-    "ghcr.io/devcontainers/features/mysql-utils:1": {}
+    "ghcr.io/devcontainers/features/common-utils:1": {}
   },
 
   "customizations": {
