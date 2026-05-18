@@ -23,13 +23,21 @@ python "Booklet 1 - OOP/Program 1 - defining a class.py"
 
 Or run whichever program number your class is currently studying.
 
-## 3. Work through the lesson
+## 3. Open the website if needed
+
+If you want to view the HTML booklet pages, open `website/index.html` and launch it with **Live Server**.
+
+1. Open `website/index.html` in VS Code.
+2. Right-click the file and choose **Open with Live Server**.
+3. Use the menu on the page to open the booklet pages.
+
+## 4. Work through the lesson
 
 - Follow along with your class notes and booklets.
 - Modify and test your code in the terminal.
 - Save changes in the editor as you work.
 
-## 4. When finished for the day
+## 5. When finished for the day
 
 See [COMMIT_AND_PUSH.md](COMMIT_AND_PUSH.md) to save and push your work to GitHub.
 
@@ -43,4 +51,7 @@ source .venv/bin/activate
 
 # Run a program
 python "Booklet 1 - OOP/Program 1 - defining a class.py"
+
+# Open the website
+# Right-click website/index.html and choose Open with Live Server
 ```

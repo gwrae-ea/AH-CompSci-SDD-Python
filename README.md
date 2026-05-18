@@ -45,10 +45,10 @@ Install these required extensions:
 1. Open the **Extensions** view in VS Code.
 2. Search for **PDF Viewer**.
 3. Install **PDF Viewer**.
-4. Search for **HTML Preview**.
-5. Install **HTML Preview**.
+4. Search for **Live Server**.
+5. Install **Live Server**.
 
-Use **PDF Viewer** for booklet files and **HTML Preview** for the generated `Program N.html` pages.
+Use **PDF Viewer** for booklet files and **Live Server** for the generated website pages.
 
 ### 4. Set up your environment
 
@@ -101,6 +101,16 @@ python "Booklet 1 - OOP/Program 1 - defining a class.py"
 ```
 
 You should see a successful program output.
+
+### 8. Open the website
+
+The HTML pages are stored in the `website` folder.
+
+1. Open `website/index.html` in VS Code.
+2. Right-click the file and choose **Open with Live Server**.
+3. Your browser should open the website entry page and link to every booklet page.
+
+If Live Server opens the wrong folder, stop it and start it again from `website/index.html`.
 
 ## Daily Workflow
 
