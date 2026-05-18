@@ -8,15 +8,51 @@ class Event:
         self.__index = int(0)              #Integer
 
     def updateDate(self, eventDate):
-        self.startDate  = str(eventDate)
+        self.__startDate = str(eventDate)
 
     def getDate(self):
-        return self.startDate
+        return self.__startDate
+
+    def getVenue(self):
+        if 5 <= len(self.__venue) <= 15:
+            return self.__venue
+        return "Invalid venue"
+
+    def getParticipants(self):
+        return self.__participants
+
+    def getParticipantCount(self):
+        return self.__index
 
     def addParticipant(self, name):
-        self.participants[self.index] = str(name)
-        self.index = self.index + 1
+        self.__participants[self.__index] = str(name)
+        self.__index = self.__index + 1
 
-#Test for the CONSTRUCTOR method
-item1 = Event("13/04/18", "0900", "Main Office", True)
-print (item1.venue)
+# Valid venue test
+item1 = Event("13/04/18", "0900", "Main Hall", True)
+print("Valid venue:", item1.getVenue())
+
+# Too-short venue test
+item2 = Event("13/04/18", "0900", "Gym", True)
+print("Too-short venue:", item2.getVenue())
+
+# Too-long venue test
+item3 = Event("13/04/18", "0900", "International Conference Centre", True)
+print("Too-long venue:", item3.getVenue())
+
+# Date update test
+print("Original date:", item1.getDate())
+item1.updateDate("14/04/22")
+print("Updated date:", item1.getDate())
+
+# Participant tests
+item1.addParticipant("Erica Knowles")
+item1.addParticipant("Norman Osborne")
+print("Participant count:", item1.getParticipantCount())
+print("Participants:", item1.getParticipants())
+
+# Direct access test
+try:
+    print(item1.__venue)
+except AttributeError:
+    print("Direct access blocked; use getVenue() instead")

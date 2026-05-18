@@ -2,7 +2,7 @@
 
 ### Technical Explanation
 
-This program applies standard algorithms to an array of objects. Car records are read from CSV into `Car` objects, then sorted by `car_make` using Bubble Sort, and searched using Binary Search. This demonstrates how algorithm logic can be adapted from primitive values to object properties.
+This program applies standard algorithms to an array of objects. Car records are read from CSV into `Car` objects, then sorted by make using Bubble Sort, and searched using Binary Search. This demonstrates how algorithm logic can be adapted from primitive values to object data accessed via getter methods.
 
 ---
 
@@ -25,7 +25,7 @@ FR1 Define a class for car records.
 
 FR2 Store records in an array of objects.
 
-FR3 Sort object array by a selected property (`car_make`).
+FR3 Sort object array by a selected field using a class getter method.
 
 FR4 Search sorted object array using Binary Search.
 
@@ -57,15 +57,15 @@ FR10 Handle not-found case robustly.
 
 - Use a fixed-size object array sized from CSV row count.
 - Store `Car` objects by index.
-- Sort/search operate on `.car_make` property.
+- Sort/search operate on `get_car_make()`.
 
 ### English Pseudocode
 
 1. Read all CSV lines.
 2. Create fixed-size car array with length equal to lines.
 3. For each row, create `Car` object and insert by index.
-4. Bubble sort array by `car_make`.
-5. Binary search sorted array for user target make.
+4. Bubble sort array by `get_car_make()`.
+5. Binary search sorted array for user target make using `get_car_make()`.
 6. Output found/not found message.
 
 ---

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 15 - Bubble Sort a 1D Array</title>
+  <style>
+    :root {
+      --bg: #f5f8fc;
+      --panel: #ffffff;
+      --text: #17223b;
+      --muted: #556781;
+      --accent: #1f6feb;
+      --accent-soft: #e8f1ff;
+      --border: #d8e1ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .shell { max-width: 920px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, #163d7a 0%, #245eb6 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 16px 40px rgba(22, 61, 122, 0.18);
+      margin-bottom: 20px;
+    }
+    .hero .kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.6rem); }
+    .hero p { margin: 0; max-width: 70ch; color: rgba(255, 255, 255, 0.9); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+    .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(23, 34, 59, 0.06);
+      padding: 24px;
+    }
+    .content h2, .content h3, .content h4 { margin-top: 1.2em; margin-bottom: 0.5em; line-height: 1.2; }
+    .content p, .content ul, .content ol, .content table, .content pre { margin-top: 0; margin-bottom: 1rem; }
+    .content ul, .content ol { padding-left: 1.25rem; }
+    .content li + li { margin-top: 0.35rem; }
+    .content code { background: var(--accent-soft); color: #163d7a; padding: 0.15em 0.35em; border-radius: 0.35rem; }
+    .content pre { background: #0f172a; color: #e2e8f0; padding: 18px; border-radius: 14px; overflow-x: auto; }
+    .content pre code { background: transparent; color: inherit; padding: 0; }
+    .content table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .content th, .content td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    .content th { background: #eef4fb; }
+    .content hr { border: 0; border-top: 1px solid var(--border); margin: 1.4rem 0; }
+    .note { margin-top: 16px; padding: 14px 16px; border-left: 4px solid var(--accent); background: #f0f6ff; border-radius: 12px; color: var(--muted); }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); }
+    @media (max-width: 700px) { .shell { padding: 14px; } .hero, .card { padding: 18px; border-radius: 16px; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div class="kicker">Task 15</div>
+      <h1>Task 15 - Bubble Sort a 1D Array</h1>
+      <p>Complete the task in the matching Python file by using the requirements below. Use the program page as a worked example, but build your own solution for this new context.</p>
+      <div class="toolbar"><a href="../index.html">Back to website index</a></div>
+      <div class="meta"><span class="chip">Task brief</span><span class="chip">Requirements only</span><span class="chip">No solution code</span></div>
+    </header>
+    <main class="card content">
+      <h2>Objective</h2>
+<p>Write a Bubble Sort function to sort a 1D array of numbers in ascending order.</p>
+<hr>
+<h2>Context</h2>
+<p>You have an empty Python file: <code>Task 15 - Bubble Sort a 1D Array.py</code>.</p>
+<p>Use Program 15 as the worked example and create your own version.</p>
+<hr>
+<h2>Requirements</h2>
+<ol><li>Create a function named <code>bubbleSort(nA)</code>.</li><li>Use adjacent comparisons (<code>nA[i]</code> and <code>nA[i+1]</code>).</li><li>Swap values when out of order.</li><li>Use a <code>swapped</code> flag to stop early if sorted.</li><li>Return the sorted array.</li><li>Print array before and after sorting.</li></ol>
+<hr>
+<h2>Functional Requirements Covered</h2>
+<ul><li>Standard Bubble Sort logic</li><li>1D array processing</li><li>Controlled loop termination</li><li>Reusable sorting function</li></ul>
+      <h2>Input Validation and Test Data</h2><p>Use these explicit input rules and test values when implementing and testing this task.</p><h3>Input-Focused Functional Requirements</h3><ul><li>Presence check: input array must be supplied to bubbleSort before sorting begins.</li><li>Length check: algorithm must handle arrays of length 1 to at least 20.</li><li>Type check: array should contain numeric values only for this task.</li></ul><h3>Test Cases: Normal, Extreme, Exceptional</h3><table><thead><tr><th>Input Field</th><th>Check Type</th><th>Normal Data</th><th>Extreme Data</th><th>Exceptional Data</th><th>Expected Result</th></tr></thead><tbody><tr><td>array values</td><td>Type</td><td>[5,2,9,1]</td><td>single value [7], 20 values</td><td>[1,&#x27;x&#x27;,3]</td><td>Accept numeric arrays; reject mixed-type input.</td></tr><tr><td>array order</td><td>Scenario</td><td>mixed order</td><td>already sorted, reverse sorted</td><td>empty if disallowed</td><td>Sort correctly across normal/extreme scenarios.</td></tr></tbody></table><div class="note">Do not copy the worked example from the program page. Replicate the idea in the new context using your own code.</div>
+    </main>
+  </div>
+</body>
+</html>

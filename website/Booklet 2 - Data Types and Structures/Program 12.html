@@ -1,137 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program 12: Read from CSV to Array of Objects</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .section-block {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #1f2937;
-        }
-
-        .section-content {
-            background: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            padding: 12px;
-            white-space: pre-wrap;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .python-code-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin: 8px 0;
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            background: #fff;
-            margin-bottom: 12px;
-        }
-
-        .test-plan-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .test-plan-table th,
-        .test-plan-table td {
-            border: 1px solid #e5e7eb;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .test-plan-table th {
-            background: #f3f4f6;
-            font-weight: 600;
-        }
-        
-        pre {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-family: 'Courier New', Courier, monospace;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program 12: Read from CSV to Array of Objects</title>
+  <style>
+    :root {
+      --bg: #f4faf4;
+      --panel: #ffffff;
+      --text: #173126;
+      --muted: #4f6b5c;
+      --accent: #237a4b;
+      --accent-soft: #e7f5ec;
+      --border: #d3e6d8;
+      --code-bg: #0f1f17;
+      --code-fg: #e4f2e9;
+      --hero-start: #14532d;
+      --hero-end: #2f855a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #f7fcf7 0%, #edf7ef 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .shell { max-width: 920px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, var(--hero-start) 0%, var(--hero-end) 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 16px 40px rgba(20, 83, 45, 0.18);
+      margin-bottom: 20px;
+    }
+    .hero .kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.6rem); }
+    .hero p { margin: 0; max-width: 70ch; color: rgba(255, 255, 255, 0.9); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+    .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(23, 49, 38, 0.06);
+      padding: 24px;
+    }
+    .section-block + .section-block { margin-top: 1.8rem; padding-top: 1.8rem; border-top: 1px solid var(--border); }
+    .section-block h2 { margin-top: 0; margin-bottom: 0.6rem; line-height: 1.2; font-size: 1.6rem; }
+    .section-block p, .section-block ul, .section-block ol, .section-block table, .section-block pre, .section-block .section-content, .section-block .table-wrap { margin-top: 0; margin-bottom: 1rem; }
+    .section-block ul, .section-block ol { padding-left: 1.25rem; }
+    .section-block li + li { margin-top: 0.35rem; }
+    .section-content {
+      background: #f8fcf9;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .python-code-label { font-size: 0.95rem; font-weight: 700; color: var(--muted); margin: 0.5rem 0; }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 18px;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    code { font-family: 'Courier New', Courier, monospace; }
+    :not(pre) > code { background: var(--accent-soft); color: #14532d; padding: 0.15em 0.35em; border-radius: 0.35rem; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: #eef8f0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.95rem; }
+    @media (max-width: 700px) { .shell { padding: 14px; } .hero, .card { padding: 18px; border-radius: 16px; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Program 12: Read from CSV to Array of Objects</h1>
-            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
-        </header>
-        
-        <section class="section-block">
+  <div class="shell">
+    <header class="hero">
+      <div class="kicker">Program 12</div>
+      <h1>Program 12: Read from CSV to Array of Objects</h1>
+      <p>Worked example page for this program. Use it to study the explanation, design, implementation, and test plan before completing the matching task in a different context.</p>
+      <div class="toolbar"><a href="../index.html">Back to website index</a></div>
+      <div class="meta"><span class="chip">Worked example</span><span class="chip">Program page</span><span class="chip">Green theme</span></div>
+    </header>
+    <main class="card">
+      <section class="section-block">
             <h2>Technical Explanation</h2>
             <div class="section-content">This program reads event records from a CSV file and converts each row into an `Event` object. The objects are then stored in a fixed-size array for indexed access and processing. This combines file handling, parsing, object creation, and fixed-capacity array design.</div>
         </section>
@@ -143,7 +128,7 @@
 1. The user wants event data loaded from a CSV file automatically.
 2. The user wants each CSV row represented as an object.
 3. The user wants the resulting objects stored in a predictable fixed-size structure.
-4. The user wants to access loaded events by index and property.
+4. The user wants to access loaded events by index and getter method.
 
 ### Functional Requirements
 
@@ -222,8 +207,8 @@ FOR eachLine IN linesArray
     SET idx &lt;- idx + 1
 NEXT eachLine
 
-OUTPUT eventArray[1].venue
-OUTPUT eventArray[24].startTime
+OUTPUT eventArray[1].getVenue()
+OUTPUT eventArray[24].getStartTime()
 ```
 
 ### Notes
@@ -238,7 +223,7 @@ OUTPUT eventArray[24].startTime
         self.startDate = str(startDate)  #String
         self.startTime = str(startTime)  #String
         self.venue = str(venue)          #String
-        self.reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;)    #Boolean (don&#39;t use bool(reminder): bool(&quot;False&quot;) is True)
+        self.reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;)    #Boolean (don&#x27;t use bool(reminder): bool(&quot;False&quot;) is True)
         self.participants = [&quot;&quot;]*20 #Array of String
         self.index = int(0)              #Integer
 
@@ -247,6 +232,12 @@ OUTPUT eventArray[24].startTime
 
     def getDate(self):
         return self.startDate
+
+    def getVenue(self):
+        return self.venue
+
+    def getStartTime(self):
+        return self.startTime
 
     def addParticipant(self, name):
         self.participants[self.index] = str(name)
@@ -265,18 +256,16 @@ def populateEventArrayFromFile():
 
 #Creating and populating an Array of Objects
 eventArray = populateEventArrayFromFile()
-print (eventArray[0].venue)
-print (eventArray[23].startTime)</code></pre>
+print (eventArray[0].getVenue())
+print (eventArray[23].getStartTime())</code></pre>
         </section>
 
         <section class="section-block">
             <h2>Test Plan</h2>
             <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>File read</td><td>Valid CSV path</td><td>Lines loaded into memory</td><td>Before: no data / After: lines array populated</td></tr><tr><td>Fixed-size array creation</td><td>`len(linesArray)`</td><td>Array capacity equals row count</td><td>Before: no array / After: correct capacity</td></tr><tr><td>Row-to-object conversion</td><td>One CSV row</td><td>One `Event` object created</td><td>Before: raw string / After: object</td></tr><tr><td>Indexed insertion</td><td>`eventArray[idx] = Event(...)`</td><td>Objects stored in sequence</td><td>Before: blanks / After: objects</td></tr><tr><td>Output check</td><td>`eventArray[0].venue`</td><td>Correct value from CSV</td><td>Before: incorrect/none / After: expected value</td></tr></tbody></table></div>
         </section>
-        
-        <footer>
-            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
-        </footer>
-    </div>
+      <footer><p>View the original Python file for execution. This HTML version is for easier reading.</p></footer>
+    </main>
+  </div>
 </body>
 </html>

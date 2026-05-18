@@ -13,7 +13,7 @@ This program reads event records from a CSV file and converts each row into an `
 1. The user wants event data loaded from a CSV file automatically.
 2. The user wants each CSV row represented as an object.
 3. The user wants the resulting objects stored in a predictable fixed-size structure.
-4. The user wants to access loaded events by index and property.
+4. The user wants to access loaded events by index and getter method.
 
 ### Functional Requirements
 
@@ -90,8 +90,8 @@ FOR eachLine IN linesArray
     SET idx <- idx + 1
 NEXT eachLine
 
-OUTPUT eventArray[1].venue
-OUTPUT eventArray[24].startTime
+OUTPUT eventArray[1].getVenue()
+OUTPUT eventArray[24].getStartTime()
 ```
 
 ### Notes
@@ -109,4 +109,4 @@ OUTPUT eventArray[24].startTime
 | Fixed-size array creation | `len(linesArray)` | Array capacity equals row count | Before: no array / After: correct capacity |
 | Row-to-object conversion | One CSV row | One `Event` object created | Before: raw string / After: object |
 | Indexed insertion | `eventArray[idx] = Event(...)` | Objects stored in sequence | Before: blanks / After: objects |
-| Output check | `eventArray[0].venue` | Correct value from CSV | Before: incorrect/none / After: expected value |
+| Output check | `eventArray[0].getVenue()` | Correct value from CSV | Before: incorrect/none / After: expected value |

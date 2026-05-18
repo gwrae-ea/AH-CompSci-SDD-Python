@@ -13,6 +13,12 @@ class Event:
     def getDate(self):
         return self.startDate
 
+    def getVenue(self):
+        return self.venue
+
+    def getStartTime(self):
+        return self.startTime
+
     def addParticipant(self, name):
         self.participants[self.index] = str(name)
         self.index = self.index + 1
@@ -30,5 +36,5 @@ def populateEventArrayFromFile():
 
 #Creating and populating an Array of Objects
 eventArray = populateEventArrayFromFile()
-print (eventArray[0].venue)
-print (eventArray[23].startTime)
+print (eventArray[0].getVenue())
+print (eventArray[23].getStartTime())

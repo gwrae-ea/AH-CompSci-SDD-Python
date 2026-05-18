@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 22 - Update Student Record</title>
+  <style>
+    :root {
+      --bg: #f5f8fc;
+      --panel: #ffffff;
+      --text: #17223b;
+      --muted: #556781;
+      --accent: #1f6feb;
+      --accent-soft: #e8f1ff;
+      --border: #d8e1ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .shell { max-width: 920px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, #163d7a 0%, #245eb6 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 16px 40px rgba(22, 61, 122, 0.18);
+      margin-bottom: 20px;
+    }
+    .hero .kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.6rem); }
+    .hero p { margin: 0; max-width: 70ch; color: rgba(255, 255, 255, 0.9); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+    .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(23, 34, 59, 0.06);
+      padding: 24px;
+    }
+    .content h2, .content h3, .content h4 { margin-top: 1.2em; margin-bottom: 0.5em; line-height: 1.2; }
+    .content p, .content ul, .content ol, .content table, .content pre { margin-top: 0; margin-bottom: 1rem; }
+    .content ul, .content ol { padding-left: 1.25rem; }
+    .content li + li { margin-top: 0.35rem; }
+    .content code { background: var(--accent-soft); color: #163d7a; padding: 0.15em 0.35em; border-radius: 0.35rem; }
+    .content pre { background: #0f172a; color: #e2e8f0; padding: 18px; border-radius: 14px; overflow-x: auto; }
+    .content pre code { background: transparent; color: inherit; padding: 0; }
+    .content table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .content th, .content td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    .content th { background: #eef4fb; }
+    .content hr { border: 0; border-top: 1px solid var(--border); margin: 1.4rem 0; }
+    .note { margin-top: 16px; padding: 14px 16px; border-left: 4px solid var(--accent); background: #f0f6ff; border-radius: 12px; color: var(--muted); }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); }
+    @media (max-width: 700px) { .shell { padding: 14px; } .hero, .card { padding: 18px; border-radius: 16px; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div class="kicker">Task 22</div>
+      <h1>Task 22 - Update Student Record</h1>
+      <p>Complete the task in the matching Python file by using the requirements below. Use the program page as a worked example, but build your own solution for this new context.</p>
+      <div class="toolbar"><a href="../index.html">Back to website index</a></div>
+      <div class="meta"><span class="chip">Task brief</span><span class="chip">Requirements only</span><span class="chip">No solution code</span></div>
+    </header>
+    <main class="card content">
+      <h2>Objective</h2>
+<p>Write a Python program that searches for a student by ID, displays their current information, allows selective field updates, and saves the changes to the database. This task builds on the concepts from <a href="./Program%2022%20-%20Update%20Data.md">Program 22 - Update Data</a>, applying them to the Student database.</p>
+<hr>
+<h2>Context</h2>
+<p>You have been given an empty Python file: <code>Task 22 - Update Student Record.py</code></p>
+<p>Your task is to complete this file to:</p>
+<ol><li>Load and validate database configuration</li><li>Establish a database connection</li><li>Prompt user for a student ID and validate it</li><li>Execute a <code>SELECT</code> query to find the student record</li><li>Display the student&#x27;s current information</li><li>Collect optional update values for each field</li><li>Execute a parameterised <code>UPDATE</code> query (only for non-blank fields)</li><li>Commit the transaction or rollback on error</li><li>Confirm success or display appropriate messages</li><li>Close the connection safely</li></ol>
+<hr>
+<h2>Requirements</h2>
+<h3>Configuration &amp; Connection (FR8, FR6)</h3>
+<ul><li>Load and validate environment variables: <code>DB_HOST</code>, <code>DB_USER</code>, <code>DB_PASS</code>, <code>DB_NAME</code></li><li>Display error if config incomplete</li><li>Connect to database with error handling</li></ul>
+<h3>Student Lookup (FR12, FR13, FR6)</h3>
+<ul><li>Prompt user to enter a student ID</li><li>Validate as positive integer (FR13)</li><li>Execute <code>SELECT * FROM Students WHERE student_id = %s;</code> (FR6)</li><li>Check if record exists (FR12)</li><li>If not found, display message and exit gracefully</li></ul>
+<h3>Display Current Values (FR7)</h3>
+<ul><li>After finding student, display current values in readable format</li><li>Show all 10 fields: ID, first name, last name, DOB, gender, enrollment date, grade level, status, email, phone</li><li>Use clear labels so user knows what each value represents</li></ul>
+<h3>Optional Field Updates (FR10, FR9, FR13)</h3>
+<ul><li>For each field, prompt user to enter new value (OR leave blank to keep current)</li><li><strong>Text fields (FR10):</strong> first_name, last_name, enrollment_status, email, phone_number</li><li>Accept blank input (means &quot;don&#x27;t change&quot;)</li><li>If new value provided, validate length</li><li>Allow up to max length for that field</li><li><strong>Numeric fields (FR9):</strong> grade_level</li><li>Accept blank (means &quot;don&#x27;t change&quot;)</li><li>If new value provided, validate is integer in range 1-12</li><li><strong>Date fields:</strong> date_of_birth</li><li>Accept blank (means &quot;don&#x27;t change&quot;)</li><li>If new value provided, validate YYYY-MM-DD format</li><li><strong>Enum fields:</strong> gender</li><li>Accept blank (means &quot;don&#x27;t change&quot;)</li><li>If new value provided, validate is &#x27;Male&#x27;, &#x27;Female&#x27;, or &#x27;Other&#x27;</li><li>Note: enrollment_date cannot be changed (system field)</li></ul>
+<h3>Conditional Update (FR6, FR12)</h3>
+<ul><li>Build UPDATE query dynamically based on which fields have new values</li><li>Only include fields where user provided new data</li><li>Use parameterised query with <code>%s</code> placeholders</li><li>Example: <code>UPDATE Students SET first_name = %s, grade_level = %s WHERE student_id = %s;</code></li><li>If no fields changed, show message &quot;No changes made&quot;</li></ul>
+<h3>Transaction Control (FR15)</h3>
+<ul><li>Commit transaction on successful update</li><li>Rollback on error</li><li>Always display connection status</li></ul>
+<h3>User Feedback (FR11, FR14)</h3>
+<ul><li>Print &quot;Looking up student...&quot;</li><li>Show &quot;Student found!&quot; or &quot;Student ID not found&quot;</li><li>After lookup, display current values clearly</li><li>Display update prompts with current value shown in brackets: e.g., <code>New First Name [Current: Emma]: </code></li><li>On successful update: &quot;--- Student Updated Successfully! ---&quot;</li><li>On error: Display error with meaningful context</li><li>If no changes occurred: &quot;--- No changes made ---&quot;</li></ul>
+<h3>Resource Management (FR11)</h3>
+<ul><li>Use try/except/finally for safe cleanup</li><li>Always close cursor and connection in finally block</li></ul>
+<hr>
+<h2>Functional Requirements Covered</h2>
+<ul><li><strong>FR6:</strong> Connect to database and execute SELECT/UPDATE queries</li><li><strong>FR8:</strong> Validate environment configuration before operations</li><li><strong>FR9:</strong> Validate numeric input (grade level 1-12)</li><li><strong>FR10:</strong> Validate text input (names, email, phone)</li><li><strong>FR11:</strong> Display success/failure messages and safe resource cleanup</li><li><strong>FR12:</strong> Verify student record exists before processing</li><li><strong>FR13:</strong> Validate user-selected identifiers (student ID)</li><li><strong>FR14:</strong> Display meaningful error context</li><li><strong>FR15:</strong> Commit/rollback transaction control</li></ul>
+      <h2>Input Validation and Test Data</h2><p>Use these explicit input rules and test values when implementing and testing this task.</p><h3>Input-Focused Functional Requirements</h3><ul><li>Presence check: student_id and at least one field to update must be provided.</li><li>Range check: student_id must be positive integer; grade_level (if updated) must be 1 to 12.</li><li>Length/format checks: updated text fields must satisfy schema lengths and formats.</li></ul><h3>Test Cases: Normal, Extreme, Exceptional</h3><table><thead><tr><th>Input Field</th><th>Check Type</th><th>Normal Data</th><th>Extreme Data</th><th>Exceptional Data</th><th>Expected Result</th></tr></thead><tbody><tr><td>student_id</td><td>Range/Type</td><td>15</td><td>1 and max existing ID</td><td>0, -1, &#x27;fifteen&#x27;</td><td>Accept positive integer IDs only.</td></tr><tr><td>update payload</td><td>Presence</td><td>{&#x27;email&#x27;:&#x27;new@x.com&#x27;}</td><td>single-field or multi-field update</td><td>{}</td><td>Reject update request with no fields.</td></tr><tr><td>grade_level</td><td>Range</td><td>10</td><td>1 and 12</td><td>13</td><td>Reject out-of-range grade level.</td></tr></tbody></table><div class="note">Do not copy the worked example from the program page. Replicate the idea in the new context using your own code.</div>
+    </main>
+  </div>
+</body>
+</html>

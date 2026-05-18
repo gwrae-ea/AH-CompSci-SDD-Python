@@ -1,139 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program 6: – testing encapsulation</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .section-block {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #1f2937;
-        }
-
-        .section-content {
-            background: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            padding: 12px;
-            white-space: pre-wrap;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .python-code-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin: 8px 0;
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            background: #fff;
-            margin-bottom: 12px;
-        }
-
-        .test-plan-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .test-plan-table th,
-        .test-plan-table td {
-            border: 1px solid #e5e7eb;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .test-plan-table th {
-            background: #f3f4f6;
-            font-weight: 600;
-        }
-        
-        pre {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-family: 'Courier New', Courier, monospace;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program 6: – testing encapsulation</title>
+  <style>
+    :root {
+      --bg: #f4faf4;
+      --panel: #ffffff;
+      --text: #173126;
+      --muted: #4f6b5c;
+      --accent: #237a4b;
+      --accent-soft: #e7f5ec;
+      --border: #d3e6d8;
+      --code-bg: #0f1f17;
+      --code-fg: #e4f2e9;
+      --hero-start: #14532d;
+      --hero-end: #2f855a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #f7fcf7 0%, #edf7ef 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .shell { max-width: 920px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, var(--hero-start) 0%, var(--hero-end) 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 16px 40px rgba(20, 83, 45, 0.18);
+      margin-bottom: 20px;
+    }
+    .hero .kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.6rem); }
+    .hero p { margin: 0; max-width: 70ch; color: rgba(255, 255, 255, 0.9); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+    .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(23, 49, 38, 0.06);
+      padding: 24px;
+    }
+    .section-block + .section-block { margin-top: 1.8rem; padding-top: 1.8rem; border-top: 1px solid var(--border); }
+    .section-block h2 { margin-top: 0; margin-bottom: 0.6rem; line-height: 1.2; font-size: 1.6rem; }
+    .section-block p, .section-block ul, .section-block ol, .section-block table, .section-block pre, .section-block .section-content, .section-block .table-wrap { margin-top: 0; margin-bottom: 1rem; }
+    .section-block ul, .section-block ol { padding-left: 1.25rem; }
+    .section-block li + li { margin-top: 0.35rem; }
+    .section-content {
+      background: #f8fcf9;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .python-code-label { font-size: 0.95rem; font-weight: 700; color: var(--muted); margin: 0.5rem 0; }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 18px;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    code { font-family: 'Courier New', Courier, monospace; }
+    :not(pre) > code { background: var(--accent-soft); color: #14532d; padding: 0.15em 0.35em; border-radius: 0.35rem; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: #eef8f0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.95rem; }
+    @media (max-width: 700px) { .shell { padding: 14px; } .hero, .card { padding: 18px; border-radius: 16px; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Program 6: – testing encapsulation</h1>
-            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
-        </header>
-        
-        <section class="section-block">
+  <div class="shell">
+    <header class="hero">
+      <div class="kicker">Program 6</div>
+      <h1>Program 6: – testing encapsulation</h1>
+      <p>Worked example page for this program. Use it to study the explanation, design, implementation, and test plan before completing the matching task in a different context.</p>
+      <div class="toolbar"><a href="../index.html">Back to website index</a></div>
+      <div class="meta"><span class="chip">Worked example</span><span class="chip">Program page</span><span class="chip">Green theme</span></div>
+    </header>
+    <main class="card">
+      <section class="section-block">
             <h2>Technical Explanation</h2>
-            <div class="section-content">This program tests the encapsulation implementation from the previous program to verify that data protection is working correctly. It demonstrates attempts to access and modify properties both correctly (through setters) and incorrectly (direct property access), showing which operations are prevented by encapsulation. The program verifies that validation rules are enforced, that read-only properties cannot be changed, and that the object maintains data integrity. Testing encapsulation proves that the design protects against common programming errors and ensures constraints are maintained. Key technical skills include exception handling, testing constraint enforcement, validating that invariants are maintained, and demonstrating the defensive benefits of encapsulation.</div>
+        <div class="section-content">This program builds directly on Program 5 by testing the encapsulated <code>Event</code> class in more depth. The focus is no longer just on making properties private: it is on proving that the class protects its data correctly. In particular, the program tests the validation inside <code>getVenue()</code>, which only returns the venue when it is between 5 and 15 characters long. It also checks that valid operations still work, that invalid values produce the expected message, that object state remains consistent after testing, and that private attributes should be accessed through methods rather than directly.</div>
         </section>
 
         <section class="section-block">
@@ -181,33 +166,125 @@ FR10 Show that modifications through setters work but direct access does not.
 
 FR11 Report total pass/fail count and coverage of test suite.
 
+FR12 Test the venue validation rule with valid, too-short and too-long values.
+
 ---</div>
         </section>
 
         <section class="section-block">
             <h2>Design</h2>
-            <div class="section-content">### Test Categories
+            <div class="section-content"><strong>Class name:</strong> Event
 
-1. **Getter Tests:** Verify getters return expected values
-2. **Valid Setter Tests:** Verify valid data is accepted
-3. **Invalid Setter Tests:** Verify invalid data is rejected
-4. **State Change Tests:** Verify object state updates correctly
-5. **Exception Tests:** Verify correct exceptions are raised
-6. **Read-Only Tests:** Verify protected properties cannot be changed
+      This program keeps the encapsulated class from Program 5. The UML class diagram still shows the same encapsulated design, with <strong>-</strong> for private properties and <strong>+</strong> for public methods. The focus of this program is testing that design, but the design itself should still describe the methods in the class.
 
----</div>
+      <p style="text-align: center;"><img src="../media/B1P6UMLClass.drawio.png" alt="UML class diagram for Event used when testing encapsulation" style="max-width: 100%; height: auto; border: 1px solid #d8e1ee; display: inline-block;"></p>
+
+### English Pseudocode
+
+      <strong>Constructor: Event()</strong>
+      1. Accept the starting date, time, venue and reminder values.
+      2. Store each value inside the object as private data.
+      3. Create an empty participants list.
+      4. Set the participant index to the first free position.
+
+      <strong>Method: getVenue()</strong>
+      1. Read the private venue value stored in the object.
+      2. Check whether the venue length is between 5 and 15 characters.
+      3. If it is valid, return the venue.
+      4. Otherwise, return an error message.
+
+      <strong>Method: updateDate()</strong>
+      1. Accept a new date value.
+      2. Change the private start date stored in the object.
+
+      <strong>Method: getDate()</strong>
+      1. Read the private start date from the object.
+      2. Return that value.
+
+      <strong>Method: addParticipant()</strong>
+      1. Accept a participant name.
+      2. Store the name in the participants list at the next free position.
+      3. Increase the private index so the next participant is stored in the next space.
+</div>
         </section>
 
         <section class="section-block">
             <h2>Implementation</h2>
             <div class="section-content">[Program 6 - testing encapsulation.py](./Program%206%20%E2%80%93%20testing%20encapsulation.py)
 
+SQA-RL:
+```
+CLASS Event
+  PRIVATE startDate AS STRING
+  PRIVATE startTime AS STRING
+  PRIVATE venue AS STRING
+  PRIVATE reminder AS BOOLEAN
+  PRIVATE participants AS ARRAY[1:20] OF STRING
+  PRIVATE index AS INTEGER
+
+  PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET startDate TO newStartDate
+    SET startTime TO newStartTime
+    SET venue TO newVenue
+    SET reminder TO newReminder
+    SET index TO 0
+  END PROCEDURE
+
+  FUNCTION getVenue() RETURNS STRING
+    IF LENGTH(venue) >= 5 AND LENGTH(venue) <= 15 THEN
+      RETURN venue
+    ELSE
+      RETURN "Invalid venue"
+    END IF
+  END FUNCTION
+
+  PROCEDURE updateDate(eventDate)
+    SET startDate TO eventDate
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN startDate
+  END FUNCTION
+
+  FUNCTION getParticipants() RETURNS ARRAY OF STRING
+    RETURN participants
+  END FUNCTION
+
+  FUNCTION getParticipantCount() RETURNS INTEGER
+    RETURN index
+  END FUNCTION
+
+  PROCEDURE addParticipant(name)
+    SET participants[index] TO name
+    SET index TO index + 1
+  END PROCEDURE
+END CLASS
+
+DECLARE item1 AS NEW Event("13/04/18", "0900", "Main Hall", TRUE)
+SEND item1.getVenue() TO DISPLAY
+
+DECLARE item2 AS NEW Event("13/04/18", "0900", "Gym", TRUE)
+SEND item2.getVenue() TO DISPLAY
+
+DECLARE item3 AS NEW Event("13/04/18", "0900", "International Conference Centre", TRUE)
+SEND item3.getVenue() TO DISPLAY
+
+SEND item1.getDate() TO DISPLAY
+CALL item1.updateDate("14/04/22")
+SEND item1.getDate() TO DISPLAY
+
+CALL item1.addParticipant("Erica Knowles")
+CALL item1.addParticipant("Norman Osborne")
+SEND item1.getParticipantCount() TO DISPLAY
+SEND item1.getParticipants() TO DISPLAY
+```
+
 ### Notes
 
-- Use try/except blocks to test for expected exceptions
-- Verify that failed operations leave object state unchanged
-- Test edge cases: zero, negative, empty, maximum length
-- Demonstrate that encapsulation prevents errors
+- Test both valid and invalid venue lengths so the encapsulation rule can be seen clearly
+- Verify that failed validation does not damage other object data
+- Use public methods to inspect private data safely
+- Include at least one test showing that direct access to private attributes is not the intended approach
 
 ---</div>
             <div class="python-code-label">Python Code</div>
@@ -216,34 +293,68 @@ FR11 Report total pass/fail count and coverage of test suite.
         self.__startDate = str(startDate)  #String
         self.__startTime = str(startTime)  #String
         self.__venue = str(venue)          #String
-        self.__reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;)    #Boolean (don&#39;t use bool(reminder): bool(&quot;False&quot;) is True)
+        self.__reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;)    #Boolean (don&#x27;t use bool(reminder): bool(&quot;False&quot;) is True)
         self.__participants = [&quot;&quot;]*20 #Array of String
         self.__index = int(0)              #Integer
 
     def updateDate(self, eventDate):
-        self.startDate  = str(eventDate)
+        self.__startDate = str(eventDate)
 
     def getDate(self):
-        return self.startDate
+        return self.__startDate
+
+    def getVenue(self):
+        if 5 &lt;= len(self.__venue) &lt;= 15:
+            return self.__venue
+        return &quot;Invalid venue&quot;
+
+    def getParticipants(self):
+        return self.__participants
+
+    def getParticipantCount(self):
+        return self.__index
 
     def addParticipant(self, name):
-        self.participants[self.index] = str(name)
-        self.index = self.index + 1
+        self.__participants[self.__index] = str(name)
+        self.__index = self.__index + 1
 
-#Test for the CONSTRUCTOR method
-item1 = Event(&quot;13/04/18&quot;, &quot;0900&quot;, &quot;Main Office&quot;, True)
-print (item1.venue)
+# Valid venue test
+item1 = Event(&quot;13/04/18&quot;, &quot;0900&quot;, &quot;Main Hall&quot;, True)
+print(&quot;Valid venue:&quot;, item1.getVenue())
+
+# Too-short venue test
+item2 = Event(&quot;13/04/18&quot;, &quot;0900&quot;, &quot;Gym&quot;, True)
+print(&quot;Too-short venue:&quot;, item2.getVenue())
+
+# Too-long venue test
+item3 = Event(&quot;13/04/18&quot;, &quot;0900&quot;, &quot;International Conference Centre&quot;, True)
+print(&quot;Too-long venue:&quot;, item3.getVenue())
+
+# Date update test
+print(&quot;Original date:&quot;, item1.getDate())
+item1.updateDate(&quot;14/04/22&quot;)
+print(&quot;Updated date:&quot;, item1.getDate())
+
+# Participant tests
+item1.addParticipant(&quot;Erica Knowles&quot;)
+item1.addParticipant(&quot;Norman Osborne&quot;)
+print(&quot;Participant count:&quot;, item1.getParticipantCount())
+print(&quot;Participants:&quot;, item1.getParticipants())
+
+# Direct access test
+try:
+    print(item1.__venue)
+except AttributeError:
+    print(&quot;Direct access blocked; use getVenue() instead&quot;)
 </code></pre>
         </section>
 
         <section class="section-block">
             <h2>Test Plan</h2>
-            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Valid salary setter</td><td>set_salary(55000)</td><td>Updates to 55000</td><td>Before: 50000 / After: 55000</td></tr><tr><td>Invalid negative salary</td><td>set_salary(-100)</td><td>ValueError raised</td><td>Before: No error / After: ValueError</td></tr><tr><td>Invalid string salary</td><td>set_salary(&quot;abc&quot;)</td><td>ValueError raised</td><td>Before: No error / After: ValueError</td></tr><tr><td>Read-only ID property</td><td>set_employee_id(999)</td><td>AttributeError or ignored</td><td>Before: Can change / After: Cannot change</td></tr><tr><td>Name validation</td><td>set_first_name(&quot;&quot;)</td><td>ValueError for empty</td><td>Before: No error / After: ValueError</td></tr><tr><td>Name validation</td><td>set_first_name(&quot;A&quot; * 100)</td><td>ValueError for too long</td><td>Before: No error / After: ValueError</td></tr></tbody></table></div>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Valid venue length</td><td>Create Event with venue &quot;Main Hall&quot; and call <code>getVenue()</code></td><td>Returns &quot;Main Hall&quot;</td><td>Before: Valid venue stored / After: Venue returned</td></tr><tr><td>Venue too short</td><td>Create Event with venue &quot;Gym&quot; and call <code>getVenue()</code></td><td>Returns &quot;Invalid venue&quot;</td><td>Before: Short venue stored / After: Validation message returned</td></tr><tr><td>Venue too long</td><td>Create Event with venue &quot;International Conference Centre&quot; and call <code>getVenue()</code></td><td>Returns &quot;Invalid venue&quot;</td><td>Before: Long venue stored / After: Validation message returned</td></tr><tr><td>Date update</td><td>Call <code>updateDate(&quot;14/04/22&quot;)</code> then <code>getDate()</code></td><td>Date changes and <code>getDate()</code> returns the new value</td><td>Before: Old date / After: New date</td></tr><tr><td>Add participant</td><td>Call <code>addParticipant()</code> twice</td><td>Both names are stored in the participants list</td><td>Before: Empty slots / After: Names stored</td></tr><tr><td>Participant count</td><td>Call <code>getParticipantCount()</code> after two adds</td><td>Count returns 2</td><td>Before: 0 / After: 2</td></tr><tr><td>Participants array</td><td>Call <code>getParticipants()</code></td><td>Returns the updated array including added names</td><td>Before: Empty entries / After: Includes added names</td></tr><tr><td>Private attribute access</td><td>Attempt to access <code>item1.__venue</code> directly</td><td>Direct access fails and the public method should be used instead</td><td>Before: Private data hidden / After: AttributeError shown</td></tr></tbody></table></div>
         </section>
-        
-        <footer>
-            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
-        </footer>
-    </div>
+      <footer><p>View the original Python file for execution. This HTML version is for easier reading.</p></footer>
+    </main>
+  </div>
 </body>
 </html>

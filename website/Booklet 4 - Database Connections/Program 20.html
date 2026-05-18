@@ -1,137 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program 20: Connect and Select</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .section-block {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #1f2937;
-        }
-
-        .section-content {
-            background: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            padding: 12px;
-            white-space: pre-wrap;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .python-code-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin: 8px 0;
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            background: #fff;
-            margin-bottom: 12px;
-        }
-
-        .test-plan-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .test-plan-table th,
-        .test-plan-table td {
-            border: 1px solid #e5e7eb;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .test-plan-table th {
-            background: #f3f4f6;
-            font-weight: 600;
-        }
-        
-        pre {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-family: 'Courier New', Courier, monospace;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program 20: Connect and Select</title>
+  <style>
+    :root {
+      --bg: #f4faf4;
+      --panel: #ffffff;
+      --text: #173126;
+      --muted: #4f6b5c;
+      --accent: #237a4b;
+      --accent-soft: #e7f5ec;
+      --border: #d3e6d8;
+      --code-bg: #0f1f17;
+      --code-fg: #e4f2e9;
+      --hero-start: #14532d;
+      --hero-end: #2f855a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #f7fcf7 0%, #edf7ef 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .shell { max-width: 920px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, var(--hero-start) 0%, var(--hero-end) 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 16px 40px rgba(20, 83, 45, 0.18);
+      margin-bottom: 20px;
+    }
+    .hero .kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.6rem); }
+    .hero p { margin: 0; max-width: 70ch; color: rgba(255, 255, 255, 0.9); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+    .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(23, 49, 38, 0.06);
+      padding: 24px;
+    }
+    .section-block + .section-block { margin-top: 1.8rem; padding-top: 1.8rem; border-top: 1px solid var(--border); }
+    .section-block h2 { margin-top: 0; margin-bottom: 0.6rem; line-height: 1.2; font-size: 1.6rem; }
+    .section-block p, .section-block ul, .section-block ol, .section-block table, .section-block pre, .section-block .section-content, .section-block .table-wrap { margin-top: 0; margin-bottom: 1rem; }
+    .section-block ul, .section-block ol { padding-left: 1.25rem; }
+    .section-block li + li { margin-top: 0.35rem; }
+    .section-content {
+      background: #f8fcf9;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .python-code-label { font-size: 0.95rem; font-weight: 700; color: var(--muted); margin: 0.5rem 0; }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 18px;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    code { font-family: 'Courier New', Courier, monospace; }
+    :not(pre) > code { background: var(--accent-soft); color: #14532d; padding: 0.15em 0.35em; border-radius: 0.35rem; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: #eef8f0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.95rem; }
+    @media (max-width: 700px) { .shell { padding: 14px; } .hero, .card { padding: 18px; border-radius: 16px; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Program 20: Connect and Select</h1>
-            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
-        </header>
-        
-        <section class="section-block">
+  <div class="shell">
+    <header class="hero">
+      <div class="kicker">Program 20</div>
+      <h1>Program 20: Connect and Select</h1>
+      <p>Worked example page for this program. Use it to study the explanation, design, implementation, and test plan before completing the matching task in a different context.</p>
+      <div class="toolbar"><a href="../index.html">Back to website index</a></div>
+      <div class="meta"><span class="chip">Worked example</span><span class="chip">Program page</span><span class="chip">Green theme</span></div>
+    </header>
+    <main class="card">
+      <section class="section-block">
             <h2>Technical Explanation</h2>
             <div class="section-content">This program demonstrates how data can be read from a database and stored in an array of objects for later processing. After validating the environment settings and opening a connection, the program runs a `SELECT` query to retrieve all employee records. This shows the technical skills of database access, SQL query execution, and cursor use.
 
@@ -233,7 +218,7 @@ This program uses one SQL query to retrieve all employee records from the databa
 
         <section class="section-block">
             <h2>Implementation</h2>
-            <div class="section-content">### SQA Reference Language
+            <div class="section-content">### SQA-RL
 
 ```text
 Line 1: CLASS Employee                                                              [FR1]
@@ -283,7 +268,7 @@ Line 39:     ENDFOR
 
 Line 40:     SEND &quot;id        name                salary      dept                          position                      date&quot; TO DISPLAY   [FR7]
 Line 41:     FOR EACH worker IN results DO
-Line 42:         SEND worker.id, worker.name, worker.salary, worker.department, worker.position, worker.hireDate TO DISPLAY   [FR7]
+Line 42:         SEND worker.get_id(), worker.get_name(), worker.get_salary(), worker.get_department(), worker.get_position(), worker.get_hire_date() TO DISPLAY   [FR7]
 Line 43:     ENDFOR
 
 Line 44:     cursor.close()                                                          [FR11]
@@ -311,7 +296,7 @@ from dotenv import load_dotenv
 from mysql.connector import Error
 
 base_path = Path(__file__).resolve().parent.parent.parent
-env_path = base_path / &#39;.env&#39;
+env_path = base_path / &#x27;.env&#x27;
 load_dotenv(dotenv_path=env_path)
 
 
@@ -325,19 +310,37 @@ class Employee:
         self.position = str(position)
         self.hireDate = str(hireDate)
 
+    def get_id(self):
+        return self.id
+
+    def get_name(self):
+        return self.name
+
+    def get_salary(self):
+        return self.salary
+
+    def get_department(self):
+        return self.department
+
+    def get_position(self):
+        return self.position
+
+    def get_hire_date(self):
+        return self.hireDate
+
 
 def select_employees():
     # FR8: validate required environment configuration values.
-    db_host = os.getenv(&#39;DB_HOST&#39;)
-    db_user = os.getenv(&#39;DB_USER&#39;)
-    db_pass = os.getenv(&#39;DB_PASS&#39;)
-    db_name = os.getenv(&#39;DB_NAME&#39;)
+    db_host = os.getenv(&#x27;DB_HOST&#x27;)
+    db_user = os.getenv(&#x27;DB_USER&#x27;)
+    db_pass = os.getenv(&#x27;DB_PASS&#x27;)
+    db_name = os.getenv(&#x27;DB_NAME&#x27;)
 
-    missing = [name for name, val in [(&#39;DB_HOST&#39;, db_host), (&#39;DB_USER&#39;, db_user),
-                                       (&#39;DB_PASS&#39;, db_pass), (&#39;DB_NAME&#39;, db_name)] if not val]
+    missing = [name for name, val in [(&#x27;DB_HOST&#x27;, db_host), (&#x27;DB_USER&#x27;, db_user),
+                                       (&#x27;DB_PASS&#x27;, db_pass), (&#x27;DB_NAME&#x27;, db_name)] if not val]
     if missing:
         # FR11: provide clear failure feedback to the user.
-        print(f&quot;Configuration Error: Missing environment variable(s): {&#39;, &#39;.join(missing)}&quot;)
+        print(f&quot;Configuration Error: Missing environment variable(s): {&#x27;, &#x27;.join(missing)}&quot;)
         return
 
     try:
@@ -371,11 +374,11 @@ def select_employees():
             results[i] = Employee(row[0], row[1], row[2], row[3], row[4], row[5])
 
         # FR7: display formatted query output.
-        print(f&quot;{&#39;id&#39;:&lt;10}{&#39;name&#39;:&lt;20}{&#39;salary&#39;:&lt;12}{&#39;dept&#39;:&lt;30}{&#39;position&#39;:&lt;30}{&#39;date&#39;:&lt;12}&quot;)
+        print(f&quot;{&#x27;id&#x27;:&lt;10}{&#x27;name&#x27;:&lt;20}{&#x27;salary&#x27;:&lt;12}{&#x27;dept&#x27;:&lt;30}{&#x27;position&#x27;:&lt;30}{&#x27;date&#x27;:&lt;12}&quot;)
 
         for worker in results:
-            print(f&quot;{str(worker.id):&lt;10}{str(worker.name):&lt;20}{str(worker.salary):&lt;12}&quot;
-                  f&quot;{str(worker.department):&lt;30}{str(worker.position):&lt;30}{str(worker.hireDate):&lt;12}&quot;)
+            print(f&quot;{str(worker.get_id()):&lt;10}{str(worker.get_name()):&lt;20}{str(worker.get_salary()):&lt;12}&quot;
+                f&quot;{str(worker.get_department()):&lt;30}{str(worker.get_position()):&lt;30}{str(worker.get_hire_date()):&lt;12}&quot;)
 
     except Error as err:
         # FR14: include meaningful error context when query fails.
@@ -397,10 +400,8 @@ if __name__ == &quot;__main__&quot;:
             <h2>Test Plan</h2>
             <div class="section-content">### Test Cases</div><div class="table-wrap"><table class="test-plan-table"><thead><tr><th>#</th><th>Functional Requirement</th><th>Test Description</th><th>Input / Conditions</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>1</td><td>FR8 – all valid</td><td>Valid credentials loaded from environment</td><td>All four environment variables set correctly</td><td>Credentials read without error</td><td>Before evidence: capture the configured environment variables. After evidence: capture program startup with no configuration error.</td></tr><tr><td>2</td><td>FR8 – one missing</td><td>One environment variable not set</td><td>DB_NAME unset</td><td>Error message naming DB_NAME displayed; program stops</td><td>Before evidence: capture environment settings showing `DB_NAME` is missing. After evidence: capture output naming the missing variable and showing no query runs.</td></tr><tr><td>3</td><td>FR8 – all missing</td><td>No environment variables set</td><td>All four unset</td><td>Error message listing all four variables; program stops</td><td>Before evidence: capture environment settings with none of the variables present. After evidence: capture output listing all missing variables and immediate termination.</td></tr><tr><td>4</td><td>FR6 – connected</td><td>Successful database connection</td><td>Valid host, user, password, and database name</td><td>Connection established; no error raised</td><td>Before evidence: capture valid credentials and a reachable database. After evidence: capture output showing the program proceeds to data retrieval without connection errors.</td></tr><tr><td>5</td><td>FR6/FR11 – failure</td><td>Connection failure stops execution</td><td>Invalid or missing credentials</td><td>Error message displayed; program stops</td><td>Before evidence: capture the bad credentials or unavailable host. After evidence: capture the connection error output and absence of table data.</td></tr><tr><td>6</td><td>FR6 – rows returned</td><td>SELECT query returns all employee rows</td><td>Employees table contains data</td><td>All rows fetched from the database</td><td>Before evidence: capture the current rows in the `Employees` table. After evidence: capture displayed results matching those stored rows.</td></tr><tr><td>7</td><td>FR12 – row count</td><td>Row count read correctly from query result</td><td>Query returns 5 rows</td><td>Results array created with 5 slots</td><td>Before evidence: capture evidence that the table contains 5 rows. After evidence: capture displayed records and evidence that the array was sized for 5 items.</td></tr><tr><td>8</td><td>FR10 – empty table</td><td>No rows in Employees table</td><td>Table is empty</td><td>No data rows displayed; program completes normally</td><td>Before evidence: capture the empty `Employees` table. After evidence: capture output showing headings only with no employee rows printed.</td></tr><tr><td>9</td><td>FR13</td><td>Each row mapped to an Employee object by index</td><td>Rows returned from query</td><td>results[i] holds Employee with correct field values for row i</td><td>Before evidence: capture one or more source rows from the database. After evidence: capture displayed values showing each object matches the row at the same index.</td></tr><tr><td>10</td><td>FR9 – headings</td><td>Records displayed with column headings</td><td>Valid data returned</td><td>Header row (id, name, salary, etc.) shown before records</td><td>Before evidence: capture the start of output before data rows appear. After evidence: capture the heading line shown above the records.</td></tr><tr><td>11</td><td>FR9 – data rows</td><td>Each employee&#39;s details displayed</td><td>Valid Employee objects in array</td><td>Each employee&#39;s id, name, salary, department, position, and hireDate shown</td><td>Before evidence: capture expected employee values from the database. After evidence: capture the printed table showing the same values in each row.</td></tr><tr><td>12</td><td>FR15</td><td>Cursor and connection closed after use</td><td>Valid connection and query</td><td>No open handles remain after execution</td><td>Before evidence: capture that the program opens the database during processing. After evidence: capture completion plus any evidence that no connection/cursor remains active.</td></tr><tr><td>13</td><td>FR14/FR11</td><td>Database error handled gracefully</td><td>Simulate a query error (e.g. table does not exist)</td><td>Appropriate error message displayed; resources closed</td><td>Before evidence: capture the condition causing the SQL failure. After evidence: capture the database error message and the absence of normal results output.</td></tr></tbody></table></div>
         </section>
-        
-        <footer>
-            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
-        </footer>
-    </div>
+      <footer><p>View the original Python file for execution. This HTML version is for easier reading.</p></footer>
+    </main>
+  </div>
 </body>
 </html>

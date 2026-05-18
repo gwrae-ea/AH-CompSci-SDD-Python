@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 5 - Encapsulate Employee Class</title>
+  <style>
+    :root {
+      --bg: #f5f8fc;
+      --panel: #ffffff;
+      --text: #17223b;
+      --muted: #556781;
+      --accent: #1f6feb;
+      --accent-soft: #e8f1ff;
+      --border: #d8e1ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4fb 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .shell { max-width: 920px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, #163d7a 0%, #245eb6 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 16px 40px rgba(22, 61, 122, 0.18);
+      margin-bottom: 20px;
+    }
+    .hero .kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.6rem); }
+    .hero p { margin: 0; max-width: 70ch; color: rgba(255, 255, 255, 0.9); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+    .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(23, 34, 59, 0.06);
+      padding: 24px;
+    }
+    .content h2, .content h3, .content h4 { margin-top: 1.2em; margin-bottom: 0.5em; line-height: 1.2; }
+    .content p, .content ul, .content ol, .content table, .content pre { margin-top: 0; margin-bottom: 1rem; }
+    .content ul, .content ol { padding-left: 1.25rem; }
+    .content li + li { margin-top: 0.35rem; }
+    .content code { background: var(--accent-soft); color: #163d7a; padding: 0.15em 0.35em; border-radius: 0.35rem; }
+    .content pre { background: #0f172a; color: #e2e8f0; padding: 18px; border-radius: 14px; overflow-x: auto; }
+    .content pre code { background: transparent; color: inherit; padding: 0; }
+    .content table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .content th, .content td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    .content th { background: #eef4fb; }
+    .content hr { border: 0; border-top: 1px solid var(--border); margin: 1.4rem 0; }
+    .note { margin-top: 16px; padding: 14px 16px; border-left: 4px solid var(--accent); background: #f0f6ff; border-radius: 12px; color: var(--muted); }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); }
+    @media (max-width: 700px) { .shell { padding: 14px; } .hero, .card { padding: 18px; border-radius: 16px; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="hero">
+      <div class="kicker">Task 5</div>
+      <h1>Task 5 - Encapsulate Employee Class</h1>
+      <p>Complete the task in the matching Python file by using the requirements below. Use the program page as a worked example, but build your own solution for this new context.</p>
+      <div class="toolbar"><a href="../index.html">Back to website index</a></div>
+      <div class="meta"><span class="chip">Task brief</span><span class="chip">Requirements only</span><span class="chip">No solution code</span></div>
+    </header>
+    <main class="card content">
+      <h2>Objective</h2>
+<p>Refactor the Employee class to use encapsulation by converting properties to private (prefixed with underscore) and providing getter/setter methods with validation. This task demonstrates data protection and constraint enforcement.</p>
+<hr>
+<h2>Context</h2>
+<p>You will refactor the Employee class from previous tasks to implement proper encapsulation.</p>
+<p>Your task is to:</p>
+<ol><li>Convert all properties to private (<code>_property_name</code>)</li><li>Create getter methods for reading properties</li><li>Create setter methods with validation</li><li>Demonstrate that invariants are maintained</li><li>Show error handling for invalid operations</li><li>Include one example where a getter validates data before returning it</li></ol>
+<hr>
+<h2>Requirements</h2>
+<h3>Private Properties (FR2, FR4)</h3>
+<p>Convert all Employee properties to private naming convention:</p>
+<ul><li><code>_employee_id</code></li><li><code>_first_name</code></li><li><code>_last_name</code></li><li><code>_salary</code></li><li><code>_department</code></li><li><code>_position</code></li><li><code>_hire_date</code></li></ul>
+<h3>Getter Methods (FR1, FR8)</h3>
+<p>Create a getter for each property:</p>
+<pre><code>def get_employee_id(self):
+    &quot;&quot;&quot;Return the employee ID.&quot;&quot;&quot;
+    return self._employee_id
+
+def get_first_name(self):
+    &quot;&quot;&quot;Return the employee&#x27;s first name.&quot;&quot;&quot;
+    return self._first_name</code></pre>
+<h3>Encapsulation by Example (FR1, FR3, FR10)</h3>
+<p>Include one validation example similar to Program 5. For the Employee task, use <code>get_department()</code> as the example:</p>
+<ul><li>Check that the stored department name is between 6 and 20 characters before returning it</li><li>If the value is valid, return the department name</li><li>If the value is invalid, raise <code>ValueError</code> or return a clear error message such as <code>&quot;Invalid department&quot;</code></li><li>Explain in your testing that this is an example of encapsulation because the class controls access to its own data</li></ul>
+<h3>Setter Methods with Validation (FR1, FR3, FR9)</h3>
+<h4><code>set_employee_id(value)</code> (FR3)</h4>
+<ul><li>Validate: must be positive integer</li></ul>
+<h4><code>set_first_name(value)</code> (FR3)</h4>
+<ul><li>Validate: non-empty string, max 50 characters</li></ul>
+<h4><code>set_last_name(value)</code> (FR3)</h4>
+<ul><li>Validate: non-empty string, max 50 characters</li></ul>
+<h4><code>set_salary(amount)</code> (FR3)</h4>
+<ul><li>Validate: non-negative number (&gt;= 0)</li><li>Cannot be set to invalid value</li><li>Raise ValueError if invalid</li></ul>
+<h4><code>set_department(value)</code> (FR3)</h4>
+<ul><li>Validate: non-empty string, max 50 characters</li></ul>
+<h4><code>set_position(value)</code> (FR3)</h4>
+<ul><li>Validate: non-empty string, max 50 characters</li></ul>
+<h4><code>set_hire_date(date_obj)</code> (FR3)</h4>
+<ul><li>Validate: date must be before today</li><li>Validate: date must be valid</li></ul>
+<h3>Read-Only Properties (FR6)</h3>
+<p>Some properties should be read-only (getter only, no setter):</p>
+<ul><li><code>_employee_id</code> (typically assigned at creation, not changed)</li><li><code>_hire_date</code> (typically assigned at creation, not changed later)</li></ul>
+<h3>Error Handling (FR5, FR9)</h3>
+<ul><li>Raise <code>ValueError</code> with descriptive message for invalid data</li><li>Example: <code>raise ValueError(&quot;Salary cannot be negative&quot;)</code></li><li>Use a similarly clear message for invalid department data if your <code>get_department()</code> validation fails</li></ul>
+<h3>Validation Method (FR9)</h3>
+<p>Consider creating a private helper method for validation:</p>
+<pre><code>def _validate_salary(amount):
+    if not isinstance(amount, (int, float)):
+        raise ValueError(&quot;Salary must be a number&quot;)
+    if amount &lt; 0:
+        raise ValueError(&quot;Salary cannot be negative&quot;)
+    return True</code></pre>
+<hr>
+<h2>Functional Requirements Covered</h2>
+<ul><li><strong>FR1:</strong> Implement property access control using getters/setters</li><li><strong>FR2:</strong> Use naming conventions for private members (underscore prefix)</li><li><strong>FR3:</strong> Add validation logic to setters</li><li><strong>FR4:</strong> Maintain consistent access patterns</li><li><strong>FR5:</strong> Display error messages for invalid modifications</li><li><strong>FR6:</strong> Allow read-only properties</li><li><strong>FR8:</strong> Document public interface</li><li><strong>FR9:</strong> Raise exceptions for invalid operations</li><li><strong>FR10:</strong> Demonstrate difference between direct and encapsulated access</li></ul>
+      <h2>Input Validation and Test Data</h2><p>Use these explicit input rules and test values when implementing and testing this task.</p><h3>Input-Focused Functional Requirements</h3><ul><li>Presence check: setter inputs must not be blank for name/department/position properties.</li><li>Range check: salary setter must enforce 0.00 to 500000.00.</li><li>Length check: <code>get_department()</code> must only return department names between 6 and 20 characters.</li><li>Type check: getter/setter methods must handle invalid types with clear errors.</li></ul><h3>Test Cases: Normal, Extreme, Exceptional</h3><table><thead><tr><th>Input Field</th><th>Check Type</th><th>Normal Data</th><th>Extreme Data</th><th>Exceptional Data</th><th>Expected Result</th></tr></thead><tbody><tr><td>set_salary(value)</td><td>Range/Type</td><td>48000</td><td>0 and 500000</td><td>-5, 500001, &#x27;high&#x27;</td><td>Accept numeric in range; reject invalid setter input.</td></tr><tr><td>set_first_name(value)</td><td>Presence/Length</td><td>&#x27;Amy&#x27;</td><td>1 and 40 chars</td><td>&#x27;&#x27;, &#x27;   &#x27;, 60-char string</td><td>Accept valid name length; reject empty/too long.</td></tr><tr><td>get_department()</td><td>Length</td><td>&#x27;Finance&#x27;</td><td>6 and 20 characters</td><td>&#x27;HR&#x27;, string longer than 20 characters</td><td>Return valid department; reject invalid department length.</td></tr></tbody></table><div class="note">Do not copy the worked example from the program page. Replicate the idea in the new context using your own code.</div>
+    </main>
+  </div>
+</body>
+</html>

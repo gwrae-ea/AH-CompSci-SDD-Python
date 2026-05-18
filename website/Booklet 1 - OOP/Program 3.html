@@ -1,137 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Program 3: – creating methods in a class</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        
-        .subtitle {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .section-block {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-            color: #1f2937;
-        }
-
-        .section-content {
-            background: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            padding: 12px;
-            white-space: pre-wrap;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
-
-        .python-code-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #374151;
-            margin: 8px 0;
-        }
-
-        .table-wrap {
-            overflow-x: auto;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            background: #fff;
-            margin-bottom: 12px;
-        }
-
-        .test-plan-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .test-plan-table th,
-        .test-plan-table td {
-            border: 1px solid #e5e7eb;
-            padding: 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        .test-plan-table th {
-            background: #f3f4f6;
-            font-weight: 600;
-        }
-        
-        pre {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            background: #2d2d2d;
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        
-        code {
-            font-family: 'Courier New', Courier, monospace;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program 3: – creating methods in a class</title>
+  <style>
+    :root {
+      --bg: #f4faf4;
+      --panel: #ffffff;
+      --text: #173126;
+      --muted: #4f6b5c;
+      --accent: #237a4b;
+      --accent-soft: #e7f5ec;
+      --border: #d3e6d8;
+      --code-bg: #0f1f17;
+      --code-fg: #e4f2e9;
+      --hero-start: #14532d;
+      --hero-end: #2f855a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, #f7fcf7 0%, #edf7ef 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .shell { max-width: 920px; margin: 0 auto; padding: 24px; }
+    .hero {
+      background: linear-gradient(135deg, var(--hero-start) 0%, var(--hero-end) 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 16px 40px rgba(20, 83, 45, 0.18);
+      margin-bottom: 20px;
+    }
+    .hero .kicker {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 0.82rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 { margin: 0 0 8px; font-size: clamp(1.7rem, 4vw, 2.6rem); }
+    .hero p { margin: 0; max-width: 70ch; color: rgba(255, 255, 255, 0.9); }
+    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0 0; }
+    .toolbar a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: white;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; color: rgba(255, 255, 255, 0.85); font-size: 0.95rem; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(23, 49, 38, 0.06);
+      padding: 24px;
+    }
+    .section-block + .section-block { margin-top: 1.8rem; padding-top: 1.8rem; border-top: 1px solid var(--border); }
+    .section-block h2 { margin-top: 0; margin-bottom: 0.6rem; line-height: 1.2; font-size: 1.6rem; }
+    .section-block p, .section-block ul, .section-block ol, .section-block table, .section-block pre, .section-block .section-content, .section-block .table-wrap { margin-top: 0; margin-bottom: 1rem; }
+    .section-block ul, .section-block ol { padding-left: 1.25rem; }
+    .section-block li + li { margin-top: 0.35rem; }
+    .section-content {
+      background: #f8fcf9;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      white-space: pre-wrap;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .python-code-label { font-size: 0.95rem; font-weight: 700; color: var(--muted); margin: 0.5rem 0; }
+    pre {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      padding: 18px;
+      border-radius: 14px;
+      overflow-x: auto;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    code { font-family: 'Courier New', Courier, monospace; }
+    :not(pre) > code { background: var(--accent-soft); color: #14532d; padding: 0.15em 0.35em; border-radius: 0.35rem; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: #eef8f0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    footer { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); text-align: center; color: var(--muted); font-size: 0.95rem; }
+    @media (max-width: 700px) { .shell { padding: 14px; } .hero, .card { padding: 18px; border-radius: 16px; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Program 3: – creating methods in a class</h1>
-            <p class="subtitle">AH CompSci SDD - Python Learning Repository</p>
-        </header>
-        
-        <section class="section-block">
+  <div class="shell">
+    <header class="hero">
+      <div class="kicker">Program 3</div>
+      <h1>Program 3: – creating methods in a class</h1>
+      <p>Worked example page for this program. Use it to study the explanation, design, implementation, and test plan before completing the matching task in a different context.</p>
+      <div class="toolbar"><a href="../index.html">Back to website index</a></div>
+      <div class="meta"><span class="chip">Worked example</span><span class="chip">Program page</span><span class="chip">Green theme</span></div>
+    </header>
+    <main class="card">
+      <section class="section-block">
             <h2>Technical Explanation</h2>
             <div class="section-content">This program demonstrates how to add methods (functions) to a class definition. While properties store data, methods define the behaviors and operations that objects can perform. Methods are functions defined within a class that typically operate on the object&#39;s properties. This program shows creating methods that access properties, calculate values, perform operations, and return results. Key technical skills include method definition syntax, the `self` parameter for accessing object properties, parameter passing to methods, return values, and understanding the difference between data (properties) and behavior (methods) in object-oriented programming.</div>
         </section>
@@ -184,25 +169,81 @@ FR10 Show method calls through consistent naming conventions.
 
         <section class="section-block">
             <h2>Design</h2>
-            <div class="section-content">### Method Structure
+            <div class="section-content"><strong>Class name:</strong> Event
 
-```
-CLASS ClassName
-    ...properties...
-    
-    METHOD MethodName(param1, param2)
-        ... method implementation ...
-        RETURN result
-    END METHOD
-END CLASS
-```
+This version of the class adds more behaviour. The UML diagram now shows a <strong>setter method</strong>, <code>updateDate()</code>, as well as getter methods and a method to add participants. A setter method changes a stored property after the object has been created, while a getter method returns a value without changing it.
 
----</div>
+<p style="text-align: center;"><img src="../media/B1P3UMLClass.drawio.png" alt="UML class diagram for Event with constructor, getter, setter and addParticipant() method" style="max-width: 100%; height: auto; border: 1px solid #d8e1ee; display: inline-block;"></p>
+
+### English Pseudocode
+
+<strong>Constructor: Event()</strong>
+1. Accept the starting date, time, venue and reminder values.
+2. Store each value in the new object.
+3. Create an empty participants list.
+4. Set the participant index to the first free position.
+
+<strong>Method: getVenue()</strong>
+1. Read the venue stored in the object.
+2. Return that venue value.
+
+<strong>Method: updateDate()</strong>
+1. Accept a new date value.
+2. Replace the object's current start date with the new date.
+
+<strong>Method: getDate()</strong>
+1. Read the current start date from the object.
+2. Return that date value.
+
+<strong>Method: addParticipant()</strong>
+1. Accept a participant name.
+2. Store the name in the participants list at the next free position.
+3. Increase the index so the next participant goes into the next space.
+</div>
         </section>
 
         <section class="section-block">
             <h2>Implementation</h2>
             <div class="section-content">[Program 3 - creating methods in a class.py](./Program%203%20%E2%80%93%20creating%20methods%20in%20a%20class.py)
+
+SQA-RL:
+```
+CLASS Event
+  DECLARE startDate AS STRING
+  DECLARE startTime AS STRING
+  DECLARE venue AS STRING
+  DECLARE reminder AS BOOLEAN
+  DECLARE participants AS ARRAY[1:20] OF STRING
+  DECLARE index AS INTEGER
+
+  PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET startDate TO newStartDate
+    SET startTime TO newStartTime
+    SET venue TO newVenue
+    SET reminder TO newReminder
+    SET index TO 0
+  END PROCEDURE
+
+  FUNCTION getVenue() RETURNS STRING
+    RETURN venue
+  END FUNCTION
+
+  PROCEDURE updateDate(eventDate)
+    SET startDate TO eventDate
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN startDate
+  END FUNCTION
+
+  PROCEDURE addParticipant(name)
+    SET participants[index] TO name
+    SET index TO index + 1
+  END PROCEDURE
+END CLASS
+```
+
+The class now includes both <strong>getter methods</strong> and a <strong>setter method</strong>. <code>getVenue()</code> and <code>getDate()</code> return stored values. <code>updateDate()</code> is a setter because it changes the value of <code>startDate</code> after the object has been created.
 
 ### Notes
 
@@ -222,6 +263,9 @@ END CLASS
         self.participants = [&quot;&quot;]*20 #Array of String
         self.index = int(0)              #Integer
 
+    def getVenue(self):
+      return self.venue
+
     def updateDate(self, eventDate):
         self.startDate  = str(eventDate)
 
@@ -236,12 +280,10 @@ END CLASS
 
         <section class="section-block">
             <h2>Test Plan</h2>
-            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Method definition</td><td>Define method in class</td><td>Method accessible on instances</td><td>Before: AttributeError / After: Method callable</td></tr><tr><td>Method with property access</td><td>Call method that reads properties</td><td>Method accesses and uses properties correctly</td><td>Before: None / After: Properties accessed</td></tr><tr><td>Method with parameters</td><td>Call method with parameters</td><td>Parameters received and used in computation</td><td>Before: TypeError / After: Parameters processed</td></tr><tr><td>Method return value</td><td>Call method and capture return</td><td>Correct value returned</td><td>Before: None returned / After: Expected value</td></tr><tr><td>Multiple method calls</td><td>Call different methods on same object</td><td>All methods execute correctly</td><td>Before: Methods fail / After: All succeed</td></tr></tbody></table></div>
+          <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Input</th><th>Expected Output</th><th>Evidence</th></tr></thead><tbody><tr><td>Constructor method</td><td>Create <code>Event(&quot;13/04/18&quot;, &quot;0900&quot;, &quot;Main Office&quot;, True)</code></td><td>Object is created and stores the given starting values</td><td>Before: Object not created / After: Object created with correct data</td></tr><tr><td><code>getVenue()</code></td><td>Call <code>item1.getVenue()</code></td><td>Returns <code>Main Office</code></td><td>Before: No returned venue / After: Correct venue displayed</td></tr><tr><td><code>updateDate()</code></td><td>Call <code>item1.updateDate(&quot;14/04/18&quot;)</code></td><td>The object's <code>startDate</code> changes to <code>14/04/18</code></td><td>Before: Old date remains / After: Date updated</td></tr><tr><td><code>getDate()</code></td><td>Call <code>item1.getDate()</code> after updating the date</td><td>Returns the current stored date</td><td>Before: Incorrect or missing date / After: Updated date returned</td></tr><tr><td><code>addParticipant()</code></td><td>Call <code>item1.addParticipant(&quot;A. Smith&quot;)</code></td><td>Name is stored in the participants array and the index increases by 1</td><td>Before: Participant not stored / After: Name added and index incremented</td></tr><tr><td>Combined method use</td><td>Create an object, update the date, add a participant, then call both getter methods</td><td>All methods work together on the same object without losing previous data</td><td>Before: Methods interfere or fail / After: Object state remains correct</td></tr></tbody></table></div>
         </section>
-        
-        <footer>
-            <p>View the original Python file for execution. This HTML version is for easier reading.</p>
-        </footer>
-    </div>
+      <footer><p>View the original Python file for execution. This HTML version is for easier reading.</p></footer>
+    </main>
+  </div>
 </body>
 </html>

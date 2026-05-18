@@ -75,7 +75,7 @@ This program uses one SQL query to retrieve all employee records from the databa
 
 ### English Pseudocode
 
-1. Define an Employee record structure to hold each row of employee data.
+1. Define an Employee class with getter methods to hold and expose each row of employee data.
 2. Start a procedure to select employee records from the database.
 3. Read the database host, username, password, and database name from environment settings.
 4. Check that all four environment variables have been set.
@@ -94,7 +94,7 @@ This program uses one SQL query to retrieve all employee records from the databa
 		2. Store the Employee object at the same index in the array.
 	6. Display column headings.
 	7. For each Employee in the results array:
-		1. Display that employee's details.
+		1. Display that employee's details using getter methods.
 	8. Close the cursor and close the database connection.
 
 ---
@@ -151,7 +151,7 @@ Line 39:     ENDFOR
 
 Line 40:     SEND "id        name                salary      dept                          position                      date" TO DISPLAY   [FR7]
 Line 41:     FOR EACH worker IN results DO
-Line 42:         SEND worker.id, worker.name, worker.salary, worker.department, worker.position, worker.hireDate TO DISPLAY   [FR7]
+Line 42:         SEND worker.get_id(), worker.get_name(), worker.get_salary(), worker.get_department(), worker.get_position(), worker.get_hire_date() TO DISPLAY   [FR7]
 Line 43:     ENDFOR
 
 Line 44:     cursor.close()                                                          [FR11]

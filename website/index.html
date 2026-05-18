@@ -57,13 +57,31 @@
       font-size: 1.2rem;
     }
 
-    ul {
-      margin: 0;
-      padding-left: 20px;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fbfdff;
     }
 
-    li + li {
-      margin-top: 6px;
+    th,
+    td {
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #eef3fa;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
     }
 
     a {
@@ -89,50 +107,82 @@
 
     <section class="booklet">
       <h2>Booklet 1 - OOP</h2>
-      <ul>
-        <li><a href="Booklet%201%20-%20OOP/Program%201.html">Program 1</a></li>
-        <li><a href="Booklet%201%20-%20OOP/Program%202.html">Program 2</a></li>
-        <li><a href="Booklet%201%20-%20OOP/Program%203.html">Program 3</a></li>
-        <li><a href="Booklet%201%20-%20OOP/Program%204.html">Program 4</a></li>
-        <li><a href="Booklet%201%20-%20OOP/Program%205.html">Program 5</a></li>
-        <li><a href="Booklet%201%20-%20OOP/Program%206.html">Program 6</a></li>
-        <li><a href="Booklet%201%20-%20OOP/Program%207.html">Program 7</a></li>
-        <li><a href="Booklet%201%20-%20OOP/Program%208.html">Program 8</a></li>
-        <li><a href="Booklet%201%20-%20OOP/Program%209.html">Program 9</a></li>
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Program</th>
+            <th>Task</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%201.html">Program 1 - defining a class</a></td><td><a href="Booklet%201%20-%20OOP/Task%201.html">Task 1 - Create an Employee Class</a></td></tr>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%202.html">Program 2 - instantiate and test</a></td><td><a href="Booklet%201%20-%20OOP/Task%202.html">Task 2 - Instantiate Employee Objects</a></td></tr>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%203.html">Program 3 - creating methods in a class</a></td><td><a href="Booklet%201%20-%20OOP/Task%203.html">Task 3 - Add Methods to Employee Class</a></td></tr>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%204.html">Program 4 - testing methods in a class</a></td><td><a href="Booklet%201%20-%20OOP/Task%204.html">Task 4 - Test Employee Methods</a></td></tr>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%205.html">Program 5 - encapsulation</a></td><td><a href="Booklet%201%20-%20OOP/Task%205.html">Task 5 - Encapsulate Employee Class</a></td></tr>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%206.html">Program 6 - testing encapsulation</a></td><td><a href="Booklet%201%20-%20OOP/Task%206.html">Task 6 - Test Encapsulation</a></td></tr>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%207.html">Program 7 - inheritance</a></td><td><a href="Booklet%201%20-%20OOP/Task%207.html">Task 7 - Implement Inheritance</a></td></tr>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%208.html">Program 8 - testing inheritance 1</a></td><td><a href="Booklet%201%20-%20OOP/Task%208.html">Task 8 - Test Inheritance 1</a></td></tr>
+          <tr><td><a href="Booklet%201%20-%20OOP/Program%209.html">Program 9 - testing inheritance 2</a></td><td><a href="Booklet%201%20-%20OOP/Task%209.html">Task 9 - Test Inheritance 2</a></td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="booklet">
       <h2>Booklet 2 - Data Types and Structures</h2>
-      <ul>
-        <li><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2010.html">Program 10</a></li>
-        <li><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2011.html">Program 11</a></li>
-        <li><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2012.html">Program 12</a></li>
-        <li><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2013.html">Program 13</a></li>
-        <li><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2014.html">Program 14</a></li>
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Program</th>
+            <th>Task</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2010.html">Program 10 - Creating an Array of Objects</a></td><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Task%2010.html">Task 10 - Create an Event Object Array</a></td></tr>
+          <tr><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2011.html">Program 11 - Polymorphism</a></td><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Task%2011.html">Task 11 - Polymorphism with Fixed Array</a></td></tr>
+          <tr><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2012.html">Program 12 - Read from CSV to Array of Objects</a></td><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Task%2012.html">Task 12 - CSV to Fixed Object Array</a></td></tr>
+          <tr><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2013.html">Program 13 - Defining a 2D Array</a></td><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Task%2013.html">Task 13 - Build a Fixed 2D Grid</a></td></tr>
+          <tr><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Program%2014.html">Program 14 - 2D Array of Records or Objects</a></td><td><a href="Booklet%202%20-%20Data%20Types%20and%20Structures/Task%2014.html">Task 14 - Cinema 2D Object Array</a></td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="booklet">
       <h2>Booklet 3 - Standard Algorithms</h2>
-      <ul>
-        <li><a href="Booklet%203%20-%20Standard%20Algorithms/Program%2015.html">Program 15</a></li>
-        <li><a href="Booklet%203%20-%20Standard%20Algorithms/Program%2016.html">Program 16</a></li>
-        <li><a href="Booklet%203%20-%20Standard%20Algorithms/Program%2017.html">Program 17</a></li>
-        <li><a href="Booklet%203%20-%20Standard%20Algorithms/Program%2018.html">Program 18</a></li>
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Program</th>
+            <th>Task</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="Booklet%203%20-%20Standard%20Algorithms/Program%2015.html">Program 15 - Bubble Sort on 1D Array</a></td><td><a href="Booklet%203%20-%20Standard%20Algorithms/Task%2015.html">Task 15 - Bubble Sort a 1D Array</a></td></tr>
+          <tr><td><a href="Booklet%203%20-%20Standard%20Algorithms/Program%2016.html">Program 16 - Insertion Sort on 1D Array</a></td><td><a href="Booklet%203%20-%20Standard%20Algorithms/Task%2016.html">Task 16 - Insertion Sort a 1D Array</a></td></tr>
+          <tr><td><a href="Booklet%203%20-%20Standard%20Algorithms/Program%2017.html">Program 17 - Binary Search on 1D Array</a></td><td><a href="Booklet%203%20-%20Standard%20Algorithms/Task%2017.html">Task 17 - Binary Search a Sorted Array</a></td></tr>
+          <tr><td><a href="Booklet%203%20-%20Standard%20Algorithms/Program%2018.html">Program 18 - Standard Algorithms on Array of Objects</a></td><td><a href="Booklet%203%20-%20Standard%20Algorithms/Task%2018.html">Task 18 - Sort and Search an Object Array</a></td></tr>
+        </tbody>
+      </table>
     </section>
 
     <section class="booklet">
       <h2>Booklet 4 - Database Connections</h2>
-      <ul>
-        <li><a href="Booklet%204%20-%20Database%20Connections/Program%2019.html">Program 19</a></li>
-        <li><a href="Booklet%204%20-%20Database%20Connections/Program%2020.html">Program 20</a></li>
-        <li><a href="Booklet%204%20-%20Database%20Connections/Program%2021.html">Program 21</a></li>
-        <li><a href="Booklet%204%20-%20Database%20Connections/Program%2022.html">Program 22</a></li>
-        <li><a href="Booklet%204%20-%20Database%20Connections/Program%2023.html">Program 23</a></li>
-        <li><a href="Booklet%204%20-%20Database%20Connections/Program%2024.html">Program 24</a></li>
-      </ul>
+      <table>
+        <thead>
+          <tr>
+            <th>Program</th>
+            <th>Task</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><a href="Booklet%204%20-%20Database%20Connections/Program%2019.html">Program 19 - Initial Connection</a></td><td><a href="Booklet%204%20-%20Database%20Connections/Task%2019.html">Task 19 - Initial Connection to Student</a></td></tr>
+          <tr><td><a href="Booklet%204%20-%20Database%20Connections/Program%2020.html">Program 20 - Connect and Select</a></td><td><a href="Booklet%204%20-%20Database%20Connections/Task%2020.html">Task 20 - Select All Students</a></td></tr>
+          <tr><td><a href="Booklet%204%20-%20Database%20Connections/Program%2021.html">Program 21 - Insert Data</a></td><td><a href="Booklet%204%20-%20Database%20Connections/Task%2021.html">Task 21 - Insert New Student</a></td></tr>
+          <tr><td><a href="Booklet%204%20-%20Database%20Connections/Program%2022.html">Program 22 - Update Data</a></td><td><a href="Booklet%204%20-%20Database%20Connections/Task%2022.html">Task 22 - Update Student Record</a></td></tr>
+          <tr><td><a href="Booklet%204%20-%20Database%20Connections/Program%2023.html">Program 23 - Delete Data</a></td><td><a href="Booklet%204%20-%20Database%20Connections/Task%2023.html">Task 23 - Delete Student Record</a></td></tr>
+          <tr><td><a href="Booklet%204%20-%20Database%20Connections/Program%2024.html">Program 24 - Complete OO Program</a></td><td></td></tr>
+        </tbody>
+      </table>
     </section>
 
     <p class="footer-note">Use the <strong>website/media</strong> folder to store images and other media assets.</p>

@@ -13,6 +13,9 @@ class Event:
     def getDate(self):
         return self.startDate
 
+    def getParticipants(self):
+        return self.participants
+
     def addParticipant(self, name):
         self.participants[self.index] = str(name)
         self.index = self.index + 1
@@ -31,7 +34,7 @@ class WorkMeeting(Event):
         return self.travelExpenses
 
     def getDate(self):
-        return ("The date of this Work Meeting is " + str(self.startDate))
+        return ("The date of this Work Meeting is " + super().getDate())
 
 class Personal(Event):
     def __init__(self, startDate, startTime, venue, reminder, eventType, description):
@@ -44,6 +47,9 @@ class Personal(Event):
 
     def setDescription(self, description):
         self.description = str(description)
+
+    def getEventType(self):
+        return self.eventType
 
     def getDescription(self):
         return self.description
@@ -61,18 +67,20 @@ print("--- Call getDate() (shows override in WorkMeeting) and addParticipant (in
 for obj in events:
     print("getDate():", obj.getDate())
     obj.addParticipant("Alice")
-    print("  first participant stored:", obj.participants[0])
+    print("  first participant stored:", obj.getParticipants()[0])
 
 # Demonstrate that subclass-only methods/properties must be accessed carefully.
 print("\n--- Attempt to call WorkMeeting-only method getTravelExpenses() on every item (runtime check) ---")
 # calculate travel expenses for the WorkMeeting instance so it has a value
 w.calculateTravelExpenses()
 for obj in events:
-    # This will succeed only for WorkMeeting; calling it on other instances will raise
-    # AttributeError and crash the program — useful for demonstrating the difference.
-    print("getTravelExpenses():", obj.getTravelExpenses())
+    if isinstance(obj, WorkMeeting):
+        print("getTravelExpenses():", obj.getTravelExpenses())
+    else:
+        print("getTravelExpenses(): not available for", type(obj).__name__)
 
 print("\n--- Access Personal-specific properties/methods using isinstance (safe) ---")
-for obj in events:   
-    print("Personal eventType:", obj.eventType)
-    print("Personal description:", obj.getDescription())
+for obj in events:
+    if isinstance(obj, Personal):
+        print("Personal eventType:", obj.getEventType())
+        print("Personal description:", obj.getDescription())

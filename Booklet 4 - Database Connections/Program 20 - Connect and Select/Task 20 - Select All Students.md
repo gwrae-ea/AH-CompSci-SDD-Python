@@ -25,7 +25,7 @@ Your task is to complete this file to:
 
 ## Student Class Requirements
 
-You must define a `Student` class with properties for all columns in the Students table:
+You must define a `Student` class with properties for all columns in the Students table and provide getter methods for values that are displayed outside the class:
 
 ```python
 class Student:
@@ -62,6 +62,7 @@ class Student:
 
 ### Display (FR7)
 - Format and print the student data as a clear table with headers and aligned columns
+- Use getter methods when reading values from each `Student` object for display
 - Include all 10 student properties in the table
 - Consider using column width formatting for readability
 - Display a row count at the end (e.g., "Total: 54 students")
@@ -100,7 +101,7 @@ class Student:
 4. **Format the table output:**
    Consider using format strings or f-strings to align columns:
    ```python
-   print(f"{student.student_id:<5} {student.first_name:<15} {student.last_name:<15} {student.grade_level:<10}")
+   print(f"{student.get_student_id():<5} {student.get_first_name():<15} {student.get_last_name():<15} {student.get_grade_level():<10}")
    ```
 
 5. **Add a `main` block:**

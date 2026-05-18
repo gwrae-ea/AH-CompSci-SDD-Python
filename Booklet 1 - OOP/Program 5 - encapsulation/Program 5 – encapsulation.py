@@ -8,11 +8,22 @@ class Event:
         self.__index = int(0)              #Integer
 
     def updateDate(self, eventDate):
-        self.startDate  = str(eventDate)
+        self.__startDate = str(eventDate)
 
     def getDate(self):
-        return self.startDate
+        return self.__startDate
+
+    def getVenue(self):
+        if 5 <= len(self.__venue) <= 15:
+            return self.__venue
+        return "Invalid venue"
+
+    def getParticipants(self):
+        return self.__participants
+
+    def getParticipantCount(self):
+        return self.__index
 
     def addParticipant(self, name):
-        self.participants[self.index] = str(name)
-        self.index = self.index + 1
+        self.__participants[self.__index] = str(name)
+        self.__index = self.__index + 1

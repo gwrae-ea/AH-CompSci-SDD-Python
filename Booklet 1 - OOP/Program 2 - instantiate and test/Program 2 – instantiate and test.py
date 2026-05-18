@@ -7,6 +7,9 @@ class Event:
         self.participants = [""]*20 #Array of String
         self.index = int(0)              #Integer
 
+    def getVenue(self):
+        return self.venue
+
 
 item1 = Event("13/04/18", "0900", "Main Office", True)
-print (item1.venue)
+print (item1.getVenue())

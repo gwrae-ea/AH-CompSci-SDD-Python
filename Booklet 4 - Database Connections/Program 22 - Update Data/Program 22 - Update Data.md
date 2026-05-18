@@ -156,10 +156,10 @@ Line 31:             RETURN
 Line 32:         ENDIF
 
 Line 33:         SEND "Leave blank to keep existing values." TO DISPLAY
-Line 34:         SET newName TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Name: ", employee.name)   [FR7, FR10]
-Line 35:         SET newPosition TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Position: ", employee.position)   [FR7, FR10]
-Line 36:         SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT("Enter New Salary: ", employee.salary)   [FR7, FR11]
-Line 37:         SET newDepartment TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Department: ", employee.department)   [FR7, FR10]
+Line 34:         SET newName TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Name: ", employee.get_name())   [FR7, FR10]
+Line 35:         SET newPosition TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Position: ", employee.get_position())   [FR7, FR10]
+Line 36:         SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT("Enter New Salary: ", employee.get_salary())   [FR7, FR11]
+Line 37:         SET newDepartment TO OPTIONAL_VALIDATED_TEXT_INPUT("Enter New Department: ", employee.get_department())   [FR7, FR10]
 
 Line 38:         SET updateQuery TO "UPDATE Employees SET name=%s, position=%s, salary=%s, department=%s WHERE id=%s"   [FR6]
 Line 39:         SET values TO (newName, newPosition, newSalary, newDepartment, employeeId)

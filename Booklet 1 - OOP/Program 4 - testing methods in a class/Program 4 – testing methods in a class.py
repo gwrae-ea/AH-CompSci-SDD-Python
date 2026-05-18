@@ -13,28 +13,38 @@ class Event:
     def getDate(self):
         return self.startDate
 
+    def getVenue(self):
+        return self.venue
+
     def addParticipant(self, name):
         self.participants[self.index] = str(name)
         self.index = self.index + 1
 
-#Test for the CONSTRUCTOR method
+# Pseudocode review:
+# Check that the UML and English pseudocode show the same constructor and methods.
+
+# Code review:
+# Check that the Python class contains Event(), getVenue(), updateDate(), getDate() and addParticipant().
+
+# Test the constructor and getter methods with a first object.
 item1 = Event("13/04/18", "0900", "Main Office", True)
-print (item1.venue)
+print("Constructor/getVenue test 1:", item1.getVenue())
+print("getDate test 1:", item1.getDate())
 
-#Test the updateDate() method by showing original date
-#then showing the new date
-print (item1.startDate, "is the original date")
+# Test updateDate() by checking the date before and after the change.
 item1.updateDate("13/04/22")
-print (item1.startDate, "is the updated date")
+print("getDate test 2:", item1.getDate())
 
-#Test the getDate() method by printing the returned value
-print (item1.getDate(), "is the date from the getDate() method")
+# Test addParticipant() with several names and check the array positions and index.
+item1.addParticipant("Erica Knowles")
+item1.addParticipant("Norman Osborne")
+item1.addParticipant("Fred Savage")
+print("addParticipant test 1:", item1.participants[0])
+print("addParticipant test 2:", item1.participants[1])
+print("addParticipant test 3:", item1.participants[2])
+print("Participant index:", item1.index)
 
-#Test the addParticipant() method is allocating names and incrementing index
-print (item1.index)
-print (item1.participants)
-item1.addParticipant ("Erica Knowles")
-item1.addParticipant ("Norman Osborne")
-item1.addParticipant ("Fred Savage")
-print (item1.index)
-print (item1.participants)
+# Test constructor independence with a second object.
+item2 = Event("20/06/18", "1400", "Assembly Hall", False)
+print("Constructor/getVenue test 2:", item2.getVenue())
+print("getDate test 3:", item2.getDate())

@@ -13,6 +13,12 @@ class Event:
     def getDate(self):
         return self.startDate
 
+    def getVenue(self):
+        return self.venue
+
+    def getParticipants(self):
+        return self.participants
+
     def addParticipant(self, name):
         self.participants[self.index] = str(name)
         self.index = self.index + 1
@@ -23,4 +29,4 @@ eventArray[0] = Event("14/04/2022", "0900", "Main Office", True )
 eventArray[1] = Event("15/04/2022", "1030", "Staff Room", True )
 
 eventArray[1].addParticipant("Erica Knowles")
-print (eventArray[1].participants)
+print (eventArray[1].getParticipants())

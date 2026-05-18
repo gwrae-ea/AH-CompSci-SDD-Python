@@ -7,6 +7,9 @@ class Event:
         self.participants = [""]*20 #Array of String
         self.index = int(0)              #Integer
 
+    def getVenue(self):
+        return self.venue
+
     def updateDate(self, eventDate):
         self.startDate  = str(eventDate)
 

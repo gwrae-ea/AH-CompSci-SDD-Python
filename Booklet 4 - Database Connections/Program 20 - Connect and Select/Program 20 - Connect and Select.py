@@ -20,6 +20,24 @@ class Employee:
         self.position = str(position)
         self.hireDate = str(hireDate)
 
+    def get_id(self):
+        return self.id
+
+    def get_name(self):
+        return self.name
+
+    def get_salary(self):
+        return self.salary
+
+    def get_department(self):
+        return self.department
+
+    def get_position(self):
+        return self.position
+
+    def get_hire_date(self):
+        return self.hireDate
+
 
 def select_employees():
     # FR8: validate required environment configuration values.
@@ -69,8 +87,8 @@ def select_employees():
         print(f"{'id':<10}{'name':<20}{'salary':<12}{'dept':<30}{'position':<30}{'date':<12}")
 
         for worker in results:
-            print(f"{str(worker.id):<10}{str(worker.name):<20}{str(worker.salary):<12}"
-                  f"{str(worker.department):<30}{str(worker.position):<30}{str(worker.hireDate):<12}")
+            print(f"{str(worker.get_id()):<10}{str(worker.get_name()):<20}{str(worker.get_salary()):<12}"
+                f"{str(worker.get_department()):<30}{str(worker.get_position()):<30}{str(worker.get_hire_date()):<12}")
 
     except Error as err:
         # FR14: include meaningful error context when query fails.

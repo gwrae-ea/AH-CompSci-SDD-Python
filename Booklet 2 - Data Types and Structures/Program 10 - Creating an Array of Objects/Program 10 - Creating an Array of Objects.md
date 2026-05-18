@@ -13,7 +13,7 @@ This program demonstrates how to create a developer-defined class and store mult
 1. The user wants to store multiple events in one program structure.
 2. The user wants each event to keep its own properties and participant list.
 3. The user wants a fixed maximum number of events to avoid uncontrolled growth.
-4. The user wants to add and view event data by index.
+4. The user wants to add and view event data by index using getter methods.
 
 ### Functional Requirements
 
@@ -89,7 +89,7 @@ DECLARE eventArray : ARRAY[1:20] OF Event
 SET eventArray[1] <- NEW Event(...)
 SET eventArray[2] <- NEW Event(...)
 CALL eventArray[2].addParticipant("Erica Knowles")
-OUTPUT eventArray[2].participants
+OUTPUT eventArray[2].getParticipants()
 ```
 
 ### Notes
@@ -106,5 +106,5 @@ OUTPUT eventArray[2].participants
 | Create fixed event array | `eventArray = [""] * 20` | Array length is 20 | Before: no array / After: length 20 |
 | Insert event object | `eventArray[0] = Event(...)` | Object stored at index 0 | Before: empty / After: Event object |
 | Add participant | `addParticipant("Erica")` | Participant saved at next index | Before: blank entry / After: `Erica` |
-| Retrieve event property | `eventArray[1].venue` | Correct venue displayed | Before: none / After: expected venue |
+| Retrieve event property | `eventArray[1].getVenue()` | Correct venue displayed | Before: none / After: expected venue |
 | Participant array bound | Add up to 20 names | No out-of-range insertion | Before: potential overflow / After: controlled capacity |
