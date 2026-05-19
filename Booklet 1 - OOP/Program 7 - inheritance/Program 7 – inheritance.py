@@ -8,24 +8,27 @@ class Event:
         self.__index = int(0)              #Integer
 
     def updateDate(self, eventDate):
-        self.startDate  = str(eventDate)
+        self.__startDate = str(eventDate)
 
     def getDate(self):
-        return self.startDate
+        return self.__startDate
+
+    def getVenue(self):
+        return self.__venue
 
     def addParticipant(self, name):
-        self.participants[self.index] = str(name)
-        self.index = self.index + 1
+        self.__participants[self.__index] = str(name)
+        self.__index = self.__index + 1
 
 class WorkMeeting(Event):
-    def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage ):
+    def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage):
         super().__init__(startDate, startTime, venue, reminder)
-        self.meetingTitle = str(meetingTitle)      #String
-        self.mileage = float(mileage)                #Real
-        self.travelExpenses = float(0)               #Real
+        self.__meetingTitle = str(meetingTitle)      #String
+        self.__mileage = float(mileage)              #Real
+        self.__travelExpenses = float(0)             #Real
 
     def calculateTravelExpenses(self):
-        self.travelExpenses = self.mileage * 1.5
+        self.__travelExpenses = self.__mileage * 1.5
     
     def getTravelExpenses(self):
-        return self.travelExpenses
+        return self.__travelExpenses

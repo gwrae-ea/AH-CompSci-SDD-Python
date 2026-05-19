@@ -18,19 +18,24 @@ class Event:
         self.__index = self.__index + 1
 
 class WorkMeeting(Event):
-    def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage ):
+    def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage):
         super().__init__(startDate, startTime, venue, reminder)
-        self.meetingTitle = str(meetingTitle)      #String
-        self.mileage = float(mileage)                #Real
-        self.travelExpenses = float(0)               #Real
+        self.__meetingTitle = str(meetingTitle)      #String
+        self.__mileage = float(mileage)              #Real
+        self.__travelExpenses = float(0)             #Real
+
+    def getDate(self):
+        return "Work meeting on " + super().getDate()
 
     def calculateTravelExpenses(self):
-        self.travelExpenses = self.mileage * 1.5
+        self.__travelExpenses = self.__mileage * 1.5
     
     def getTravelExpenses(self):
-        return self.travelExpenses
+        return self.__travelExpenses
 
-#Test for the CONSTRUCTOR method (inheriting from Event class)
+# Test the overridden getDate() method.
 workMeeting1 = WorkMeeting(startDate = "14/04/21", startTime = "0900", venue = "Main Office", reminder = True, meetingTitle = "Work from Home", mileage = 7.5)
 
-print ("The date of the meeting was" , workMeeting1.getDate())
+print("The date details are", workMeeting1.getDate())
+workMeeting1.calculateTravelExpenses()
+print("Travel expenses are £", workMeeting1.getTravelExpenses())

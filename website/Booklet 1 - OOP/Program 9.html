@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Program 9: –testing inheritance 2</title>
+  <title>Program 9 - personal subclass starter</title>
   <style>
     :root {
       --bg: #f4faf4;
@@ -110,7 +110,7 @@
   <div class="shell">
     <header class="hero">
       <div class="kicker">Program 9</div>
-      <h1>Program 9: –testing inheritance 2</h1>
+      <h1>Program 9 - personal subclass starter</h1>
       <p>Worked example page for this program. Use it to study the explanation, design, implementation, and test plan before completing the matching task in a different context.</p>
       <div class="toolbar"><a href="../index.html">Back to website index</a></div>
       <div class="meta"><span class="chip">Worked example</span><span class="chip">Program page</span><span class="chip">Green theme</span></div>
@@ -118,17 +118,17 @@
     <main class="card">
       <section class="section-block">
             <h2>Technical Explanation</h2>
-            <div class="section-content">This program continues testing inheritance but focuses on more advanced scenarios: polymorphism (treating different types uniformly), method overrides, and complex inheritance scenarios. The program demonstrates calling methods on a collection of mixed parent and child objects, handling polymorphic calls correctly, and verifying that the most specific implementation executes. It also tests method chaining (child calling parent via `super()`), inheritance-based processing, and shows how inheritance enables flexible, extensible code. This program validates not just that inheritance works, but that it enables the design patterns and flexibility that make OOP powerful.</div>
+        <div class="section-content">This program provides the starter code for the next task. It keeps the <code>Event</code> and <code>WorkMeeting</code> classes from Program 8 so that the learner can begin with a working inheritance and overriding example. In Task 9, this starter will be adapted to create a new child class called <code>Personal</code>. The learner will keep the inherited event behaviour, create a new overridden method, and add suitable private properties with getter and setter methods.</div>
         </section>
 
         <section class="section-block">
             <h2>Analysis</h2>
             <div class="section-content">### End User Requirements
 
-1. The user wants to mix parent and child objects in collections and process them uniformly.
-2. The user wants method overrides to execute the appropriate version based on object type.
-3. The user wants to verify polymorphism works correctly.
-4. The user wants to confirm that inheritance enables extensible design.
+1. The user wants starter code that already demonstrates inheritance and overriding.
+2. The user wants to reuse the existing <code>Event</code> design when creating a new subclass.
+3. The user wants a clear example that can be adapted into a personal-event class.
+4. The user wants to add new child-class data and methods without changing the whole parent class.
 
 ### Functional Requirements
 
@@ -136,119 +136,195 @@
 
 The solution is required to:
 
-FR1 Store parent and child objects in the same collection.
+FR1 Provide a working parent class called <code>Event</code>.
 
-FR2 Call methods on mixed collections correctly.
+FR2 Provide a working child class called <code>WorkMeeting</code> that inherits from <code>Event</code>.
 
-FR3 Verify polymorphic behavior (correct method version executes).
+FR3 Demonstrate an overridden <code>getDate()</code> method in the child class.
 
-FR4 Test method overrides in realistic scenarios.
+FR4 Give a valid starter structure that can be adapted into a new <code>Personal</code> subclass.
 
 #### Integration
 
 The solution is required to:
 
-FR5 Display output showing polymorphic behavior.
+FR5 Show how <code>super()</code> is used to call the parent constructor.
 
-FR6 Show how parent and child types behave differently.
+FR6 Include child-specific properties and methods in the starter code.
 
-FR7 Demonstrate extensibility benefits of inheritance.
+FR7 Display output that proves the overridden method works.
 
 #### Additional functional requirements
 
 The solution is required to:
 
-FR8 Test super() calls within methods.
+FR8 Create at least one child-class object using realistic test data.
 
-FR9 Test complex method behavior with inherited state.
+FR9 Show that the child object still uses inherited behaviour from <code>Event</code>.
 
-FR10 Display clear output showing polymorphic results.
+FR10 Keep the starter code simple enough to be modified in Task 9.
 
-FR11 Verify that inheritance enables flexible code patterns.
+FR11 Prepare the learner to add getter and setter methods in the next task.
 
 ---</div>
         </section>
 
         <section class="section-block">
             <h2>Design</h2>
-            <div class="section-content">### English Pseudocode
+            <div class="section-content"><strong>Parent class:</strong> Event
+          <strong>Child class:</strong> WorkMeeting
 
-1. Store a mix of Event and WorkMeeting objects in one collection.
-2. Loop through the collection one object at a time.
-3. Call the shared date method on each object.
-4. Let each object decide how its own result should appear.
-5. Show that different object types can still be handled together.
+          This starter keeps the Program 8 class structure. The learner can see how the child class inherits the common event information from <code>Event</code>, overrides <code>getDate()</code>, and adds new child-specific properties and methods. The same pattern will then be reused in Task 9 to create a <code>Personal</code> class.
 
----</div>
+          ### English Pseudocode
+
+          <strong>Parent Constructor: Event()</strong>
+          1. Accept the starting date, time, venue and reminder values.
+          2. Store each value inside the event object.
+          3. Create an empty participants list.
+          4. Set the participant index to the first free position.
+
+          <strong>Parent Method: getDate()</strong>
+          1. Read the stored date from the object.
+          2. Return that date value.
+
+          <strong>Child Constructor: WorkMeeting()</strong>
+          1. Accept all the event details plus the meeting title and mileage.
+          2. Call the parent constructor to set up the inherited event data.
+          3. Store the child-specific details in the child object.
+          4. Set the initial travel expenses to zero.
+
+          <strong>Child Method: getDate()</strong>
+          1. Call the parent version of <code>getDate()</code>.
+          2. Add text that makes the message specific to a work meeting.
+          3. Return the new combined string.
+
+          <strong>Child Method: calculateTravelExpenses()</strong>
+          1. Read the mileage stored in the child object.
+          2. Multiply the mileage by 1.5.
+          3. Store the result as the travel expenses.
+
+          <strong>Child Method: getTravelExpenses()</strong>
+          1. Read the stored travel expenses.
+          2. Return that value.
+          </div>
         </section>
 
         <section class="section-block">
             <h2>Implementation</h2>
-            <div class="section-content">[Program 9 - testing inheritance 2.py](./Program%209%20%E2%80%93testing%20inheritance%202.py)
+            <div class="section-content">[Program 9 - personal subclass starter.py](./Program%209%20%E2%80%93%20personal%20subclass%20starter.py)
 
 SQA-RL:
-```text
-SET workMeeting1 TO NEW WorkMeeting(...)
-SEND workMeeting1.getTravelExpenses() TO DISPLAY
+```
+CLASS Event
+  PRIVATE startDate AS STRING
+  PRIVATE startTime AS STRING
+  PRIVATE venue AS STRING
+  PRIVATE reminder AS BOOLEAN
+  PRIVATE participants AS ARRAY[1:20] OF STRING
+  PRIVATE index AS INTEGER
+
+  PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET startDate TO newStartDate
+    SET startTime TO newStartTime
+    SET venue TO newVenue
+    SET reminder TO newReminder
+    SET index TO 0
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN startDate
+  END FUNCTION
+END CLASS
+
+CLASS WorkMeeting EXTENDS Event
+  PRIVATE meetingTitle AS STRING
+  PRIVATE mileage AS REAL
+  PRIVATE travelExpenses AS REAL
+
+  PROCEDURE WorkMeeting(newStartDate, newStartTime, newVenue, newReminder, newMeetingTitle, newMileage)
+    CALL SUPER.Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET meetingTitle TO newMeetingTitle
+    SET mileage TO newMileage
+    SET travelExpenses TO 0
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN "Work meeting on " + SUPER.getDate()
+  END FUNCTION
+
+  PROCEDURE calculateTravelExpenses()
+    SET travelExpenses TO mileage * 1.5
+  END PROCEDURE
+
+  FUNCTION getTravelExpenses() RETURNS REAL
+    RETURN travelExpenses
+  END FUNCTION
+END CLASS
+
+DECLARE workMeeting1 AS NEW WorkMeeting("14/04/21", "0900", "Main Office", TRUE, "Work from Home", 7.5)
+
+SEND workMeeting1.getDate() TO DISPLAY
 CALL workMeeting1.calculateTravelExpenses()
 SEND workMeeting1.getTravelExpenses() TO DISPLAY
 ```
 
 ### Notes
 
-- Collections can hold parent and child objects
-- Methods called on collection items use correct type-specific version
-- Demonstrates true polymorphism
-- Shows benefits of inheritance for extensible code
+- This starter repeats the Program 8 inheritance and overriding structure
+- The child version reuses the parent version with <code>super()</code>
+- Overriding allows more specific behaviour in the child class
+- The same structure can be adapted in Task 9 to create a <code>Personal</code> class with getters and setters
 
 ---</div>
             <div class="python-code-label">Python Code</div>
             <pre><code>class Event:
-    def __init__(self, startDate, startTime, venue, reminder):
-        self.__startDate = str(startDate)  #String
-        self.__startTime = str(startTime)  #String
-        self.__venue = str(venue)          #String
-        self.__reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;)    #Boolean (don&#39;t use bool(reminder): bool(&quot;False&quot;) is True)
-        self.__participants = [&quot;&quot;]*20 #Array of String
-        self.__index = int(0)              #Integer
+        def __init__(self, startDate, startTime, venue, reminder):
+          self.__startDate = str(startDate)  #String
+          self.__startTime = str(startTime)  #String
+          self.__venue = str(venue)          #String
+          self.__reminder = reminder if isinstance(reminder, bool) else str(reminder).strip().lower() in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;)    #Boolean (don&#39;t use bool(reminder): bool(&quot;False&quot;) is True)
+          self.__participants = [&quot;&quot;]*20 #Array of String
+          self.__index = int(0)              #Integer
 
-    def updateDate(self, eventDate):
-        self.startDate  = str(eventDate)
+        def updateDate(self, eventDate):
+          self.__startDate = str(eventDate)
 
-    def getDate(self):
-        return self.startDate
+        def getDate(self):
+          return self.__startDate
 
-    def addParticipant(self, name):
-        self.participants[self.index] = str(name)
-        self.index = self.index + 1
+        def addParticipant(self, name):
+          self.__participants[self.__index] = str(name)
+          self.__index = self.__index + 1
 
-class WorkMeeting(Event):
-    def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage ):
-        super().__init__(startDate, startTime, venue, reminder)
-        self.meetingTitle = str(meetingTitle)      #String
-        self.mileage = float(mileage)                #Real
-        self.travelExpenses = float(0)               #Real
+      class WorkMeeting(Event):
+        def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage):
+          super().__init__(startDate, startTime, venue, reminder)
+          self.__meetingTitle = str(meetingTitle)      #String
+          self.__mileage = float(mileage)              #Real
+          self.__travelExpenses = float(0)             #Real
 
-    def calculateTravelExpenses(self):
-        self.travelExpenses = self.mileage * 1.5
+        def getDate(self):
+          return &quot;Work meeting on &quot; + super().getDate()
+
+        def calculateTravelExpenses(self):
+          self.__travelExpenses = self.__mileage * 1.5
     
-    def getTravelExpenses(self):
-        return self.travelExpenses
+        def getTravelExpenses(self):
+          return self.__travelExpenses
 
+      # Test the overridden getDate() method.
+      workMeeting1 = WorkMeeting(startDate = &quot;14/04/21&quot;, startTime = &quot;0900&quot;, venue = &quot;Main Office&quot;, reminder = True, meetingTitle = &quot;Work from Home&quot;, mileage = 7.5)
 
-#Test for the CONSTRUCTOR method (inheriting from Event class)
-workMeeting1 = WorkMeeting(startDate = &quot;14/04/21&quot;, startTime = &quot;0900&quot;, venue = &quot;Main Office&quot;, reminder = True, meetingTitle = &quot;Work from Home&quot;, mileage = 7.5)
-
-#Test for the 2 methods in WorkMeeting class
-print (&quot;Before calculation, the travel expenses are £&quot;, workMeeting1.getTravelExpenses())
-workMeeting1.calculateTravelExpenses()
-print (&quot;After calculation, the travel expenses are £&quot;, workMeeting1.getTravelExpenses())
+      print(&quot;The date details are&quot;, workMeeting1.getDate())
+      workMeeting1.calculateTravelExpenses()
+      print(&quot;Travel expenses are £&quot;, workMeeting1.getTravelExpenses())
 </code></pre>
         </section>
 
         <section class="section-block">
             <h2>Test Plan</h2>
-            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Subclass object creation</td><td>Create WorkMeeting object</td><td>Object created successfully</td><td>Before: TypeError / After: Object created</td></tr><tr><td>Inherited call</td><td>Call getDate() on WorkMeeting</td><td>Inherited Event behavior works</td><td>Before: Error / After: Correct date</td></tr><tr><td>Child method execution</td><td>Call calculateTravelExpenses()</td><td>Travel expenses updated</td><td>Before: 0 / After: Calculated value</td></tr><tr><td>Child getter output</td><td>Call getTravelExpenses()</td><td>Returns calculated expenses</td><td>Before: 0 / After: Expected value</td></tr><tr><td>Type-specific behavior</td><td>Compare Event and WorkMeeting usage</td><td>Shared parent behavior plus child additions</td><td>Before: No distinction / After: Clear distinction</td></tr></tbody></table></div>
+        <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Child object creation</td><td>Create a <code>WorkMeeting</code> object</td><td>Object is created successfully</td><td>Before: No object / After: Object available</td></tr><tr><td>Overridden child method result</td><td>Call <code>getDate()</code> on a <code>WorkMeeting</code> object</td><td>Returns a work-meeting date message</td><td>Before: Parent-style output / After: Child-specific output</td></tr><tr><td>Travel expense before calculation</td><td>Call <code>getTravelExpenses()</code> before calculation</td><td>Returns 0</td><td>Before: Initial value / After: 0 shown</td></tr><tr><td>Travel expense calculation</td><td>Call <code>calculateTravelExpenses()</code></td><td>Travel expenses are updated</td><td>Before: 0 / After: Calculated value</td></tr><tr><td>Travel expense getter</td><td>Call <code>getTravelExpenses()</code> after calculation</td><td>Returns the new expense value</td><td>Before: 0 / After: Updated value shown</td></tr></tbody></table></div>
         </section>
       <footer><p>View the original Python file for execution. This HTML version is for easier reading.</p></footer>
     </main>

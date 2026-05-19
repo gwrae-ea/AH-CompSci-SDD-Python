@@ -171,31 +171,118 @@ FR11 Document the inheritance relationship clearly in code.
 
         <section class="section-block">
             <h2>Design</h2>
-            <div class="section-content">### English Pseudocode
+            <div class="section-content"><strong>Parent class:</strong> Event
+<strong>Child class:</strong> WorkMeeting
 
-1. Create a parent Event class to hold the shared event details.
-2. Add methods for updating the date, reading the date, and adding participants.
-3. Create a WorkMeeting class that inherits from Event.
-4. Add work-meeting details such as title, mileage, and travel expenses.
-5. Add a method to calculate travel expenses from the mileage.
+This program introduces <strong>inheritance</strong>. Inheritance allows a new class to be created from an existing class. The new class is called the <strong>child class</strong> and it automatically receives the properties and methods of the <strong>parent class</strong>. In this diagram, <code>WorkMeeting</code> inherits from <code>Event</code>, so it can use the event data and methods already defined in the parent class, while also adding its own extra properties and methods.
 
----</div>
+<p style="text-align: center;"><img src="../media/B1P7UMLClass.drawio.png" alt="UML class diagram for Event and WorkMeeting inheritance" style="max-width: 100%; height: auto; border: 1px solid #d8e1ee; display: inline-block;"></p>
+
+### English Pseudocode
+
+<strong>Parent Constructor: Event()</strong>
+1. Accept the starting date, time, venue and reminder values.
+2. Store each value inside the event object.
+3. Create an empty participants list.
+4. Set the participant index to the first free position.
+
+<strong>Parent Method: getVenue()</strong>
+1. Read the venue stored in the parent object.
+2. Return that venue value.
+
+<strong>Parent Method: updateDate()</strong>
+1. Accept a new date value.
+2. Replace the current stored date with the new date.
+
+<strong>Parent Method: getDate()</strong>
+1. Read the stored date from the object.
+2. Return that date value.
+
+<strong>Parent Method: addParticipant()</strong>
+1. Accept a participant name.
+2. Store the name in the participants list at the next free position.
+3. Increase the index so the next participant is stored in the next space.
+
+<strong>Child Constructor: WorkMeeting()</strong>
+1. Accept all the event details plus the meeting title and mileage.
+2. Call the parent constructor to set up the inherited event data.
+3. Store the meeting title and mileage in the child object.
+4. Set the initial travel expenses to zero.
+
+<strong>Child Method: calculateTravelExpenses()</strong>
+1. Read the mileage stored in the child object.
+2. Multiply the mileage by 1.5.
+3. Store the result as the travel expenses.
+
+<strong>Child Method: getTravelExpenses()</strong>
+1. Read the stored travel expenses.
+2. Return that value.
+</div>
         </section>
 
         <section class="section-block">
             <h2>Implementation</h2>
             <div class="section-content">[Program 7 - inheritance.py](./Program%207%20%E2%80%93%20inheritance.py)
 
-      SQA-RL:
-      ```text
-      CLASS WorkMeeting EXTENDS Event
-        METHOD __init__(..., meetingTitle, mileage)
-          CALL SUPER.__init__(...)
-          SET self.meetingTitle TO meetingTitle
-          SET self.mileage TO mileage
-        END METHOD
-      END CLASS
-      ```
+SQA-RL:
+```
+CLASS Event
+  PRIVATE startDate AS STRING
+  PRIVATE startTime AS STRING
+  PRIVATE venue AS STRING
+  PRIVATE reminder AS BOOLEAN
+  PRIVATE participants AS ARRAY[1:20] OF STRING
+  PRIVATE index AS INTEGER
+
+  PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET startDate TO newStartDate
+    SET startTime TO newStartTime
+    SET venue TO newVenue
+    SET reminder TO newReminder
+    SET index TO 0
+  END PROCEDURE
+
+  FUNCTION getVenue() RETURNS STRING
+    RETURN venue
+  END FUNCTION
+
+  PROCEDURE updateDate(eventDate)
+    SET startDate TO eventDate
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN startDate
+  END FUNCTION
+
+  PROCEDURE addParticipant(name)
+    SET participants[index] TO name
+    SET index TO index + 1
+  END PROCEDURE
+END CLASS
+
+CLASS WorkMeeting EXTENDS Event
+  PRIVATE meetingTitle AS STRING
+  PRIVATE mileage AS REAL
+  PRIVATE travelExpenses AS REAL
+
+  PROCEDURE WorkMeeting(newStartDate, newStartTime, newVenue, newReminder, newMeetingTitle, newMileage)
+    CALL SUPER.Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET meetingTitle TO newMeetingTitle
+    SET mileage TO newMileage
+    SET travelExpenses TO 0
+  END PROCEDURE
+
+  PROCEDURE calculateTravelExpenses()
+    SET travelExpenses TO mileage * 1.5
+  END PROCEDURE
+
+  FUNCTION getTravelExpenses() RETURNS REAL
+    RETURN travelExpenses
+  END FUNCTION
+END CLASS
+```
+
+Inheritance is shown in the full class definitions above. <code>WorkMeeting</code> extends <code>Event</code>, so it reuses the parent constructor and methods, then adds its own properties and behaviour for work meetings.
 
 ### Notes
 
@@ -216,32 +303,35 @@ FR11 Document the inheritance relationship clearly in code.
         self.__index = int(0)              #Integer
 
     def updateDate(self, eventDate):
-        self.startDate  = str(eventDate)
+          self.__startDate = str(eventDate)
 
     def getDate(self):
-        return self.startDate
+          return self.__startDate
+
+        def getVenue(self):
+          return self.__venue
 
     def addParticipant(self, name):
-        self.participants[self.index] = str(name)
-        self.index = self.index + 1
+          self.__participants[self.__index] = str(name)
+          self.__index = self.__index + 1
 
 class WorkMeeting(Event):
-    def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage ):
+        def __init__(self, startDate, startTime, venue, reminder, meetingTitle, mileage):
         super().__init__(startDate, startTime, venue, reminder)
-        self.meetingTitle = str(meetingTitle)      #String
-        self.mileage = float(mileage)                #Real
-        self.travelExpenses = float(0)               #Real
+          self.__meetingTitle = str(meetingTitle)      #String
+          self.__mileage = float(mileage)              #Real
+          self.__travelExpenses = float(0)             #Real
 
     def calculateTravelExpenses(self):
-        self.travelExpenses = self.mileage * 1.5
+          self.__travelExpenses = self.__mileage * 1.5
     
     def getTravelExpenses(self):
-        return self.travelExpenses</code></pre>
+          return self.__travelExpenses</code></pre>
         </section>
 
         <section class="section-block">
             <h2>Test Plan</h2>
-            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Child inherits properties</td><td>Create child, access parent property</td><td>Property accessible</td><td>Before: AttributeError / After: Value</td></tr><tr><td>Child inherits methods</td><td>Call parent method on child object</td><td>Parent method works on child</td><td>Before: AttributeError / After: Method works</td></tr><tr><td>Child adds properties</td><td>Add property in child class</td><td>New property on child, not parent</td><td>Before: N/A / After: Property exists</td></tr><tr><td>Child adds methods</td><td>Add method in child class</td><td>New method callable on child</td><td>Before: AttributeError / After: Method works</td></tr><tr><td>Method override</td><td>Override parent method in child</td><td>Child version executes</td><td>Before: Parent version / After: Child version</td></tr><tr><td>Polymorphism</td><td>Use child where parent expected</td><td>Works due to inheritance</td><td>Before: Type error / After: Works</td></tr></tbody></table></div>
+            <div class="table-wrap"><table class="test-plan-table"><thead><tr><th>Test Case</th><th>Operation</th><th>Expected</th><th>Evidence</th></tr></thead><tbody><tr><td>Child inherits properties</td><td>Create child, access parent property</td><td>Property accessible</td><td>Before: AttributeError / After: Value</td></tr><tr><td>Child inherits methods</td><td>Call parent method on child object</td><td>Parent method works on child</td><td>Before: AttributeError / After: Method works</td></tr><tr><td>Child adds properties</td><td>Add property in child class</td><td>New property on child, not parent</td><td>Before: N/A / After: Property exists</td></tr><tr><td>Child adds methods</td><td>Add method in child class</td><td>New method callable on child</td><td>Before: AttributeError / After: Method works</td></tr></tbody></table></div>
         </section>
       <footer><p>View the original Python file for execution. This HTML version is for easier reading.</p></footer>
     </main>
