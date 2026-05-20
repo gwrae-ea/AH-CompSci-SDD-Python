@@ -169,22 +169,66 @@ FR10 Keep parsing logic clear and maintainable.
 
         <section class="section-block">
             <h2>Design</h2>
-            <div class="section-content">### Data Structure Design
+            <div class="section-content"><strong>Class:</strong> Event
 
-- Read all lines from CSV first.
-- Create fixed-size array: `eventArray = [&quot;&quot;] * len(linesArray)`
-- Insert one `Event` object per row by index.
+<span style="color: #1a6bbf; font-weight: 600;">### Data Structure Design
+
+- Fixed-size event array populated from CSV: <code>eventArray = [&quot;&quot;] * len(linesArray)</code>
+- Fixed-size participant array inside each <code>Event</code>: <code>participants = [&quot;&quot;] * 20</code>
+  - Integer index tracks next insertion point for participants.</span>
+
+<p style="text-align: center;"><img src="../media/B1P6UMLClass.drawio.png" alt="UML class diagram for Event class" style="max-width: 100%; height: auto; border: 1px solid #d8e1ee; display: inline-block;"></p>
+
+### Array of Objects Design (Plain English)
+
+- The program reads all event rows first so it knows exactly how many object spaces are needed.
+- It then creates a fixed set of spaces to match that row count.
+- A counter tracks which space should receive the next event object.
+- Each CSV row becomes one event object and is stored in the current space.
+- The counter advances until all spaces are filled in sequence.
 
 ### English Pseudocode
 
-1. Open CSV file and read all lines.
-2. Create fixed-size array sized to number of lines.
-3. For each line:
-   - Split by comma.
-   - Instantiate `Event` object.
-   - Store object at current index.
-4. Return fixed-size object array.
-5. Display selected properties.
+<strong>Constructor: Event()</strong>
+1. Accept the starting date, time, venue and reminder values.
+2. Store each value inside the event object.
+3. Convert reminder input to a boolean value.
+4. Create an empty participants list.
+5. Set the participant index to the first free position.
+
+<strong>Method: updateDate()</strong>
+1. Accept a new date value.
+2. Replace the current stored date with the new date.
+
+<strong>Method: getDate()</strong>
+1. Read the stored date from the object.
+2. Return that date value.
+
+<strong>Method: getVenue()</strong>
+1. Read the venue stored in the object.
+2. Return that venue value.
+
+<strong>Method: getStartTime()</strong>
+1. Read the start time stored in the object.
+2. Return that start time value.
+
+<strong>Method: addParticipant()</strong>
+1. Accept a participant name.
+2. Store the name in the participants list at the next free position.
+3. Increase the index so the next participant is stored in the next space.
+
+<strong>Function: populateEventArrayFromFile()</strong>
+1. Open the CSV file for reading.
+2. Read all lines from the file into a list.
+3. Create a fixed-size array using the number of lines.
+4. Set an index counter to 1.
+5. Close the file.
+6. For each line:
+   - Split the line by commas.
+   - Create a new <code>Event</code> object from the fields.
+  - Store the object at <code>eventArray[index]</code>.
+  - Increase index by 1.
+7. Return the populated event array.
 
 ---</div>
         </section>
@@ -195,18 +239,61 @@ FR10 Keep parsing logic clear and maintainable.
 
 SQA-RL:
 ```text
-OPENFILE &quot;dataFiles/eventData.csv&quot; FOR READ
-SET linesArray &lt;- READALLLINES
-CLOSEFILE
+CLASS Event
+  DECLARE startDate : STRING
+  DECLARE startTime : STRING
+  DECLARE venue : STRING
+  DECLARE reminder : BOOLEAN
+  DECLARE participants : ARRAY[1:20] OF STRING
+  DECLARE index : INTEGER
 
-DECLARE eventArray : ARRAY[1:SIZE(linesArray)] OF Event
-SET idx &lt;- 1
-FOR eachLine IN linesArray
-    SET fields &lt;- SPLIT(eachLine, &quot;,&quot;)
-    SET eventArray[idx] &lt;- NEW Event(fields[1], fields[2], fields[3], fields[4])
-    SET idx &lt;- idx + 1
-NEXT eachLine
+  PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET startDate TO STRING(newStartDate)
+    SET startTime TO STRING(newStartTime)
+    SET venue TO STRING(newVenue)
+    SET reminder TO TOBOOLEAN(newReminder)
+    SET index TO 0
+  END PROCEDURE
 
+  PROCEDURE updateDate(eventDate)
+    SET startDate TO STRING(eventDate)
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN startDate
+  END FUNCTION
+
+  FUNCTION getVenue() RETURNS STRING
+    RETURN venue
+  END FUNCTION
+
+  FUNCTION getStartTime() RETURNS STRING
+    RETURN startTime
+  END FUNCTION
+
+  PROCEDURE addParticipant(name)
+    SET participants[index] TO STRING(name)
+    SET index TO index + 1
+  END PROCEDURE
+END CLASS
+
+FUNCTION populateEventArrayFromFile() RETURNS ARRAY OF Event
+  OPENFILE &quot;dataFiles/eventData.csv&quot; FOR READ
+  SET linesArray TO READALLLINES
+  DECLARE eventArray : ARRAY[1:SIZE(linesArray)] OF Event
+  SET idx TO 1
+  CLOSEFILE
+
+  FOR eachLine IN linesArray
+    SET lineSplit TO SPLIT(eachLine, &quot;,&quot;)
+    SET eventArray[idx] TO NEW Event(lineSplit[1], lineSplit[2], lineSplit[3], lineSplit[4])
+    SET idx TO idx + 1
+  NEXT eachLine
+
+  RETURN eventArray
+END FUNCTION
+
+SET eventArray TO populateEventArrayFromFile()
 OUTPUT eventArray[1].getVenue()
 OUTPUT eventArray[24].getStartTime()
 ```

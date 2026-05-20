@@ -260,7 +260,7 @@ CLASS Event
   END PROCEDURE
 END CLASS
 
-DECLARE item1 AS NEW Event("13/04/18", "0900", "Main Hall", TRUE)
+<span style="color: #1a6bbf; font-weight: 600;">DECLARE item1 AS NEW Event("13/04/18", "0900", "Main Hall", TRUE)
 SEND item1.getVenue() TO DISPLAY
 
 DECLARE item2 AS NEW Event("13/04/18", "0900", "Gym", TRUE)
@@ -276,7 +276,7 @@ SEND item1.getDate() TO DISPLAY
 CALL item1.addParticipant("Erica Knowles")
 CALL item1.addParticipant("Norman Osborne")
 SEND item1.getParticipantCount() TO DISPLAY
-SEND item1.getParticipants() TO DISPLAY
+SEND item1.getParticipants() TO DISPLAY</span>
 ```
 
 ### Notes

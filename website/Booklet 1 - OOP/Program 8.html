@@ -198,10 +198,10 @@ This program develops the inheritance example from Program 7 by adding an <stron
 3. Store the meeting title and mileage in the child object.
 4. Set the initial travel expenses to zero.
 
-<strong>Child Method: getDate()</strong>
+<span style="color: #1a6bbf; font-weight: 600;"><strong>Child Method: getDate()</strong>
 1. Call the parent version of <code>getDate()</code>.
 2. Add extra text to show that the date belongs to a work meeting.
-3. Return the new combined result.
+3. Return the new combined result.</span>
 
 <strong>Child Method: calculateTravelExpenses()</strong>
 1. Read the mileage stored in the child object.
@@ -258,9 +258,9 @@ CLASS WorkMeeting EXTENDS Event
     SET travelExpenses TO 0
   END PROCEDURE
 
-  FUNCTION getDate() RETURNS STRING
+  <span style="color: #1a6bbf; font-weight: 600;">FUNCTION getDate() RETURNS STRING
     RETURN "Work meeting on " + SUPER.getDate()
-  END FUNCTION
+  END FUNCTION</span>
 
   PROCEDURE calculateTravelExpenses()
     SET travelExpenses TO mileage * 1.5
@@ -271,10 +271,10 @@ CLASS WorkMeeting EXTENDS Event
   END FUNCTION
 END CLASS
 
-DECLARE workMeeting1 AS NEW WorkMeeting("14/04/21", "0900", "Main Office", TRUE, "Work from Home", 7.5)
+<span style="color: #1a6bbf; font-weight: 600;">DECLARE workMeeting1 AS NEW WorkMeeting("14/04/21", "0900", "Main Office", TRUE, "Work from Home", 7.5)
 SEND workMeeting1.getDate() TO DISPLAY
 CALL workMeeting1.calculateTravelExpenses()
-SEND workMeeting1.getTravelExpenses() TO DISPLAY
+SEND workMeeting1.getTravelExpenses() TO DISPLAY</span>
 ```
 
 ### Notes

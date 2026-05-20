@@ -171,24 +171,33 @@ FR10 Keep the function reusable for different input arrays.
             <h2>Design</h2>
             <div class="section-content">### Data Structure Design
 
-- Use a 1D numeric array.
-- Track active unsorted region with variable `n`.
-- Use boolean `swapped` for early stop.
+    - A fixed-size 1D array stores all numeric values to be sorted.
+    - The algorithm repeatedly scans adjacent pairs from left to right.
+    - A pass boundary (`n`) shrinks after each complete pass because the largest value is placed at the end.
+    - A boolean flag (`swapped`) records whether any swap happened in the current pass.
+    - If no swap occurs, the array is already sorted and processing stops early.
 
-### English Pseudocode
+    ### English Pseudocode
 
-1. Set `n` to array length.
-2. Set `swapped` to true.
-3. While `swapped` is true and `n` is valid:
-   - Set `swapped` false.
-   - Loop from index 0 to `n-2`.
-   - Compare adjacent values.
-   - Swap when left value is larger.
-   - Set `swapped` true if a swap occurs.
-4. Decrease `n` after each pass.
-5. Return sorted array.
+    1. Set a variable to the length of the array.
+    2. Set a swap flag to true.
+    3. While swaps are still happening and the unsorted length is greater than zero:
+      - Reset the swap flag to false.
+      - Compare each adjacent pair inside the unsorted region.
+      - If the left value is greater than the right value, swap them.
+      - Mark that a swap occurred.
+    4. Reduce the unsorted length by one.
+    5. Return the sorted array.
 
----</div>
+    ### 1D Array Design (Plain English)
+
+    - Imagine values lined up in one row.
+    - On each pass, neighboring values are checked and out-of-order pairs are swapped.
+    - Bigger values gradually move to the right end of the row.
+    - After each pass, one more value is known to be in its final position.
+    - The process stops as soon as a full pass makes no changes.
+
+    ---</div>
         </section>
 
         <section class="section-block">
@@ -197,11 +206,14 @@ FR10 Keep the function reusable for different input arrays.
 
 SQA-RL:
 ```text
+DECLARE numArray : ARRAY[1:7] OF INTEGER
+SET numArray <- [23, 546, 2, 3214, 456, 234, 321]
+
 FUNCTION bubbleSort(numArray)
     SET n &lt;- SIZE(numArray)
     SET swapped &lt;- TRUE
 
-    WHILE swapped = TRUE AND n &gt;= 0
+  WHILE swapped = TRUE AND n &gt; 0
         SET swapped &lt;- FALSE
         FOR i &lt;- 1 TO n-1
             IF numArray[i] &gt; numArray[i+1] THEN
@@ -214,6 +226,10 @@ FUNCTION bubbleSort(numArray)
 
     RETURN numArray
 END FUNCTION
+
+OUTPUT numArray
+SET numArray &lt;- bubbleSort(numArray)
+OUTPUT numArray
 ```
 
 ---</div>

@@ -171,18 +171,31 @@ FR10 Keep pricing rules by row.
             <h2>Design</h2>
             <div class="section-content">### Data Structure Design
 
-- Fixed-size dimensions: `ROWS = 4`, `SEATS_PER_ROW = 6`
-- Fixed-size 2D object array:
-  `cinema = [[Seat(r, s) for s in range(SEATS_PER_ROW)] for r in range(ROWS)]`
+- Fixed-size cinema dimensions are set at program start: 4 rows and 6 seats per row.
+- A fixed-size 2D array stores `Seat` objects, one object per seat position.
+- Each `Seat` object holds row number, seat number, status, and ticket price.
+- Pricing is linked to row so revenue can be calculated from booked seat objects.
+- The full 2D structure is traversed to count available seats and total booked revenue.
+- A separate display grid is built so the cinema can be shown in table form.
 
 ### English Pseudocode
 
-1. Define `Seat` class with row, number, status, price.
-2. Create fixed-size 2D array of `Seat` objects.
-3. Book selected seats by row/column index.
-4. Traverse fixed-size 2D array to count available seats.
-5. Traverse fixed-size 2D array to sum booked revenue.
-6. Display seating grid and reports.
+1. Define a `Seat` class with constructor, booking, availability, and display behavior.
+2. Set fixed values for number of rows and seats per row.
+3. Build a fixed-size 2D array and place a `Seat` object in every coordinate.
+4. Attempt bookings using row/seat coordinates.
+5. Reject duplicate bookings where a seat is already marked booked.
+6. Traverse all coordinates to count available seats.
+7. Traverse all coordinates to total revenue from booked seats.
+8. Output the cinema layout and summary values.
+
+### 2D Array of Objects Design (Plain English)
+
+- Think of the cinema as a fixed grid where every row/seat position exists from the start.
+- Each position contains a seat object rather than just a single character value.
+- Booking changes the status stored inside one object at a known position.
+- Counting and revenue are found by checking every object in the grid one-by-one.
+- Because the size is fixed, coverage is complete and no seat is skipped.
 
 ---</div>
         </section>
@@ -197,14 +210,46 @@ DECLARE ROWS &lt;- 4
 DECLARE SEATS_PER_ROW &lt;- 6
 DECLARE cinema : ARRAY[1:ROWS, 1:SEATS_PER_ROW] OF Seat
 
+CLASS Seat
+  DECLARE row : INTEGER
+  DECLARE seatNum : INTEGER
+  DECLARE status : STRING
+  DECLARE price : REAL
+
+  PROCEDURE Seat(newRow, newSeatNum, rowPrices)
+    SET row TO newRow
+    SET seatNum TO newSeatNum
+    SET status TO &quot;available&quot;
+    SET price TO rowPrices[row]
+  END PROCEDURE
+
+  FUNCTION isAvailable() RETURNS BOOLEAN
+    RETURN status = &quot;available&quot;
+  END FUNCTION
+
+  FUNCTION book() RETURNS BOOLEAN
+    IF status = &quot;booked&quot; THEN
+      RETURN FALSE
+    END IF
+    SET status TO &quot;booked&quot;
+    RETURN TRUE
+  END FUNCTION
+END CLASS
+
+DECLARE rowPrices : ARRAY[1:ROWS] OF REAL
+SET rowPrices &lt;- [8.50, 12.00, 12.00, 15.00]
+
 FOR r FROM 1 TO ROWS
     FOR s FROM 1 TO SEATS_PER_ROW
-        SET cinema[r,s] &lt;- NEW Seat(r, s)
+        SET cinema[r,s] &lt;- NEW Seat(r, s, rowPrices)
     NEXT s
 NEXT r
 
-CALL bookSeat(cinema, 1, 2)
-CALL bookSeat(cinema, 2, 3)
+CALL cinema[1,2].book()
+CALL cinema[2,3].book()
+CALL cinema[3,1].book()
+CALL cinema[4,5].book()
+CALL cinema[1,2].book()    // second booking attempt
 
 SET availableCount &lt;- 0
 SET revenue &lt;- 0
@@ -217,6 +262,9 @@ FOR r FROM 1 TO ROWS
         END IF
     NEXT s
 NEXT r
+
+    OUTPUT availableCount
+    OUTPUT revenue
 ```
 
 ### Notes

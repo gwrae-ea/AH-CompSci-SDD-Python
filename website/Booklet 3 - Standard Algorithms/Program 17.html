@@ -171,22 +171,35 @@ FR10 Handle values not present in array.
             <h2>Design</h2>
             <div class="section-content">### Data Structure Design
 
-- Use one 1D numeric array.
-- Sort first, then search.
-- Binary search region controlled by `low` and `high`.
+    - A fixed-size 1D array stores the dataset.
+    - The array is sorted first so Binary Search can operate correctly.
+    - Binary Search uses three index values:
+      - `low` for the lower bound
+      - `high` for the upper bound
+      - `mid` for the midpoint being tested
+    - Each comparison halves the active search region.
+    - The algorithm returns a valid index when found, or `-1` if absent.
 
-### English Pseudocode
+    ### English Pseudocode
 
-1. Sort numeric array ascending.
-2. Set `low = 0`, `high = len(array)-1`.
-3. While not found and `low &lt;= high`:
-   - Set `mid = (low + high) // 2`.
-   - If target equals middle value, return `mid`.
-   - If target larger, set `low = mid + 1`.
-   - Else set `high = mid - 1`.
-4. Return `-1` if search ends with no match.
+    1. Sort the numeric array into ascending order.
+    2. Set low bound to first index and high bound to last index.
+    3. Repeat while low is less than or equal to high:
+      - Calculate middle index.
+      - If target equals middle value, return that index.
+      - If target is greater than middle value, move low above midpoint.
+      - Otherwise move high below midpoint.
+    4. If loop ends, return `-1` to show target is not in the array.
 
----</div>
+    ### 1D Array Search Design (Plain English)
+
+    - First, the values are arranged in order.
+    - The search looks at the middle value instead of starting from one end.
+    - Each comparison removes half of the remaining possibilities.
+    - The search space gets smaller very quickly.
+    - The process ends with either an exact position or a clear not-found result.
+
+    ---</div>
         </section>
 
         <section class="section-block">
@@ -195,6 +208,27 @@ FR10 Handle values not present in array.
 
 SQA-RL:
 ```text
+DECLARE numArray : ARRAY[1:24] OF INTEGER
+SET numArray &lt;- [23,546,2,3214,456,234,3214,4576,4657,324,321,4658,765,324,6548,435,54687,32,46857,87659,435,486,87690,5]
+
+FUNCTION bubbleSort(numArray)
+  SET n &lt;- SIZE(numArray)
+  SET swapped &lt;- TRUE
+
+  WHILE swapped = TRUE AND n &gt; 0
+    SET swapped &lt;- FALSE
+    FOR i &lt;- 1 TO n-1
+      IF numArray[i] &gt; numArray[i+1] THEN
+        SWAP numArray[i], numArray[i+1]
+        SET swapped &lt;- TRUE
+      END IF
+    NEXT i
+    SET n &lt;- n - 1
+  END WHILE
+
+  RETURN numArray
+END FUNCTION
+
 FUNCTION binarySearch(numArray, target)
     SET low &lt;- 1
     SET high &lt;- SIZE(numArray)
@@ -212,6 +246,12 @@ FUNCTION binarySearch(numArray, target)
 
     RETURN -1
 END FUNCTION
+
+SET numArray &lt;- bubbleSort(numArray)
+OUTPUT numArray
+INPUT target
+SET posFound &lt;- binarySearch(numArray, target)
+OUTPUT posFound
 ```
 
 ---</div>

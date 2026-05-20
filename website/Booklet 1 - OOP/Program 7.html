@@ -203,7 +203,7 @@ This program introduces <strong>inheritance</strong>. Inheritance allows a new c
 2. Store the name in the participants list at the next free position.
 3. Increase the index so the next participant is stored in the next space.
 
-<strong>Child Constructor: WorkMeeting()</strong>
+<span style="color: #1a6bbf; font-weight: 600;"><strong>Child Constructor: WorkMeeting()</strong>
 1. Accept all the event details plus the meeting title and mileage.
 2. Call the parent constructor to set up the inherited event data.
 3. Store the meeting title and mileage in the child object.
@@ -216,7 +216,7 @@ This program introduces <strong>inheritance</strong>. Inheritance allows a new c
 
 <strong>Child Method: getTravelExpenses()</strong>
 1. Read the stored travel expenses.
-2. Return that value.
+2. Return that value.</span>
 </div>
         </section>
 
@@ -260,7 +260,7 @@ CLASS Event
   END PROCEDURE
 END CLASS
 
-CLASS WorkMeeting EXTENDS Event
+<span style="color: #1a6bbf; font-weight: 600;">CLASS WorkMeeting EXTENDS Event
   PRIVATE meetingTitle AS STRING
   PRIVATE mileage AS REAL
   PRIVATE travelExpenses AS REAL
@@ -279,7 +279,7 @@ CLASS WorkMeeting EXTENDS Event
   FUNCTION getTravelExpenses() RETURNS REAL
     RETURN travelExpenses
   END FUNCTION
-END CLASS
+END CLASS</span>
 ```
 
 Inheritance is shown in the full class definitions above. <code>WorkMeeting</code> extends <code>Event</code>, so it reuses the parent constructor and methods, then adds its own properties and behaviour for work meetings.

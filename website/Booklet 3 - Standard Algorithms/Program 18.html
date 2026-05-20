@@ -171,18 +171,77 @@ FR10 Handle not-found case robustly.
             <h2>Design</h2>
             <div class="section-content">### Data Structure Design
 
-- Use a fixed-size object array sized from CSV row count.
-- Store `Car` objects by index.
-- Sort/search operate on `get_car_make()`.
+- Use an object array to store `Car` records read from CSV.
+- Each `Car` object keeps strongly typed values for key fields:
+  - `car_year` stored as an Integer
+  - `car_serviced` stored as a Boolean
+- Setter validation ensures invalid year or service-status data is rejected.
+- Sorting and searching compare car make values through getter methods.
+
+<p style="text-align: center;"><img src="../media/B3P18UMLClass.drawio.png" alt="UML class diagram for Program 18 Car class" style="max-width: 100%; height: auto; border: 1px solid #d8e1ee; display: inline-block;"></p>
 
 ### English Pseudocode
 
-1. Read all CSV lines.
-2. Create fixed-size car array with length equal to lines.
-3. For each row, create `Car` object and insert by index.
-4. Bubble sort array by `get_car_make()`.
-5. Binary search sorted array for user target make using `get_car_make()`.
-6. Output found/not found message.
+<strong>Constructor: Car()</strong>
+1. Accept id, make, model, colour, year and serviced values.
+2. Store id, make, model and colour as strings.
+3. Call `set_car_year()` to validate and store the year.
+4. Call `set_car_serviced()` to validate and store serviced status.
+
+<strong>Method: get_car_make()</strong>
+1. Read the make stored in the object.
+2. Return that make.
+
+<strong>Method: get_car_year()</strong>
+1. Read the year stored in the object.
+2. Return that integer year.
+
+<strong>Method: get_car_serviced()</strong>
+1. Read the serviced flag stored in the object.
+2. Return that boolean value.
+
+<strong>Method: set_car_year()</strong>
+1. Accept a new year value.
+2. Check that it can be converted to an integer.
+3. Check the year is within valid range.
+4. Store the validated integer year.
+
+<strong>Method: set_car_serviced()</strong>
+1. Accept a new serviced value.
+2. If it is already boolean, store it directly.
+3. Otherwise, normalize text and check accepted true/false values.
+4. Store as boolean when valid, otherwise reject input.
+
+<strong>Function: readFileToArrayOfObjects()</strong>
+1. Open the car CSV file and read all lines.
+2. For each line, split fields by comma.
+3. Create a `Car` object from fields.
+4. Add the object to the car array.
+5. Return the populated object array.
+
+<strong>Function: bubbleSortArrayofObjects()</strong>
+1. Set working length and swapped flag.
+2. Repeat passes while swaps occur.
+3. Compare adjacent objects by `get_car_make()`.
+4. Swap full objects when out of order.
+5. Reduce active length after each pass.
+6. Return sorted object array.
+
+<strong>Function: binarySearch()</strong>
+1. Set low and high bounds for the sorted array.
+2. While target not found and bounds are valid:
+3. Calculate midpoint.
+4. Compare target with midpoint `get_car_make()`.
+5. Move lower or upper bound accordingly.
+6. Return found index, or `-1` if not found.
+
+### Array of Objects Design (Plain English)
+
+- Think of the data as a shelf of car objects, where each object has multiple properties.
+- Before sorting, objects are loaded in file order.
+- Sorting rearranges full objects based on one chosen property (make).
+- Searching checks that same property in the middle object, then halves the search region.
+- Validation happens when values are set, so incorrect year/service values do not enter the object.
 
 ---</div>
         </section>
@@ -193,18 +252,57 @@ FR10 Handle not-found case robustly.
 
 SQA-RL:
 ```text
-DECLARE carArray : ARRAY[1:n] OF Car
-FOR i FROM 1 TO n
-    SET carArray[i] &lt;- NEW Car(...)
-NEXT i
+CLASS Car
+  DECLARE car_id : STRING
+  DECLARE car_make : STRING
+  DECLARE car_model : STRING
+  DECLARE car_colour : STRING
+  DECLARE car_year : INTEGER
+  DECLARE car_serviced : BOOLEAN
 
-CALL bubbleSortArrayOfObjects(carArray) USING car_make
-SET position &lt;- binarySearch(carArray, targetMake) USING car_make
+  PROCEDURE Car(newID, newMake, newModel, newColour, newYear, newServiced)
+    SET car_id TO STRING(newID)
+    SET car_make TO STRING(newMake)
+    SET car_model TO STRING(newModel)
+    SET car_colour TO STRING(newColour)
+    CALL set_car_year(newYear)
+    CALL set_car_serviced(newServiced)
+  END PROCEDURE
+
+  PROCEDURE set_car_year(newYear)
+    IF IS_INTEGER(newYear) = FALSE THEN
+      RAISE ERROR &quot;car_year must be an integer&quot;
+    END IF
+
+    IF INTEGER(newYear) &lt; 1886 OR INTEGER(newYear) &gt; 2100 THEN
+      RAISE ERROR &quot;car_year must be between 1886 and 2100&quot;
+    END IF
+
+    SET car_year TO INTEGER(newYear)
+  END PROCEDURE
+
+  PROCEDURE set_car_serviced(newServiced)
+    IF TYPE(newServiced) = BOOLEAN THEN
+      SET car_serviced TO newServiced
+    ELSE IF LOWERCASE(TRIM(STRING(newServiced))) IN ["true","1","yes","y"] THEN
+      SET car_serviced TO TRUE
+    ELSE IF LOWERCASE(TRIM(STRING(newServiced))) IN ["false","0","no","n"] THEN
+      SET car_serviced TO FALSE
+    ELSE
+      RAISE ERROR &quot;car_serviced must be a boolean or boolean-like string&quot;
+    END IF
+  END PROCEDURE
+END CLASS
+
+SET carArray &lt;- readFileToArrayOfObjects()
+SET sortedArray &lt;- bubbleSortArrayofObjects(carArray)
+INPUT targetMake
+SET position &lt;- binarySearch(sortedArray, targetMake)
 
 IF position = -1 THEN
-    OUTPUT &quot;Not found&quot;
+  OUTPUT &quot;Sorry, we don't have any of that make.&quot;
 ELSE
-    OUTPUT &quot;Found&quot;
+  OUTPUT &quot;Yes! We have that make of car!&quot;
 END IF
 ```
 
@@ -217,41 +315,62 @@ END IF
         self.car_make = str(car_make) #String
         self.car_model = str(car_model) #String
         self.car_colour = str(car_colour) #String
-        self.car_year = str(car_year) #String
-        self.car_serviced = str(car_serviced) #String
+        self.set_car_year(car_year) #Integer
+        self.set_car_serviced(car_serviced) #Boolean
 
-        def get_car_id(self):
-          return self.car_id
+    def get_car_id(self):
+        return self.car_id
 
-        def get_car_make(self):
-          return self.car_make
+    def get_car_make(self):
+        return self.car_make
 
-        def get_car_model(self):
-          return self.car_model
+    def get_car_model(self):
+        return self.car_model
 
-        def get_car_colour(self):
-          return self.car_colour
+    def get_car_colour(self):
+        return self.car_colour
 
-        def get_car_year(self):
-          return self.car_year
+    def get_car_year(self):
+        return self.car_year
 
-        def get_car_serviced(self):
-          return self.car_serviced
+    def get_car_serviced(self):
+        return self.car_serviced
 
-        def set_car_make(self, car_make):
-          self.car_make = str(car_make)
+    def set_car_make(self, car_make):
+        self.car_make = str(car_make)
 
-        def set_car_model(self, car_model):
-          self.car_model = str(car_model)
+    def set_car_model(self, car_model):
+        self.car_model = str(car_model)
 
-        def set_car_colour(self, car_colour):
-          self.car_colour = str(car_colour)
+    def set_car_colour(self, car_colour):
+        self.car_colour = str(car_colour)
 
-        def set_car_year(self, car_year):
-          self.car_year = str(car_year)
+    def set_car_year(self, car_year):
+        try:
+            year = int(car_year)
+        except (TypeError, ValueError):
+            raise ValueError(&quot;car_year must be an integer&quot;)
 
-        def set_car_serviced(self, car_serviced):
-          self.car_serviced = str(car_serviced)
+        if year &lt; 1886 or year &gt; 2100:
+            raise ValueError(&quot;car_year must be between 1886 and 2100&quot;)
+
+        self.car_year = year
+
+    def set_car_serviced(self, car_serviced):
+        if isinstance(car_serviced, bool):
+            self.car_serviced = car_serviced
+            return
+
+        if isinstance(car_serviced, str):
+            value = car_serviced.strip().lower()
+            if value in (&quot;true&quot;, &quot;1&quot;, &quot;yes&quot;, &quot;y&quot;):
+                self.car_serviced = True
+                return
+            if value in (&quot;false&quot;, &quot;0&quot;, &quot;no&quot;, &quot;n&quot;):
+                self.car_serviced = False
+                return
+
+        raise ValueError(&quot;car_serviced must be a boolean or boolean-like string&quot;)
 
 def readFileToArrayOfObjects():
 
@@ -274,7 +393,7 @@ def bubbleSortArrayofObjects(cArray):
     while swapped and n&gt;=0:
         swapped = False
         for i in range(0,n-1): #changed from algorithm (n-2)
-        if cArray[i].get_car_make() &gt; cArray[i+1].get_car_make():
+            if cArray[i].get_car_make() &gt; cArray[i+1].get_car_make():
                 temp = cArray[i]
                 cArray[i] = cArray [i+1]
                 cArray[i+1] = temp
@@ -291,27 +410,27 @@ def binarySearch(cA, target):
 
     while not(found) and low &lt;= high:
         mid = int((low + high)/2)
-      if target == cA[mid].get_car_make():
+        if target == cA[mid].get_car_make():
             position = mid
             found = True
-      elif target &gt;= cA[mid].get_car_make():
+        elif target &gt;= cA[mid].get_car_make():
             low = mid + 1
         else:
             high = mid - 1
-    
+
     return position
-    
+
 carArray = readFileToArrayOfObjects()
 
 print (&quot;*Unsorted Array*&quot;)
 for cars in range (0,len(carArray)):
-  print (carArray[cars].get_car_make())
+    print (carArray[cars].get_car_make())
 
 sortedArray = bubbleSortArrayofObjects(carArray)
 
 print (&quot;*Sorted Array*&quot;)
 for cars in range (0,len(carArray)):
-  print (carArray[cars].get_car_make())
+    print (carArray[cars].get_car_make())
 
 
 target = str(input(&quot;What make of car are you looking for? &quot;))

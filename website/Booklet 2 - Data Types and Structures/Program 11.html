@@ -169,20 +169,90 @@ FR10 Keep object creation and array population explicit.
 
         <section class="section-block">
             <h2>Design</h2>
-            <div class="section-content">### Data Structure Design
+            <div class="section-content"><strong>Parent class:</strong> Event
+<strong>Child classes:</strong> WorkMeeting, Personal
 
-- Fixed-size array of objects: `events = [&quot;&quot;] * 3`
-- Index 0 stores `Event`, index 1 stores `WorkMeeting`, index 2 stores `Personal`.
+This program demonstrates <strong>polymorphism</strong>. A fixed-size array stores objects of different types — <code>Event</code>, <code>WorkMeeting</code>, and <code>Personal</code>. Calling the same method on each object gives different results because <code>WorkMeeting</code> overrides <code>getDate()</code>. The <code>Personal</code> class inherits from <code>Event</code> and adds its own properties and getter/setter methods.
+
+<p style="text-align: center;"><img src="../media/B2P11UMLClass.drawio.png" alt="UML class diagram for Event, WorkMeeting and Personal polymorphism" style="max-width: 100%; height: auto; border: 1px solid #d8e1ee; display: inline-block;"></p>
+
+### Array of Objects Design (Plain English)
+
+- The program prepares one fixed list of event spaces.
+- Each space can hold a general event or a specialised event type.
+- As objects are created, they are placed in order from the first free space onward.
+- The list keeps object order predictable, so tests can target specific positions.
+- During output, the program checks each object and uses behavior that matches its type.
 
 ### English Pseudocode
 
-1. Define parent class `Event`.
-2. Define child classes `WorkMeeting` and `Personal`.
-3. Override `getDate()` in `WorkMeeting`.
-4. Create fixed-size array of length 3.
-5. Store one object of each class by index.
-6. Loop through fixed-size array and call `getDate()`.
-7. Safely call subtype-only methods where applicable.
+<strong>Parent Constructor: Event()</strong>
+1. Accept the starting date, time, venue and reminder values.
+2. Store each value inside the event object.
+3. Create an empty participants list.
+4. Set the participant index to the first free position.
+
+<strong>Parent Method: updateDate()</strong>
+1. Accept a new date value.
+2. Replace the current stored date with the new date.
+
+<strong>Parent Method: getDate()</strong>
+1. Read the stored date from the object.
+2. Return that date value.
+
+<strong>Parent Method: getVenue()</strong>
+1. Read the venue stored in the object.
+2. Return that venue value.
+
+<strong>Parent Method: getParticipants()</strong>
+1. Read the participants list stored in the object.
+2. Return the full participants list.
+
+<strong>Parent Method: addParticipant()</strong>
+1. Accept a participant name.
+2. Store the name in the participants list at the next free position.
+3. Increase the index so the next participant is stored in the next space.
+
+<span style="color: #1a6bbf; font-weight: 600;"><strong>WorkMeeting Constructor: WorkMeeting()</strong>
+1. Accept all the event details plus the meeting title and mileage.
+2. Call the parent constructor to set up the inherited event data.
+3. Store the meeting title and mileage in the child object.
+4. Set the initial travel expenses to zero.
+
+<strong>WorkMeeting Method: getDate() (overrides parent)</strong>
+1. Call the parent version of <code>getDate()</code>.
+2. Add text that makes the message specific to a work meeting.
+3. Return the new combined string.
+
+<strong>WorkMeeting Method: calculateTravelExpenses()</strong>
+1. Read the mileage stored in the child object.
+2. Multiply the mileage by 1.5.
+3. Store the result as the travel expenses.
+
+<strong>WorkMeeting Method: getTravelExpenses()</strong>
+1. Read the stored travel expenses.
+2. Return that value.</span>
+
+<span style="color: #1a6bbf; font-weight: 600;"><strong>Personal Constructor: Personal()</strong>
+1. Accept all the event details plus the event type and description.
+2. Call the parent constructor to set up the inherited event data.
+3. Store the event type and description in the child object.
+
+<strong>Personal Method: setEventType()</strong>
+1. Accept a new event type value.
+2. Replace the current stored event type with the new value.
+
+<strong>Personal Method: setDescription()</strong>
+1. Accept a new description value.
+2. Replace the current stored description with the new value.
+
+<strong>Personal Method: getEventType()</strong>
+1. Read the event type stored in the child object.
+2. Return that value.
+
+<strong>Personal Method: getDescription()</strong>
+1. Read the description stored in the child object.
+2. Return that value.</span>
 
 ---</div>
         </section>
@@ -193,15 +263,105 @@ FR10 Keep object creation and array population explicit.
 
 SQA-RL:
 ```text
-DECLARE events : ARRAY[1:3] OF Event
-SET events[1] &lt;- NEW Event(...)
-SET events[2] &lt;- NEW WorkMeeting(...)
-SET events[3] &lt;- NEW Personal(...)
+CLASS Event
+  PRIVATE startDate AS STRING
+  PRIVATE startTime AS STRING
+  PRIVATE venue AS STRING
+  PRIVATE reminder AS BOOLEAN
+  PRIVATE participants AS ARRAY[1:20] OF STRING
+  PRIVATE index AS INTEGER
+
+  PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET startDate TO newStartDate
+    SET startTime TO newStartTime
+    SET venue TO newVenue
+    SET reminder TO newReminder
+    SET index TO 0
+  END PROCEDURE
+
+  PROCEDURE updateDate(eventDate)
+    SET startDate TO eventDate
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN startDate
+  END FUNCTION
+
+  FUNCTION getVenue() RETURNS STRING
+    RETURN venue
+  END FUNCTION
+
+  FUNCTION getParticipants() RETURNS ARRAY OF STRING
+    RETURN participants
+  END FUNCTION
+
+  PROCEDURE addParticipant(name)
+    SET participants[index] TO name
+    SET index TO index + 1
+  END PROCEDURE
+END CLASS
+
+<span style="color: #1a6bbf; font-weight: 600;">CLASS WorkMeeting EXTENDS Event
+  PRIVATE meetingTitle AS STRING
+  PRIVATE mileage AS REAL
+  PRIVATE travelExpenses AS REAL
+
+  PROCEDURE WorkMeeting(newStartDate, newStartTime, newVenue, newReminder, newMeetingTitle, newMileage)
+    CALL SUPER.Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET meetingTitle TO newMeetingTitle
+    SET mileage TO newMileage
+    SET travelExpenses TO 0
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN "The date of this Work Meeting is " + SUPER.getDate()
+  END FUNCTION
+
+  PROCEDURE calculateTravelExpenses()
+    SET travelExpenses TO mileage * 1.5
+  END PROCEDURE
+
+  FUNCTION getTravelExpenses() RETURNS REAL
+    RETURN travelExpenses
+  END FUNCTION
+END CLASS</span>
+
+<span style="color: #1a6bbf; font-weight: 600;">CLASS Personal EXTENDS Event
+  PRIVATE eventType AS STRING
+  PRIVATE description AS STRING
+
+  PROCEDURE Personal(newStartDate, newStartTime, newVenue, newReminder, newEventType, newDescription)
+    CALL SUPER.Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET eventType TO newEventType
+    SET description TO newDescription
+  END PROCEDURE
+
+  PROCEDURE setEventType(newEventType)
+    SET eventType TO newEventType
+  END PROCEDURE
+
+  PROCEDURE setDescription(newDescription)
+    SET description TO newDescription
+  END PROCEDURE
+
+  FUNCTION getEventType() RETURNS STRING
+    RETURN eventType
+  END FUNCTION
+
+  FUNCTION getDescription() RETURNS STRING
+    RETURN description
+  END FUNCTION
+END CLASS</span>
+
+<span style="color: #1a6bbf; font-weight: 600;">DECLARE events : ARRAY[1:3] OF Event
+SET events[1] <- NEW Event(...)
+SET events[2] <- NEW WorkMeeting(...)
+SET events[3] <- NEW Personal(...)
 
 FOR eachEvent FROM 1 TO 3
     OUTPUT events[eachEvent].getDate()
-    CALL events[eachEvent].addParticipant(&quot;Alice&quot;)
-NEXT eachEvent
+    CALL events[eachEvent].addParticipant("Alice")
+NEXT eachEvent</span>
 ```
 
 ### Notes

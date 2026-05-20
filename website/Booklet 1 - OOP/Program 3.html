@@ -177,17 +177,17 @@ This version of the class adds more behaviour. The UML diagram now shows a <stro
 
 ### English Pseudocode
 
-<strong>Constructor: Event()</strong>
+<span style="color: #1a6bbf; font-weight: 600;"><strong>Constructor: Event()</strong>
 1. Accept the starting date, time, venue and reminder values.
 2. Store each value in the new object.
 3. Create an empty participants list.
-4. Set the participant index to the first free position.
+4. Set the participant index to the first free position.</span>
 
 <strong>Method: getVenue()</strong>
 1. Read the venue stored in the object.
 2. Return that venue value.
 
-<strong>Method: updateDate()</strong>
+<span style="color: #1a6bbf; font-weight: 600;"><strong>Method: updateDate()</strong>
 1. Accept a new date value.
 2. Replace the object's current start date with the new date.
 
@@ -198,7 +198,7 @@ This version of the class adds more behaviour. The UML diagram now shows a <stro
 <strong>Method: addParticipant()</strong>
 1. Accept a participant name.
 2. Store the name in the participants list at the next free position.
-3. Increase the index so the next participant goes into the next space.
+3. Increase the index so the next participant goes into the next space.</span>
 </div>
         </section>
 
@@ -216,19 +216,19 @@ CLASS Event
   DECLARE participants AS ARRAY[1:20] OF STRING
   DECLARE index AS INTEGER
 
-  PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
+  <span style="color: #1a6bbf; font-weight: 600;">PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
     SET startDate TO newStartDate
     SET startTime TO newStartTime
     SET venue TO newVenue
     SET reminder TO newReminder
     SET index TO 0
-  END PROCEDURE
+  END PROCEDURE</span>
 
   FUNCTION getVenue() RETURNS STRING
     RETURN venue
   END FUNCTION
 
-  PROCEDURE updateDate(eventDate)
+  <span style="color: #1a6bbf; font-weight: 600;">PROCEDURE updateDate(eventDate)
     SET startDate TO eventDate
   END PROCEDURE
 
@@ -239,7 +239,7 @@ CLASS Event
   PROCEDURE addParticipant(name)
     SET participants[index] TO name
     SET index TO index + 1
-  END PROCEDURE
+  END PROCEDURE</span>
 END CLASS
 ```
 

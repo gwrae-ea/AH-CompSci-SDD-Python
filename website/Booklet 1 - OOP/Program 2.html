@@ -193,13 +193,13 @@ CLASS Event
   DECLARE participants AS ARRAY[1:20] OF STRING
   DECLARE index AS INTEGER
 
-  FUNCTION getVenue() RETURNS STRING
+  <span style="color: #1a6bbf; font-weight: 600;">FUNCTION getVenue() RETURNS STRING
     RETURN venue
-  END FUNCTION
+  END FUNCTION</span>
 END CLASS
 
-DECLARE item1 AS NEW Event("13/04/18", "0900", "Main Office", TRUE)
-SEND item1.getVenue() TO DISPLAY
+<span style="color: #1a6bbf; font-weight: 600;">DECLARE item1 AS NEW Event("13/04/18", "0900", "Main Office", TRUE)
+SEND item1.getVenue() TO DISPLAY</span>
 ```
 
 The **constructor** shown in the UML as <code>+ Event()</code> is called when creating an object. In SQA-RL this happens through <code>NEW Event(...)</code>. It builds a new instance of the class and sets its properties to the values passed in. Each call to the constructor creates a completely independent object, so changing <code>item1</code> has no effect on any other object created from the same class.

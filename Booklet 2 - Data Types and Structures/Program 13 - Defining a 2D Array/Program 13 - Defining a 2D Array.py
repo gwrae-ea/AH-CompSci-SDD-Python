@@ -1,3 +1,44 @@
+"""
+Program 13 - Defining a 2D Array
+
+Design
+- The program models a fixed game grid with known dimensions (6 rows, 9 columns).
+- A 2D array is created first, then individual cells are updated by coordinate.
+- One extra row and one extra column are included in storage so the displayed grid can use
+	human-friendly numbering (1..6 and 1..9) while keeping index logic predictable.
+- Row and column header lists are prepared to label the final printed table.
+- Numpy and pandas are used only to format output clearly as a table.
+
+SQA-RL
+DECLARE rows <- 6
+DECLARE cols <- 9
+DECLARE game : ARRAY[0:rows, 0:cols] OF STRING
+
+FOR r FROM 0 TO rows
+	FOR c FROM 0 TO cols
+		SET game[r,c] <- " "
+	NEXT c
+NEXT r
+
+SET game[3,7] <- "P"
+SET game[2,3] <- "E"
+SET game[5,2] <- "E"
+
+DECLARE rowHeaders : ARRAY[1:rows] OF STRING
+DECLARE colHeaders : ARRAY[1:cols] OF STRING
+SET rowHeaders <- ["1","2","3","4","5","6"]
+SET colHeaders <- ["1","2","3","4","5","6","7","8","9"]
+
+SET dispGame <- CONVERT_TO_NUMPY_ARRAY(game)
+SET dispGame <- CONVERT_TO_DATAFRAME(
+	dispGame[1..rows, 1..cols],
+	colHeaders,
+	rowHeaders
+)
+SET COLUMN_NAME(dispGame) <- "Game"
+OUTPUT dispGame
+"""
+
 import numpy, pandas #numpy and pandas provide useful functions for the display and manipulation of 2-d Arrays
 
 rows, cols = (6,9) #define the number of rows and columns in the 2-D Array

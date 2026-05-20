@@ -187,9 +187,9 @@ FR10 Show the difference between direct property access and encapsulated access.
 
 <strong>Method: getVenue()</strong>
 1. Read the private venue value stored in the object.
-2. Check whether the venue length is between 5 and 15 characters.
+<span style="color: #1a6bbf; font-weight: 600;">2. Check whether the venue length is between 5 and 15 characters.
 3. If it is valid, return the venue.
-4. Otherwise, return an error message.
+4. Otherwise, return an error message.</span>
 
 <strong>Method: updateDate()</strong>
 1. Accept a new date value.
@@ -199,13 +199,13 @@ FR10 Show the difference between direct property access and encapsulated access.
 1. Read the private start date from the object.
 2. Return that value.
 
-<strong>Method: getParticipants()</strong>
+<span style="color: #1a6bbf; font-weight: 600;"><strong>Method: getParticipants()</strong>
 1. Read the participants list stored in the object.
 2. Return the list.
 
 <strong>Method: getParticipantCount()</strong>
 1. Read the current participant index.
-2. Return the number of stored participants.
+2. Return the number of stored participants.</span>
 
 <strong>Method: addParticipant()</strong>
 1. Accept a participant name.
@@ -221,12 +221,12 @@ FR10 Show the difference between direct property access and encapsulated access.
 SQA-RL:
 ```
 CLASS Event
-  PRIVATE startDate AS STRING
+  <span style="color: #1a6bbf; font-weight: 600;">PRIVATE startDate AS STRING
   PRIVATE startTime AS STRING
   PRIVATE venue AS STRING
   PRIVATE reminder AS BOOLEAN
   PRIVATE participants AS ARRAY[1:20] OF STRING
-  PRIVATE index AS INTEGER
+  PRIVATE index AS INTEGER</span>
 
   PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
     SET startDate TO newStartDate
@@ -236,13 +236,13 @@ CLASS Event
     SET index TO 0
   END PROCEDURE
 
-  FUNCTION getVenue() RETURNS STRING
+  <span style="color: #1a6bbf; font-weight: 600;">FUNCTION getVenue() RETURNS STRING
     IF LENGTH(venue) >= 5 AND LENGTH(venue) <= 15 THEN
       RETURN venue
     ELSE
       RETURN "Invalid venue"
     END IF
-  END FUNCTION
+  END FUNCTION</span>
 
   PROCEDURE updateDate(eventDate)
     SET startDate TO eventDate
@@ -252,13 +252,13 @@ CLASS Event
     RETURN startDate
   END FUNCTION
 
-  FUNCTION getParticipants() RETURNS ARRAY OF STRING
+  <span style="color: #1a6bbf; font-weight: 600;">FUNCTION getParticipants() RETURNS ARRAY OF STRING
     RETURN participants
   END FUNCTION
 
   FUNCTION getParticipantCount() RETURNS INTEGER
     RETURN index
-  END FUNCTION
+  END FUNCTION</span>
 
   PROCEDURE addParticipant(name)
     SET participants[index] TO name

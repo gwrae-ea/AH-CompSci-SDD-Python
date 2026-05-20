@@ -5,8 +5,8 @@ class Car():
         self.car_make = str(car_make) #String
         self.car_model = str(car_model) #String
         self.car_colour = str(car_colour) #String
-        self.car_year = str(car_year) #String
-        self.car_serviced = str(car_serviced) #String
+        self.set_car_year(car_year) #Integer
+        self.set_car_serviced(car_serviced) #Boolean
 
     def get_car_id(self):
         return self.car_id
@@ -36,10 +36,31 @@ class Car():
         self.car_colour = str(car_colour)
 
     def set_car_year(self, car_year):
-        self.car_year = str(car_year)
+        try:
+            year = int(car_year)
+        except (TypeError, ValueError):
+            raise ValueError("car_year must be an integer")
+
+        if year < 1886 or year > 2100:
+            raise ValueError("car_year must be between 1886 and 2100")
+
+        self.car_year = year
 
     def set_car_serviced(self, car_serviced):
-        self.car_serviced = str(car_serviced)
+        if isinstance(car_serviced, bool):
+            self.car_serviced = car_serviced
+            return
+
+        if isinstance(car_serviced, str):
+            value = car_serviced.strip().lower()
+            if value in ("true", "1", "yes", "y"):
+                self.car_serviced = True
+                return
+            if value in ("false", "0", "no", "n"):
+                self.car_serviced = False
+                return
+
+        raise ValueError("car_serviced must be a boolean or boolean-like string")
 
 def readFileToArrayOfObjects():
 

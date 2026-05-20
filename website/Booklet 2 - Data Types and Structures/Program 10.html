@@ -169,20 +169,52 @@ FR10 Use clear variable names and comments for readability.
 
         <section class="section-block">
             <h2>Design</h2>
-            <div class="section-content">### Data Structure Design
+            <div class="section-content"><strong>Class:</strong> Event
 
-- Fixed-size event array: `eventArray = [&quot;&quot;] * 20`
-- Fixed-size participant array inside each `Event`: `participants = [&quot;&quot;] * 20`
-- Integer index tracks next insertion point for participants.
+  <span style="color: #1a6bbf; font-weight: 600;">### Data Structure Design
+
+- Fixed-size event array: <code>eventArray = [""] * 20</code>
+- Fixed-size participant array inside each <code>Event</code>: <code>participants = [""] * 20</code>
+  - Integer index tracks next insertion point for participants.</span>
+
+<p style="text-align: center;"><img src="../media/BP10UMLClass.drawio.png" alt="UML class diagram for Event array of objects" style="max-width: 100%; height: auto; border: 1px solid #d8e1ee; display: inline-block;"></p>
+
+### Array of Objects Design (Plain English)
+
+- The program sets aside twenty event spaces before any data is added.
+- Each space is identified by a position number, so every event has a clear place.
+- When a new event is created, it is placed into the next empty position.
+- The position number is then moved on by one, ready for the next event.
+- To read an event later, the program goes straight to its stored position.
 
 ### English Pseudocode
 
-1. Define class `Event` with date, time, venue, reminder.
-2. In constructor, create fixed-size participant array of length 20.
-3. Create fixed-size `eventArray` of length 20.
-4. Store `Event` objects in specific array positions.
-5. Add a participant to one event.
-6. Display participant array contents.
+<strong>Constructor: Event()</strong>
+1. Accept the starting date, time, venue and reminder values.
+2. Store each value inside the event object.
+3. Create an empty participants list.
+4. Set the participant index to the first free position.
+
+<strong>Method: getVenue()</strong>
+1. Read the venue stored in the object.
+2. Return that venue value.
+
+<strong>Method: updateDate()</strong>
+1. Accept a new date value.
+2. Replace the current stored date with the new date.
+
+<strong>Method: getDate()</strong>
+1. Read the stored date from the object.
+2. Return that date value.
+
+<strong>Method: getParticipants()</strong>
+1. Read the participants list stored in the object.
+2. Return the full participants list.
+
+<strong>Method: addParticipant()</strong>
+1. Accept a participant name.
+2. Store the name in the participants list at the next free position.
+3. Increase the index so the next participant is stored in the next space.
 
 ---</div>
         </section>
@@ -194,19 +226,48 @@ FR10 Use clear variable names and comments for readability.
 SQA-RL:
 ```text
 CLASS Event
-    DECLARE startDate : STRING
-    DECLARE startTime : STRING
-    DECLARE venue : STRING
-    DECLARE reminder : BOOLEAN
-    DECLARE participants : ARRAY[1:20] OF STRING
-    DECLARE index : INTEGER
+  DECLARE startDate : STRING
+  DECLARE startTime : STRING
+  DECLARE venue : STRING
+  DECLARE reminder : BOOLEAN
+  DECLARE participants : ARRAY[1:20] OF STRING
+  DECLARE index : INTEGER
+
+  PROCEDURE Event(newStartDate, newStartTime, newVenue, newReminder)
+    SET startDate TO newStartDate
+    SET startTime TO newStartTime
+    SET venue TO newVenue
+    SET reminder TO newReminder
+    SET index TO 0
+  END PROCEDURE
+
+  PROCEDURE updateDate(eventDate)
+    SET startDate TO eventDate
+  END PROCEDURE
+
+  FUNCTION getDate() RETURNS STRING
+    RETURN startDate
+  END FUNCTION
+
+  FUNCTION getVenue() RETURNS STRING
+    RETURN venue
+  END FUNCTION
+
+  FUNCTION getParticipants() RETURNS ARRAY OF STRING
+    RETURN participants
+  END FUNCTION
+
+  PROCEDURE addParticipant(name)
+    SET participants[index] TO name
+    SET index TO index + 1
+  END PROCEDURE
 END CLASS
 
-DECLARE eventArray : ARRAY[1:20] OF Event
-SET eventArray[1] &lt;- NEW Event(...)
-SET eventArray[2] &lt;- NEW Event(...)
-CALL eventArray[2].addParticipant(&quot;Erica Knowles&quot;)
-OUTPUT eventArray[2].getParticipants()
+<span style="color: #1a6bbf; font-weight: 600;">DECLARE eventArray : ARRAY[1:20] OF Event
+SET eventArray[1] <- NEW Event(...)
+SET eventArray[2] <- NEW Event(...)
+CALL eventArray[2].addParticipant("Erica Knowles")
+OUTPUT eventArray[2].getParticipants()</span>
 ```
 
 ### Notes

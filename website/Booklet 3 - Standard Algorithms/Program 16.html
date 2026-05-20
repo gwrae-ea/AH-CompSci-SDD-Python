@@ -171,19 +171,30 @@ FR10 Print the sorted array for verification.
             <h2>Design</h2>
             <div class="section-content">### Data Structure Design
 
-- Use one 1D numeric array.
-- Maintain `value` (item being inserted) and `index` (current insert position).
+- A fixed-size 1D array stores all numeric values to be sorted.
+- The array is treated as two regions during processing:
+  - a sorted region on the left
+  - an unsorted region on the right
+- On each pass, one value from the unsorted region is inserted into the correct place in the sorted region.
+- Temporary variables (`value` and `index`) track the item being inserted and its target location.
 
 ### English Pseudocode
 
-1. Loop `i` from 1 to end of array.
-2. Set `value` to current element.
-3. Set `index` to `i`.
-4. While `index &gt; 0` and previous element is larger:
-   - Shift previous element right.
-   - Decrease `index`.
-5. Insert `value` at `index`.
-6. Continue until all elements processed.
+1. Start at the second element in the array.
+2. Take the current value as the value to insert.
+3. Move left through the sorted region while values are larger than the current value.
+4. Shift larger values one place to the right.
+5. Insert the held value into the first valid position.
+6. Repeat until all elements have been processed.
+7. Return the sorted array.
+
+### 1D Array Design (Plain English)
+
+- Imagine a row of values where the left side is gradually kept in order.
+- Each step picks up one new value and finds where it belongs in that ordered part.
+- Values that are too large are moved right to make space.
+- The picked-up value is placed into the new gap.
+- The ordered part grows by one each step until the full row is sorted.
 
 ---</div>
         </section>
@@ -194,6 +205,9 @@ FR10 Print the sorted array for verification.
 
 SQA-RL:
 ```text
+DECLARE numArray : ARRAY[1:7] OF INTEGER
+SET numArray <- [23, 546, 2, 3214, 456, 234, 321]
+
 FUNCTION insertionSort(numArray)
     FOR i &lt;- 2 TO SIZE(numArray)
         SET value &lt;- numArray[i]
@@ -209,6 +223,9 @@ FUNCTION insertionSort(numArray)
 
     RETURN numArray
 END FUNCTION
+
+SET sortedArray &lt;- insertionSort(numArray)
+OUTPUT sortedArray
 ```
 
 ---</div>

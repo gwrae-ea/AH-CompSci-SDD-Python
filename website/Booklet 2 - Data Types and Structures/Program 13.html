@@ -171,18 +171,33 @@ FR10 Use meaningful symbols for stored values.
             <h2>Design</h2>
             <div class="section-content">### Data Structure Design
 
-- Fixed-size dimensions: `ROWS = 6`, `COLS = 9`
-- Fixed-size 2D array: `game = [[&quot; &quot; for c in range(COLS)] for r in range(ROWS)]`
+      - Fixed-size grid dimensions are set at program start: 6 rows and 9 columns.
+      - A fixed-size 2D array stores grid content, initially filled with blank values.
+      - Storage includes position 0 in both dimensions so display can use human-friendly labels 1..6 and 1..9.
+      - Three target coordinates are updated to represent game entities.
+      - Separate row and column header lists are prepared for readable output.
+      - The grid is then displayed as a labelled table.
 
-### English Pseudocode
+      ### English Pseudocode
 
-1. Set fixed row and column values.
-2. Create fixed-size 2D array with blanks.
-3. Set values at specific coordinates.
-4. Build row/column headers.
-5. Output grid in table form.
+      1. Set row count and column count as fixed constants.
+      2. Create a 2D array large enough for every row/column position.
+      3. Fill every element of the 2D array with a blank symbol.
+      4. Place key symbols at the required coordinates.
+      5. Create row headers numbered 1 to 6.
+      6. Create column headers numbered 1 to 9.
+      7. Convert the grid into display format.
+      8. Print the labelled table.
 
----</div>
+      ### 2D Array Design (Plain English)
+
+      - Think of the structure as a board made of six horizontal lines and nine vertical slots.
+      - Every slot exists from the start, so the layout size never changes.
+      - The program updates only the slots it needs, leaving all other slots blank.
+      - Because each slot has a row and column position, the program can place and find values precisely.
+      - The same fixed layout can be reused for maps, seating plans, or game boards.
+
+      ---</div>
         </section>
 
         <section class="section-block">
@@ -191,20 +206,34 @@ FR10 Use meaningful symbols for stored values.
 
 SQA-RL:
 ```text
-DECLARE ROWS &lt;- 6
-DECLARE COLS &lt;- 9
-DECLARE game : ARRAY[1:ROWS, 1:COLS] OF STRING
+DECLARE rows &lt;- 6
+DECLARE cols &lt;- 9
+DECLARE game : ARRAY[0:rows, 0:cols] OF STRING
 
-FOR r FROM 1 TO ROWS
-    FOR c FROM 1 TO COLS
-        SET game[r,c] &lt;- &quot; &quot;
-    NEXT c
+FOR r FROM 0 TO rows
+  FOR c FROM 0 TO cols
+    SET game[r,c] &lt;- &quot; &quot;
+  NEXT c
 NEXT r
 
 SET game[3,7] &lt;- &quot;P&quot;
 SET game[2,3] &lt;- &quot;E&quot;
 SET game[5,2] &lt;- &quot;E&quot;
-OUTPUT game
+
+DECLARE rowHeaders : ARRAY[1:rows] OF STRING
+DECLARE colHeaders : ARRAY[1:cols] OF STRING
+SET rowHeaders &lt;- ["1", "2", "3", "4", "5", "6"]
+SET colHeaders &lt;- ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
+SET dispGame &lt;- CONVERT_TO_NUMPY_ARRAY(game)
+SET dispGame &lt;- CONVERT_TO_DATAFRAME(
+  dispGame[1..rows, 1..cols],
+  colHeaders,
+  rowHeaders
+)
+SET COLUMN_NAME(dispGame) &lt;- &quot;Game&quot;
+
+OUTPUT dispGame
 ```
 
 ### Notes
