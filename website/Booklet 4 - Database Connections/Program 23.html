@@ -154,9 +154,9 @@ The solution is required to:
 
 FR5 Have a database table to store employee records.
 
-FR6 Connect to the database to execute a query to validate connectivity and retrieve/update/delete employee data as required.
+FR6 Connect to the database and execute a parameterised `SELECT ... WHERE id = %s` query to retrieve the target employee record for deletion.
 
-FR7 Generate an interface to receive query input values and display formatted query output.
+FR7 Execute a parameterised `DELETE FROM ... WHERE id = %s` query to remove the confirmed target employee record.
 
 #### Additional functional requirements
 
@@ -187,42 +187,62 @@ FR15 Always close the cursor and connection after execution, whether the delete 
 
 This program uses two parameterised SQL queries: one to locate the employee record and one to delete it.
 
-| Query | Purpose | SQL | Parameters | Expected Result |
-|---|---|---|---|---|
-| Select employee by ID | Finds the employee record that matches the entered ID | `SELECT id, name, position, salary, department FROM Employees WHERE id = %s` | `employeeId` | One matching employee row or no row if the ID does not exist |
-| Delete employee by ID | Deletes the selected employee record | `DELETE FROM Employees WHERE id = %s` | `employeeId` | One row deleted, or no rows if nothing matched |
+### Query 1: Select Employee
+
+<div class="table-wrap"><table>
+<tbody>
+<tr><td>SELECT</td><td>id, name, position, salary, department</td></tr>
+<tr><td>FROM</td><td>Employees</td></tr>
+<tr><td>WHERE</td><td>id = %employeeId</td></tr>
+</tbody>
+</table></div>
+
+### Query 2: Delete Employee
+
+<div class="table-wrap"><table>
+<tbody>
+<tr><td>DELETE FROM</td><td>Employees</td></tr>
+<tr><td>WHERE</td><td>id = %employeeId</td></tr>
+</tbody>
+</table></div>
+
+The `%` symbol is used here to show each value comes from a program variable (parameter value) rather than hard-coded SQL text.
 
 ### English Pseudocode
 
-1. Start a procedure to delete an existing employee record.
-2. Read the database host, username, password, and database name from environment settings.
-3. Check that all four environment variables have been set.
-   1. If any are missing, display an error message naming the missing variables and stop.
-4. Try to connect to the database using the validated settings.
-5. If the connection fails:
-   1. Display a connection error message.
-   2. Stop the procedure.
-6. Otherwise:
-   1. Create a database cursor.
-   2. Ask the user for an employee ID and validate that it is a whole number greater than 0.
-   3. Use a SELECT query to fetch that employee record.
-   4. If no record is found:
-      1. Display a message that no employee exists with that ID.
-      2. Stop the procedure.
-   5. Display the current record values.
-   6. Ask for confirmation before delete.
-   7. If confirmation is No:
-      1. Display cancellation message.
-      2. Stop the procedure.
-   8. Execute the DELETE query for the selected employee ID.
-   9. Commit the transaction.
-   10. If no rows were deleted, display no-delete message.
-   11. Otherwise, display success message.
-   12. If a database error occurs:
-      1. Display a database error message.
-      2. Roll back the transaction.
-   13. Close the cursor if it exists.
-   14. Close the database connection.
+<strong>Procedure: delete_employee()</strong>
+1. Read required database settings from environment variables.
+2. Validate that no required setting is missing.
+3. If settings are missing, display a clear configuration error and stop.
+4. Attempt to create a database connection.
+5. If connection fails, display a clear connection error and stop.
+6. Display heading for delete mode.
+7. Read and validate employee ID (whole number greater than 0).
+8. Execute parameterised SELECT query for that ID.
+9. If no record exists, display not-found message and stop.
+10. Show current record values for verification.
+11. Request explicit delete confirmation (yes/no).
+12. If confirmation is no, display cancellation message and stop.
+13. Execute parameterised DELETE query with the ID.
+14. Commit transaction.
+15. If no rows deleted, display no-delete message.
+16. Otherwise display success confirmation.
+17. On database error, display error context and roll back.
+18. Always close cursor and connection resources before finishing.
+
+<strong>Procedure: validate_environment_settings()</strong>
+1. Read `DB_HOST`, `DB_USER`, `DB_PASS`, and `DB_NAME`.
+2. Build a list of missing variable names.
+3. If list is non-empty, display missing names and return failure.
+4. Otherwise return validated values for connection.
+
+### Database Delete Design (Plain English)
+
+- Validate configuration first, then connect, then locate record, then delete.
+- Use parameter placeholders so user input is never concatenated into SQL text.
+- Show record and require explicit confirmation before any deletion.
+- Commit only after successful delete; roll back on any database failure.
+- Always close resources even when errors occur.
 
 ---</div>
         </section>
@@ -232,78 +252,89 @@ This program uses two parameterised SQL queries: one to locate the employee reco
             <div class="section-content">### SQA-RL
 
 ```text
-Line 1: FUNCTION DeleteEmployee()
-Line 2:     SET dbHost TO GETENV(&quot;DB_HOST&quot;)                                         [FR8]
-Line 3:     SET dbUser TO GETENV(&quot;DB_USER&quot;)                                         [FR8]
-Line 4:     SET dbPass TO GETENV(&quot;DB_PASS&quot;)                                         [FR8]
-Line 5:     SET dbName TO GETENV(&quot;DB_NAME&quot;)                                         [FR8]
+FUNCTION ValidateSettings() RETURNS (BOOLEAN, STRING, STRING, STRING, STRING)
+  SET dbHost TO GETENV(&quot;DB_HOST&quot;)
+  SET dbUser TO GETENV(&quot;DB_USER&quot;)
+  SET dbPass TO GETENV(&quot;DB_PASS&quot;)
+  SET dbName TO GETENV(&quot;DB_NAME&quot;)
 
-Line 6:     SET missing TO []
-Line 7:     FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
-Line 8:         IF varValue = NULL OR varValue = &quot;&quot; THEN
-Line 9:             APPEND varName TO missing
-Line 10:         ENDIF
-Line 11:     ENDFOR
-Line 12:     IF LENGTH(missing) &gt; 0 THEN
-Line 13:         SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY   [FR8, FR11]
-Line 14:         RETURN
-Line 15:     ENDIF
+  SET missing TO []
+  FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
+    IF varValue = NULL OR varValue = &quot;&quot; THEN
+      APPEND varName TO missing
+    END IF
+  NEXT
 
-Line 16:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
-Line 17:     IF conn = NULL THEN
-Line 18:         SEND &quot;Connection Error&quot; TO DISPLAY                                 [FR11]
-Line 19:         RETURN
-Line 20:     ENDIF
+  IF LENGTH(missing) &gt; 0 THEN
+    SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY
+    RETURN (FALSE, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;)
+  END IF
 
-Line 21:     SET cursor TO NULL
+  RETURN (TRUE, dbHost, dbUser, dbPass, dbName)
+END FUNCTION
 
-Line 22:     TRY
-Line 23:         SET cursor TO conn.cursor()
+FUNCTION DeleteEmployee()
+  SET (isValid, dbHost, dbUser, dbPass, dbName) TO ValidateSettings()
+  IF isValid = FALSE THEN
+    RETURN
+  END IF
 
-Line 24:         SEND &quot;--- Delete Employee Record ---&quot; TO DISPLAY
-Line 25:         SET employeeId TO VALIDATED_INTEGER_INPUT(&quot;Enter Employee ID to delete: &quot;)   [FR7, FR9]
+  TRY
+    SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)
+  CATCH error
+    SEND &quot;Connection Error: &quot; &amp; error TO DISPLAY
+    RETURN
+  END TRY
 
-Line 26:         SET selectQuery TO &quot;SELECT id, name, position, salary, department FROM Employees WHERE id = %s&quot;   [FR6, FR12]
-Line 27:         cursor.execute(selectQuery, (employeeId))
-Line 28:         SET employee TO cursor.fetchone()
+  SET cursor TO NULL
 
-Line 29:         IF employee = NULL THEN
-Line 30:             SEND &quot;No employee found with that ID.&quot; TO DISPLAY               [FR11, FR12]
-Line 31:             RETURN
-Line 32:         ENDIF
+  TRY
+    SET cursor TO conn.cursor()
+    SEND &quot;--- Delete Employee Record ---&quot; TO DISPLAY
 
-Line 33:         SEND &quot;Display current record values&quot; TO DISPLAY                     [FR7]
-Line 34:         SET confirmDelete TO VALIDATED_TEXT_INPUT(&quot;Confirm delete (Yes/No): &quot;)   [FR10]
-Line 35:         IF confirmDelete = &quot;No&quot; THEN
-Line 36:             SEND &quot;Delete cancelled. No changes made.&quot; TO DISPLAY            [FR11]
-Line 37:             RETURN
-Line 38:         ENDIF
+    SET employeeId TO VALIDATED_INTEGER_INPUT(&quot;Enter Employee ID to delete: &quot;)
 
-Line 39:         SET deleteQuery TO &quot;DELETE FROM Employees WHERE id = %s&quot;            [FR6]
-Line 40:         cursor.execute(deleteQuery, (employeeId))
-Line 41:         conn.commit()                                                        [FR14]
+    SET selectQuery TO &quot;SELECT id, name, position, salary, department FROM Employees WHERE id = %s&quot;
+    cursor.execute(selectQuery, (employeeId))
+    SET employee TO cursor.fetchone()
 
-Line 42:         IF cursor.rowcount = 0 THEN
-Line 43:             SEND &quot;No record was deleted.&quot; TO DISPLAY
-Line 44:         ELSE
-Line 45:             SEND &quot;Employee deleted successfully.&quot; TO DISPLAY                 [FR11]
-Line 46:         ENDIF
+    IF employee = NULL THEN
+      SEND &quot;No employee found with that ID.&quot; TO DISPLAY
+      RETURN
+    END IF
 
-Line 47:     CATCH DATABASEERROR
-Line 48:         SEND &quot;Database Error&quot; TO DISPLAY                                   [FR11, FR13]
-Line 49:         conn.rollback()                                                      [FR14]
+    SEND &quot;Record found:&quot; TO DISPLAY
+    SEND &quot;ID=&quot; &amp; employee[0] &amp; &quot;, Name=&quot; &amp; employee[1] &amp; &quot;, Position=&quot; &amp; employee[2] &amp; &quot;, Salary=&quot; &amp; employee[3] &amp; &quot;, Department=&quot; &amp; employee[4] TO DISPLAY
 
-Line 50:     FINALLY
-Line 51:         IF conn.is_connected() = TRUE THEN
-Line 52:             IF cursor &lt;&gt; NULL THEN
-Line 53:                 cursor.close()                                              [FR15]
-Line 54:             ENDIF
-Line 55:             conn.close()                                                    [FR15]
-Line 56:         ENDIF
-Line 57:     ENDTRY
-Line 58: ENDFUNCTION
+    SET confirmDelete TO VALIDATED_TEXT_INPUT(&quot;Are you sure you want to delete this record? (Yes/No): &quot;)
+    IF confirmDelete = &quot;No&quot; THEN
+      SEND &quot;Delete cancelled. No changes made.&quot; TO DISPLAY
+      RETURN
+    END IF
 
-Line 59: CALL DeleteEmployee()
+    SET deleteQuery TO &quot;DELETE FROM Employees WHERE id = %s&quot;
+    cursor.execute(deleteQuery, (employeeId))
+    conn.commit()
+
+    IF cursor.rowcount = 0 THEN
+      SEND &quot;No record was deleted.&quot; TO DISPLAY
+    ELSE
+      SEND &quot;Employee deleted successfully.&quot; TO DISPLAY
+    END IF
+  CATCH error
+    SEND &quot;Database Error: &quot; &amp; error TO DISPLAY
+    conn.rollback()
+  FINALLY
+    IF conn.is_connected() = TRUE THEN
+      IF cursor &lt;&gt; NULL THEN
+        cursor.close()
+      END IF
+      conn.close()
+    END IF
+  END TRY
+END FUNCTION
+
+CALL DeleteEmployee()
 ```
 
 The Python implementation is in [Program 23 - Delete Data.py](./Program%2023%20-%20Delete%20Data.py).
