@@ -155,9 +155,9 @@ The solution is required to:
 
 FR5 Have a database table to store employee records.
 
-FR6 Connect to the database to execute a query to validate connectivity and retrieve/update employee data as required.
+FR6 Connect to the database and execute a parameterised `SELECT ... WHERE id = %s` query to retrieve the target employee record for update.
 
-FR7 Generate an interface to receive query input values and display formatted query output.
+FR7 Execute a parameterised `UPDATE ... WHERE id = %s` query to write validated changes back to the target employee record.
 
 #### Additional functional requirements
 
@@ -188,122 +188,156 @@ FR15 Commit the transaction on success, roll back on error, and always close the
 
 This program uses two parameterised SQL queries: one to find the existing employee record and one to update it.
 
-| Query | Purpose | SQL | Parameters | Expected Result |
-|---|---|---|---|---|
-| Select employee by ID | Finds the employee record that matches the entered ID | `SELECT id, name, position, salary, department FROM Employees WHERE id = %s` | `employeeId` | One matching employee row or no row if the ID does not exist |
-| Update employee by ID | Updates the selected employee record with the new values | `UPDATE Employees SET name = %s, position = %s, salary = %s, department = %s WHERE id = %s` | `newName`, `newPosition`, `newSalary`, `newDepartment`, `employeeId` | The matching employee row updated, or no rows changed if the values are unchanged |
+### Query 1: Select Employee
+
+<div class="table-wrap"><table>
+<tbody>
+<tr><td>SELECT</td><td>id, name, position, salary, department</td></tr>
+<tr><td>FROM</td><td>Employees</td></tr>
+<tr><td>WHERE</td><td>id = %employeeId</td></tr>
+</tbody>
+</table></div>
+
+### Query 2: Update Employee
+
+<div class="table-wrap"><table>
+<tbody>
+<tr><td>UPDATE</td><td>Employees</td></tr>
+<tr><td>SET</td><td>name = %newName, position = %newPosition, salary = %newSalary, department = %newDepartment</td></tr>
+<tr><td>WHERE</td><td>id = %employeeId</td></tr>
+</tbody>
+</table></div>
+
+The `%` symbol is used here to show each value comes from a program variable (parameter value) rather than hard-coded SQL text.
 
 ### English Pseudocode
 
-1. Start a procedure to update an existing employee record.
-2. Read the database host, username, password, and database name from environment settings.
-3. Check that all four environment variables have been set.
-	1. If any are missing, display an error message naming the missing variables and stop.
-4. Try to connect to the database using the validated settings.
-5. If the connection fails:
-	1. Display a connection error message.
-	2. Stop the procedure.
-6. Otherwise:
-	1. Create a database cursor.
-	2. Ask the user for an employee ID and validate that it is a whole number greater than 0.
-	3. Use a SELECT query to fetch that employee record.
-	4. If no record is found:
-		1. Display a message that no employee exists with that ID.
-		2. Stop the procedure.
-	5. Display the current values.
-	6. Ask for new name, position, salary, and department.
-	7. Allow blank input to keep the existing value.
-	8. Validate each non-blank text field length and salary value.
-	9. Build an UPDATE query for the Employees table.
-	10. Execute the UPDATE query and commit the transaction.
-	11. If no rows were changed, display that no changes were made.
-	12. Otherwise, display a success message.
-	13. If a database error occurs:
-		1. Display a database error message.
-		2. Roll back the transaction.
-	14. Close the cursor if it exists.
-	15. Close the database connection.
+<strong>Procedure: update_employee()</strong>
+1. Read required database settings from environment variables.
+2. Validate that no required setting is missing.
+3. If settings are missing, display a clear configuration error and stop.
+4. Attempt to create a database connection.
+5. If connection fails, display a clear connection error and stop.
+6. Display heading for update mode.
+7. Read and validate employee ID (whole number greater than 0).
+8. Execute parameterised SELECT query for that ID.
+9. If no record exists, display not-found message and stop.
+10. Show current values and explain blank input keeps current data.
+11. Read and validate optional new name.
+12. Read and validate optional new position.
+13. Read and validate optional new salary.
+14. Read and validate optional new department.
+15. Build parameterised UPDATE query and values tuple.
+16. Execute query and commit transaction.
+17. If no rows changed, display no-change message.
+18. Otherwise display success confirmation.
+19. On database error, display error context and roll back.
+20. Always close cursor and connection resources before finishing.
+
+<strong>Procedure: validate_environment_settings()</strong>
+1. Read `DB_HOST`, `DB_USER`, `DB_PASS`, and `DB_NAME`.
+2. Build a list of missing variable names.
+3. If list is non-empty, display missing names and return failure.
+4. Otherwise return validated values for connection.
+
+### Database Update Design (Plain English)
+
+- Validate configuration first, then connect, then locate record, then update.
+- Use parameter placeholders so user input is never concatenated into SQL text.
+- Keep original values when user leaves fields blank.
+- Commit only after successful update; roll back on any database failure.
+- Always close resources even when errors occur.
 
 ---</div>
         </section>
 
         <section class="section-block">
             <h2>Implementation</h2>
-            <div class="section-content">### SQA Reference Language
+                        <div class="section-content">### SQA-RL
 
 ```text
-Line 1: FUNCTION UpdateEmployee()
-Line 2:     SET dbHost TO GETENV(&quot;DB_HOST&quot;)                                         [FR8]
-Line 3:     SET dbUser TO GETENV(&quot;DB_USER&quot;)                                         [FR8]
-Line 4:     SET dbPass TO GETENV(&quot;DB_PASS&quot;)                                         [FR8]
-Line 5:     SET dbName TO GETENV(&quot;DB_NAME&quot;)                                         [FR8]
+FUNCTION ValidateSettings() RETURNS (BOOLEAN, STRING, STRING, STRING, STRING)
+    SET dbHost TO GETENV(&quot;DB_HOST&quot;)
+    SET dbUser TO GETENV(&quot;DB_USER&quot;)
+    SET dbPass TO GETENV(&quot;DB_PASS&quot;)
+    SET dbName TO GETENV(&quot;DB_NAME&quot;)
 
-Line 6:     SET missing TO []
-Line 7:     FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
-Line 8:         IF varValue = NULL OR varValue = &quot;&quot; THEN
-Line 9:             APPEND varName TO missing
-Line 10:         ENDIF
-Line 11:     ENDFOR
-Line 12:     IF LENGTH(missing) &gt; 0 THEN
-Line 13:         SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY   [FR8, FR14]
-Line 14:         RETURN
-Line 15:     ENDIF
+    SET missing TO []
+    FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
+        IF varValue = NULL OR varValue = &quot;&quot; THEN
+            APPEND varName TO missing
+        END IF
+    NEXT
 
-Line 16:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
-Line 17:     IF conn = NULL THEN
-Line 18:         SEND &quot;Connection Error&quot; TO DISPLAY                                 [FR14]
-Line 19:         RETURN
-Line 20:     ENDIF
+    IF LENGTH(missing) &gt; 0 THEN
+        SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY
+        RETURN (FALSE, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;)
+    END IF
 
-Line 21:     SET cursor TO NULL
+    RETURN (TRUE, dbHost, dbUser, dbPass, dbName)
+END FUNCTION
 
-Line 22:     TRY
-Line 23:         SET cursor TO conn.cursor()
+FUNCTION UpdateEmployee()
+    SET (isValid, dbHost, dbUser, dbPass, dbName) TO ValidateSettings()
+    IF isValid = FALSE THEN
+        RETURN
+    END IF
 
-Line 24:         SEND &quot;--- Update Employee Record ---&quot; TO DISPLAY
-Line 25:         SET employeeId TO VALIDATED_INTEGER_INPUT(&quot;Enter Employee ID to update: &quot;)   [FR7, FR9]
+    TRY
+        SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)
+    CATCH error
+        SEND &quot;Connection Error: &quot; &amp; error TO DISPLAY
+        RETURN
+    END TRY
 
-Line 26:         SET selectQuery TO &quot;SELECT id, name, position, salary, department FROM Employees WHERE id = %s&quot;   [FR6, FR12]
-Line 27:         cursor.execute(selectQuery, (employeeId))
-Line 28:         SET employee TO cursor.fetchone()
+    SET cursor TO NULL
 
-Line 29:         IF employee = NULL THEN
-Line 30:             SEND &quot;No employee found with that ID.&quot; TO DISPLAY               [FR12, FR14]
-Line 31:             RETURN
-Line 32:         ENDIF
+    TRY
+        SET cursor TO conn.cursor()
+        SEND &quot;--- Update Employee Record ---&quot; TO DISPLAY
 
-Line 33:         SEND &quot;Leave blank to keep existing values.&quot; TO DISPLAY
-Line 34:         SET newName TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Name: &quot;, employee.get_name())   [FR7, FR10]
-Line 35:         SET newPosition TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Position: &quot;, employee.get_position())   [FR7, FR10]
-Line 36:         SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT(&quot;Enter New Salary: &quot;, employee.get_salary())   [FR7, FR11]
-Line 37:         SET newDepartment TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Department: &quot;, employee.get_department())   [FR7, FR10]
+        SET employeeId TO VALIDATED_INTEGER_INPUT(&quot;Enter Employee ID to update: &quot;)
 
-Line 38:         SET updateQuery TO &quot;UPDATE Employees SET name=%s, position=%s, salary=%s, department=%s WHERE id=%s&quot;   [FR6]
-Line 39:         SET values TO (newName, newPosition, newSalary, newDepartment, employeeId)
-Line 40:         cursor.execute(updateQuery, values)
-Line 41:         conn.commit()                                                        [FR15]
+        SET selectQuery TO &quot;SELECT id, name, position, salary, department FROM Employees WHERE id = %s&quot;
+        cursor.execute(selectQuery, (employeeId))
+        SET employee TO cursor.fetchone()
 
-Line 42:         IF cursor.rowcount = 0 THEN
-Line 43:             SEND &quot;No changes were made.&quot; TO DISPLAY
-Line 44:         ELSE
-Line 45:             SEND &quot;Employee updated successfully.&quot; TO DISPLAY                 [FR14]
-Line 46:         ENDIF
+        IF employee = NULL THEN
+            SEND &quot;No employee found with that ID.&quot; TO DISPLAY
+            RETURN
+        END IF
 
-Line 47:     CATCH DATABASEERROR
-Line 48:         SEND &quot;Database Error&quot; TO DISPLAY                                   [FR14]
-Line 49:         conn.rollback()                                                      [FR15]
+        SEND &quot;Leave blank to keep existing values.&quot; TO DISPLAY
+        SET newName TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Name: &quot;, employee[1])
+        SET newPosition TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Position: &quot;, employee[2])
+        SET newSalary TO OPTIONAL_VALIDATED_REAL_INPUT(&quot;Enter New Salary: &quot;, employee[3])
+        SET newDepartment TO OPTIONAL_VALIDATED_TEXT_INPUT(&quot;Enter New Department: &quot;, employee[4])
 
-Line 50:     FINALLY
-Line 51:         IF conn.is_connected() = TRUE THEN
-Line 52:             IF cursor &lt;&gt; NULL THEN
-Line 53:                 cursor.close()                                              [FR15]
-Line 54:             ENDIF
-Line 55:             conn.close()                                                    [FR15]
-Line 56:         ENDIF
-Line 57:     ENDTRY
-Line 58: ENDFUNCTION
+        SET updateQuery TO &quot;UPDATE Employees SET name = %s, position = %s, salary = %s, department = %s WHERE id = %s&quot;
+        SET values TO (newName, newPosition, newSalary, newDepartment, employeeId)
 
-Line 59: CALL UpdateEmployee()
+        cursor.execute(updateQuery, values)
+        conn.commit()
+
+        IF cursor.rowcount = 0 THEN
+            SEND &quot;No changes were made.&quot; TO DISPLAY
+        ELSE
+            SEND &quot;Employee updated successfully.&quot; TO DISPLAY
+        END IF
+    CATCH error
+        SEND &quot;Database Error: &quot; &amp; error TO DISPLAY
+        conn.rollback()
+    FINALLY
+        IF conn.is_connected() = TRUE THEN
+            IF cursor &lt;&gt; NULL THEN
+                cursor.close()
+            END IF
+            conn.close()
+        END IF
+    END TRY
+END FUNCTION
+
+CALL UpdateEmployee()
 ```
 
 The Python implementation is in [Program 22 - Update Data.py](./Program%2022%20-%20Update%20Data.py).

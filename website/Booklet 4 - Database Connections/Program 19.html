@@ -184,30 +184,44 @@ FR15 Ensure each transaction-based operation leaves the database in a consistent
             <h2>Design</h2>
             <div class="section-content">### Query Design
 
-This program uses one SQL query to confirm that the database connection is working correctly.
+This program runs a single verification query after a successful connection.
 
-| Query | Purpose | SQL | Parameters | Expected Result |
-|---|---|---|---|---|
-| Get server version | Checks that the database is responding and returns version information | `SELECT VERSION();` | None | A single row containing the database server version |
+<div class="table-wrap"><table>
+<tbody>
+<tr><td>SELECT</td><td>VERSION</td></tr>
+</tbody>
+</table></div>
 
 ### English Pseudocode
 
-1. Start a procedure to test the database connection.
-2. Display a message saying a connection check is being performed.
-3. Read the database host, username, password, and database name from environment settings.
-4. Check that all four environment variables have been set.
-	1. If any are missing, display an error message naming the missing variables and stop.
-5. Try to connect to the database using the validated settings.
-6. If the connection is successful:
-	1. Create a cursor.
-	2. Run a query to get the database server version.
-	3. Read the returned version value.
-	4. Display a success message and display the version.
-	5. Close the cursor and close the connection.
-	6. Display a message confirming the connection was closed safely.
-7. Otherwise:
-	1. Display a failure message.
-	2. Display a troubleshooting hint.
+<strong>Procedure: test_connection()</strong>
+1. Display a message to show that a connection test is starting.
+2. Read required database settings from environment variables.
+3. Validate that no required setting is missing.
+4. If settings are missing, display a clear configuration error and stop.
+5. Attempt to create a database connection.
+6. If the connection is valid:
+   - Create a cursor.
+   - Execute `SELECT VERSION();`.
+   - Read the result row.
+   - Display success and server version.
+7. If query execution fails, display a query-specific error.
+8. Always close open cursor/connection resources before finishing.
+9. If connection was not established, display failure plus troubleshooting hint.
+
+<strong>Procedure: validate_environment_settings()</strong>
+1. Read `DB_HOST`, `DB_USER`, `DB_PASS`, and `DB_NAME`.
+2. Build a list of missing variable names.
+3. If list is non-empty, display missing names and return failure.
+4. Otherwise return validated values for connection.
+
+### Database Connection Design (Plain English)
+
+- Treat configuration loading, connection, query execution, and cleanup as separate stages.
+- Do not attempt any SQL until required settings are confirmed.
+- Use one lightweight query to prove the connection is alive.
+- Report clear outcomes for configuration failure, connection failure, query failure, and success.
+- Always clean up resources so failed runs do not leave open handles.
 
 ---</div>
         </section>
@@ -217,45 +231,68 @@ This program uses one SQL query to confirm that the database connection is worki
             <div class="section-content">### SQA-RL
 
 ```text
-Line 1: FUNCTION TestConnection()
-Line 2:     SEND &quot;Checking connection to external database...&quot; TO DISPLAY
+      FUNCTION ValidateSettings() RETURNS (BOOLEAN, STRING, STRING, STRING, STRING)
+        SET dbHost TO GETENV(&quot;DB_HOST&quot;)
+        SET dbUser TO GETENV(&quot;DB_USER&quot;)
+        SET dbPass TO GETENV(&quot;DB_PASS&quot;)
+        SET dbName TO GETENV(&quot;DB_NAME&quot;)
 
-Line 3:     SET dbHost TO GETENV(&quot;DB_HOST&quot;)                                         [FR8]
-Line 4:     SET dbUser TO GETENV(&quot;DB_USER&quot;)                                         [FR8]
-Line 5:     SET dbPass TO GETENV(&quot;DB_PASS&quot;)                                         [FR8]
-Line 6:     SET dbName TO GETENV(&quot;DB_NAME&quot;)                                         [FR8]
+        SET missing TO []
+        FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
+          IF varValue = NULL OR varValue = &quot;&quot; THEN
+            APPEND varName TO missing
+          END IF
+        NEXT
 
-Line 7:     SET missing TO []
-Line 8:     FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
-Line 9:         IF varValue = NULL OR varValue = &quot;&quot; THEN
-Line 10:             APPEND varName TO missing
-Line 11:         ENDIF
-Line 12:     ENDFOR
-Line 13:     IF LENGTH(missing) &gt; 0 THEN
-Line 14:         SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY   [FR8, FR11]
-Line 15:         RETURN
-Line 16:     ENDIF
+        IF LENGTH(missing) &gt; 0 THEN
+          SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY
+          RETURN (FALSE, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;)
+        END IF
 
-Line 17:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
+        RETURN (TRUE, dbHost, dbUser, dbPass, dbName)
+      END FUNCTION
 
-Line 18:     IF conn &lt;&gt; NULL AND conn.is_connected() = TRUE THEN
-Line 19:         SET cursor TO conn.cursor()
-Line 20:         cursor.execute(&quot;SELECT VERSION();&quot;)                                 [FR6]
-Line 21:         SET version TO cursor.fetchone()
+      FUNCTION TestConnection()
+        SEND &quot;Checking connection to external database...&quot; TO DISPLAY
 
-Line 22:         SEND &quot;--- Connection Successful! ---&quot; TO DISPLAY                     [FR11]
-Line 23:         SEND &quot;Database Server Version: &quot; &amp; version[0] TO DISPLAY             [FR7]
+        SET (isValid, dbHost, dbUser, dbPass, dbName) TO ValidateSettings()
+        IF isValid = FALSE THEN
+          RETURN
+        END IF
 
-Line 24:         cursor.close()                                                      [FR11]
-Line 25:         conn.close()                                                        [FR11]
-Line 26:         SEND &quot;Connection closed safely.&quot; TO DISPLAY                          [FR11]
-Line 27:     ELSE
-Line 28:         SEND &quot;--- Connection Failed ---&quot; TO DISPLAY                          [FR11]
-Line 29:         SEND &quot;Check your GitHub Secrets (Host, User, Pass) and Firewall settings.&quot; TO DISPLAY   [FR11, FR14]
-Line 30:     ENDIF
-Line 31: ENDFUNCTION
+        SET cursor TO NULL
 
-Line 32: CALL TestConnection()
+        TRY
+          SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)
+        CATCH error
+          SEND &quot;Connection Error: &quot; &amp; error TO DISPLAY
+          SET conn TO NULL
+        END TRY
+
+        IF conn &lt;&gt; NULL AND conn.is_connected() = TRUE THEN
+          TRY
+            SET cursor TO conn.cursor()
+            cursor.execute(&quot;SELECT VERSION();&quot;)
+            SET versionRow TO cursor.fetchone()
+
+            SEND &quot;--- Connection Successful! ---&quot; TO DISPLAY
+            SEND &quot;Database Server Version: &quot; &amp; versionRow[0] TO DISPLAY
+          CATCH error
+            SEND &quot;Connected, but query failed: &quot; &amp; error TO DISPLAY
+          FINALLY
+            IF cursor &lt;&gt; NULL THEN
+              cursor.close()
+            END IF
+            conn.close()
+            SEND &quot;Connection closed safely.&quot; TO DISPLAY
+          END TRY
+        ELSE
+          SEND &quot;--- Connection Failed ---&quot; TO DISPLAY
+          SEND &quot;Check your GitHub Secrets (Host, User, Pass) and Firewall settings.&quot; TO DISPLAY
+        END IF
+      END FUNCTION
+
+      CALL TestConnection()
 ```
 
 The Python implementation is in [Program 19 - Initial Connection.py](./Program%2019%20-%20Initial%20Connection.py).

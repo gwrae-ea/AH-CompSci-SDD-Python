@@ -185,33 +185,45 @@ FR15 Ensure the cursor and connection are always closed after execution, even if
 
 This program uses one SQL query to retrieve all employee records from the database before storing them in a fixed-size array of objects.
 
-| Query | Purpose | SQL | Parameters | Expected Result |
-|---|---|---|---|---|
-| Select all employees | Retrieves every employee record from the Employees table | `SELECT * FROM Employees` | None | Zero or more rows containing full employee records |
+<div class="table-wrap"><table>
+<tbody>
+<tr><td>SELECT</td><td>ALL</td></tr>
+<tr><td>FROM</td><td>Employees</td></tr>
+</tbody>
+</table></div>
 
 ### English Pseudocode
 
-1. Define an Employee record structure to hold each row of employee data.
-2. Start a procedure to select employee records from the database.
-3. Read the database host, username, password, and database name from environment settings.
-4. Check that all four environment variables have been set.
-	1. If any are missing, display an error message naming the missing variables and stop.
-5. Try to connect to the database using the validated settings.
-6. If the connection fails:
-	1. Display an error message.
-	2. Stop the procedure.
-7. Otherwise:
-	1. Create a SQL query to select all rows from the Employees table.
-	2. Create a cursor, execute the query, and fetch all rows.
-	3. Read the number of rows returned.
-	4. Create a fixed-size array of that length to hold Employee objects.
-	5. For each index from 0 to number of rows minus 1:
-		1. Create an Employee object from the row at that index.
-		2. Store the Employee object at the same index in the array.
-	6. Display column headings.
-	7. For each Employee in the results array:
-		1. Display that employee&#39;s details.
-	8. Close the cursor and close the database connection.
+<strong>Procedure: select_employees()</strong>
+1. Read required database settings from environment variables.
+2. Validate that no required setting is missing.
+3. If settings are missing, display a clear configuration error and stop.
+4. Attempt to create a database connection.
+5. If connection fails, display a clear connection error and stop.
+6. Create a cursor and execute `SELECT * FROM Employees`.
+7. Fetch all returned rows.
+8. Create a fixed-size results array using the number of returned rows.
+9. For each row index:
+   - Build an `Employee` object from that row.
+   - Store it at the matching index in the results array.
+10. Display table headings.
+11. Loop through the results array and display each employee row.
+12. If query execution fails, display query-specific error context.
+13. Always close cursor and connection resources before finishing.
+
+<strong>Procedure: validate_environment_settings()</strong>
+1. Read `DB_HOST`, `DB_USER`, `DB_PASS`, and `DB_NAME`.
+2. Build a list of missing variable names.
+3. If list is non-empty, display missing names and return failure.
+4. Otherwise return validated values for connection.
+
+### Database Select Design (Plain English)
+
+- Validate configuration first, then connect, then run query, then map rows.
+- Convert raw database rows into `Employee` objects before display.
+- Use a fixed-size array so storage size matches returned row count exactly.
+- Keep formatting logic separate from retrieval logic.
+- Always close resources even when errors occur.
 
 ---</div>
         </section>
@@ -221,61 +233,91 @@ This program uses one SQL query to retrieve all employee records from the databa
             <div class="section-content">### SQA-RL
 
 ```text
-Line 1: CLASS Employee                                                              [FR1]
-Line 2:     FUNCTION __init__(id, name, salary, department, position, hireDate)
-Line 3:         SET self.id TO id
-Line 4:         SET self.name TO name
-Line 5:         SET self.salary TO salary
-Line 6:         SET self.department TO department
-Line 7:         SET self.position TO position
-Line 8:         SET self.hireDate TO hireDate
-Line 9:     ENDFUNCTION
-Line 10: ENDCLASS
+CLASS Employee
+  DECLARE id : INTEGER
+  DECLARE name : STRING
+  DECLARE salary : REAL
+  DECLARE department : STRING
+  DECLARE position : STRING
+  DECLARE hireDate : STRING
 
-Line 11: FUNCTION SelectEmployees()
-Line 12:     SET dbHost TO GETENV(&quot;DB_HOST&quot;)                                         [FR8]
-Line 13:     SET dbUser TO GETENV(&quot;DB_USER&quot;)                                         [FR8]
-Line 14:     SET dbPass TO GETENV(&quot;DB_PASS&quot;)                                         [FR8]
-Line 15:     SET dbName TO GETENV(&quot;DB_NAME&quot;)                                         [FR8]
+  PROCEDURE Employee(newID, newName, newSalary, newDepartment, newPosition, newHireDate)
+    SET id TO INTEGER(newID)
+    SET name TO STRING(newName)
+    SET salary TO REAL(newSalary)
+    SET department TO STRING(newDepartment)
+    SET position TO STRING(newPosition)
+    SET hireDate TO STRING(newHireDate)
+  END PROCEDURE
+END CLASS
 
-Line 16:     SET missing TO []
-Line 17:     FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
-Line 18:         IF varValue = NULL OR varValue = &quot;&quot; THEN
-Line 19:             APPEND varName TO missing
-Line 20:         ENDIF
-Line 21:     ENDFOR
-Line 22:     IF LENGTH(missing) &gt; 0 THEN
-Line 23:         SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY   [FR8, FR11]
-Line 24:         RETURN
-Line 25:     ENDIF
+FUNCTION ValidateSettings() RETURNS (BOOLEAN, STRING, STRING, STRING, STRING)
+  SET dbHost TO GETENV(&quot;DB_HOST&quot;)
+  SET dbUser TO GETENV(&quot;DB_USER&quot;)
+  SET dbPass TO GETENV(&quot;DB_PASS&quot;)
+  SET dbName TO GETENV(&quot;DB_NAME&quot;)
 
-Line 26:     SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)               [FR6]
-Line 27:     IF conn = NULL OR conn.is_connected() = FALSE THEN
-Line 28:         SEND &quot;Connection failed&quot; TO DISPLAY                                 [FR11]
-Line 29:         RETURN
-Line 30:     ENDIF
+  SET missing TO []
+  FOR EACH (varName, varValue) IN [(&quot;DB_HOST&quot;, dbHost), (&quot;DB_USER&quot;, dbUser), (&quot;DB_PASS&quot;, dbPass), (&quot;DB_NAME&quot;, dbName)] DO
+    IF varValue = NULL OR varValue = &quot;&quot; THEN
+      APPEND varName TO missing
+    END IF
+  NEXT
 
-Line 31:     SET query TO &quot;SELECT * FROM Employees&quot;                                  [FR6]
-Line 32:     SET cursor TO conn.cursor()
-Line 33:     cursor.execute(query)
-Line 34:     SET dbRows TO cursor.fetchall()
+  IF LENGTH(missing) &gt; 0 THEN
+    SEND &quot;Configuration Error: Missing environment variable(s): &quot; &amp; JOIN(missing, &quot;, &quot;) TO DISPLAY
+    RETURN (FALSE, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;)
+  END IF
 
-Line 35:     SET numRows TO LENGTH(dbRows)
-Line 36:     SET results TO ARRAY OF SIZE numRows                                    [FR2]
-Line 37:     FOR i FROM 0 TO numRows - 1 DO
-Line 38:         SET results[i] TO NEW Employee(dbRows[i][0], dbRows[i][1], dbRows[i][2], dbRows[i][3], dbRows[i][4], dbRows[i][5])   [FR1, FR2]
-Line 39:     ENDFOR
+  RETURN (TRUE, dbHost, dbUser, dbPass, dbName)
+END FUNCTION
 
-Line 40:     SEND &quot;id        name                salary      dept                          position                      date&quot; TO DISPLAY   [FR7]
-Line 41:     FOR EACH worker IN results DO
-Line 42:         SEND worker.get_id(), worker.get_name(), worker.get_salary(), worker.get_department(), worker.get_position(), worker.get_hire_date() TO DISPLAY   [FR7]
-Line 43:     ENDFOR
+FUNCTION SelectEmployees()
+  SET (isValid, dbHost, dbUser, dbPass, dbName) TO ValidateSettings()
+  IF isValid = FALSE THEN
+    RETURN
+  END IF
 
-Line 44:     cursor.close()                                                          [FR11]
-Line 45:     conn.close()                                                            [FR11]
-Line 46: ENDFUNCTION
+  TRY
+    SET conn TO MYSQLCONNECT(dbHost, dbUser, dbPass, dbName)
+  CATCH error
+    SEND &quot;Connection Error: &quot; &amp; error TO DISPLAY
+    RETURN
+  END TRY
 
-Line 47: CALL SelectEmployees()
+  SET cursor TO NULL
+
+  TRY
+    SET query TO &quot;SELECT * FROM Employees&quot;
+    SET cursor TO conn.cursor()
+    cursor.execute(query)
+    SET dbRows TO cursor.fetchall()
+
+    SET numRows TO LENGTH(dbRows)
+    SET results TO ARRAY OF SIZE numRows
+
+    FOR i FROM 0 TO numRows - 1 DO
+      SET row TO dbRows[i]
+      SET results[i] TO NEW Employee(row[0], row[1], row[2], row[3], row[4], row[5])
+    NEXT i
+
+    SEND &quot;id        name                salary      dept                          position                      date&quot; TO DISPLAY
+    FOR EACH worker IN results DO
+      SEND worker.get_id(), worker.get_name(), worker.get_salary(), worker.get_department(), worker.get_position(), worker.get_hire_date() TO DISPLAY
+    NEXT worker
+  CATCH error
+    SEND &quot;Connection failed: &quot; &amp; error TO DISPLAY
+  FINALLY
+    IF conn.is_connected() = TRUE THEN
+      IF cursor &lt;&gt; NULL THEN
+        cursor.close()
+      END IF
+      conn.close()
+    END IF
+  END TRY
+END FUNCTION
+
+CALL SelectEmployees()
 ```
 
 The Python implementation is in [Program 20 - Connect and Select.py](./Program%2020%20-%20Connect%20and%20Select.py).
