@@ -65,8 +65,8 @@ Then run the setup commands below.
 In the terminal, from the project root:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
